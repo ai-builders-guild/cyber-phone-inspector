@@ -1,0 +1,8 @@
+name = "13_empty_phone"
+description = "Edge: no packages at all. Every check CHECKED."
+[device]
+manufacturer = "Google"
+model = "Pixel 9"
+androidRelease = "16"
+sdkInt = 36
+

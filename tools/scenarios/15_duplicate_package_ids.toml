@@ -1,0 +1,40 @@
+name = "15_duplicate_package_ids"
+description = "Edge: the same package id appears twice (multi user leftovers on some OEMs). Both preserved and flagged by the loader."
+[device]
+manufacturer = "samsung"
+model = "SM-S928U"
+androidRelease = "16"
+sdkInt = 36
+oemSkin = "One UI 8.5"
+
+[[apps]]
+packageName = "com.android.systemui"
+label = "System UI"
+isSystem = true
+[[apps]]
+packageName = "com.android.settings"
+label = "Settings"
+isSystem = true
+hasLauncherIcon = true
+[[apps]]
+packageName = "com.google.android.gms"
+label = "Google Play services"
+isSystem = true
+[[apps]]
+packageName = "com.android.vending"
+label = "Google Play Store"
+isSystem = true
+hasLauncherIcon = true
+[[apps]]
+packageName = "com.android.phone"
+label = "Phone"
+isSystem = true
+[[apps]]
+packageName = "com.whatsapp"
+label = "WhatsApp"
+category = "SOCIAL"
+[[apps]]
+packageName = "com.whatsapp"
+label = "WhatsApp"
+category = "SOCIAL"
+versionCode = 2

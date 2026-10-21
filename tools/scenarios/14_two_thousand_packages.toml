@@ -1,0 +1,10 @@
+name = "14_two_thousand_packages"
+description = "Edge: 2000 synthetic packages for parse time and scale."
+generate_apps = 2000
+[device]
+manufacturer = "samsung"
+model = "SM-S928U"
+androidRelease = "16"
+sdkInt = 36
+oemSkin = "One UI 8.5"
+

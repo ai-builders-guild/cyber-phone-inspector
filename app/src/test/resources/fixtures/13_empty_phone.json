@@ -1,0 +1,44 @@
+{
+  "apps": [],
+  "checks": [
+    {
+      "check": "APPS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "CONTROL",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERMISSIONS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERSISTENCE",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "NETWORK",
+      "reason": null,
+      "status": "CHECKED"
+    }
+  ],
+  "collectedAt": 1792411200000,
+  "controls": [],
+  "device": {
+    "androidRelease": "16",
+    "manufacturer": "Google",
+    "model": "Pixel 9",
+    "sdkInt": 36
+  },
+  "flows": [],
+  "iocSnapshotDate": "2026-10-21",
+  "permissions": [],
+  "persistence": [],
+  "scenario": "13_empty_phone",
+  "schemaVersion": 1
+}

@@ -28,7 +28,7 @@ class GuardrailTest {
                 .orEmpty()
                 .map { File(it, "AndroidManifest.xml") }
                 .filter { it.exists() }
-        val added = others.flatMap { m -> declaredPermissions(m).map { "${m.parentFile.name}: $it" } }
+        val added = others.flatMap { m -> declaredPermissions(m).map { "${m.parentFile?.name}: $it" } }
         assertThat(added).isEmpty()
     }
 

@@ -54,3 +54,30 @@ Queued next
 Surprises
 - Samsung exposes a Smart Switch CD image over USB by default; adb only appears after choosing Transferring files.
 - Private DNS automatic mode on the phone makes the Phase 11 fallback check mandatory on this exact device.
+
+## 2026-10-21 — Phase 3: Evidence model and fixture corpus (branch phase-03-evidence-model)
+
+What ran
+- `core/model/Records.kt` and `Evidence.kt`: five record types with provenance, `CheckResult`, `DeviceInfo`, the `Evidence` envelope, `EvidenceParseError`, and a loader that flags duplicate package ids.
+- `tools/make_fixture.py` (stdlib only, TOML scenarios) with 5 unittest cases; 16 scenarios under `tools/scenarios/`; 16 generated fixtures under `app/src/test/resources/fixtures/`.
+- `EvidenceModelTest` (10 tests, written first and seen failing on unresolved references).
+- Housekeeping: `ACCESS_NETWORK_STATE` landed in its own commit before this phase (Rick's decision); three compiler warnings from Phase 2 code cleared.
+
+What was verified (validation gate)
+- 16 fixtures load and round trip losslessly; serialization deterministic.
+- 2,000 package fixture parses well under 500 ms (steady state) on the JVM.
+- Duplicate package fixture: both records preserved, both `duplicate=true`, all others false.
+- String timestamp → `EvidenceParseError` naming `bad_timestamp.json` and `firstInstallAt`; malformed JSON names the file.
+- Unknown fields at top level and inside a record are ignored.
+- `make_fixture.py --check` passes against the committed fixtures; `./gradlew check` green (19 unit tests, lint, ktlint, dependency allowlist).
+
+What failed and how it was fixed
+- Generator used Python `hash()` for synthetic cert ids (randomized per process) → sha256.
+- Shell quoting of scenario text broke → scenarios written by a Python script instead.
+- Generator printed a path relative to the project root even for a temp dir → guarded.
+
+Queued next
+- Phases 4 to 7 (collectors) may run as parallel sessions; they share only this model and touch separate files.
+
+Surprises
+- None in the model. The fixture corpus took more design than the model: the scenarios are the spec the rule engine will be judged against.

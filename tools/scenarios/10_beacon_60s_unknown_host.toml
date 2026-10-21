@@ -1,0 +1,83 @@
+name = "10_beacon_60s_unknown_host"
+description = "Otherwise ordinary Play app beacons to an unrecognized host every 60 s. Expected medium beacon finding."
+[device]
+manufacturer = "Google"
+model = "Pixel 9"
+androidRelease = "16"
+sdkInt = 36
+
+[[apps]]
+packageName = "com.android.systemui"
+label = "System UI"
+isSystem = true
+[[apps]]
+packageName = "com.android.settings"
+label = "Settings"
+isSystem = true
+hasLauncherIcon = true
+[[apps]]
+packageName = "com.google.android.gms"
+label = "Google Play services"
+isSystem = true
+[[apps]]
+packageName = "com.android.vending"
+label = "Google Play Store"
+isSystem = true
+hasLauncherIcon = true
+[[apps]]
+packageName = "com.android.phone"
+label = "Phone"
+isSystem = true
+[[apps]]
+packageName = "com.whatsapp"
+label = "WhatsApp"
+category = "SOCIAL"
+[[apps]]
+packageName = "com.spotify.music"
+label = "Spotify"
+category = "AUDIO"
+[[apps]]
+packageName = "com.google.android.apps.maps"
+label = "Maps"
+category = "MAPS"
+[[apps]]
+packageName = "com.photo.filters.free"
+label = "Photo Filters"
+category = "IMAGE"
+[[permissions]]
+packageName = "com.whatsapp"
+group = "MICROPHONE"
+[[permissions]]
+packageName = "com.whatsapp"
+group = "CAMERA"
+[[permissions]]
+packageName = "com.google.android.apps.maps"
+group = "LOCATION"
+[[persistence]]
+packageName = "com.spotify.music"
+bootReceiver = true
+foregroundServiceMinutes7d = 900
+[[persistence]]
+packageName = "com.whatsapp"
+bootReceiver = true
+foregroundServiceMinutes7d = 40
+[[flows]]
+uid = 10101
+packageName = "com.whatsapp"
+host = "g.whatsapp.net"
+answerIps = ["157.240.1.60"]
+repeat = 3
+intervalSeconds = 97
+jitterSeconds = 40
+[[flows]]
+uid = 10102
+packageName = "com.spotify.music"
+host = "api.spotify.com"
+answerIps = ["35.186.224.25"]
+[[flows]]
+uid = 10300
+packageName = "com.photo.filters.free"
+host = "c2.metrics-collector.xyz"
+answerIps = ["45.9.148.12"]
+repeat = 10
+intervalSeconds = 60
