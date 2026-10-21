@@ -15,6 +15,10 @@ import com.cyberrick.phoneinspector.collect.SystemPackages
 import com.cyberrick.phoneinspector.core.model.ControlKind
 import com.cyberrick.phoneinspector.core.model.InstallSource
 import com.cyberrick.phoneinspector.core.model.SensitiveGroup
+import com.cyberrick.phoneinspector.report.ReportExporter
+import com.cyberrick.phoneinspector.rules.IocMatcher
+import com.cyberrick.phoneinspector.rules.IocSet
+import com.cyberrick.phoneinspector.scan.ScanPipeline
 
 private const val TAG = "CPIProbe"
 
@@ -140,5 +144,92 @@ class CollectorProbe(
             row("droppedEvents", r.sumOf { it.droppedEvents }, "unmatched stop events"),
             row("maxMinutes", r.maxOfOrNull { it.foregroundServiceMinutes7d }?.toInt() ?: 0, "largest 7 d total"),
         )
+    }
+
+    /** Full pipeline on the device, exported to Downloads. Only counts and the verdict word come back to the probe report. */
+    fun scanAndExport(): List<ProbeResult> {
+        val start = System.nanoTime()
+        val result = ScanPipeline(context).run()
+        val ms = (System.nanoTime() - start) / 1_000_000
+        val exported = ReportExporter(context).exportToDownloads(result.report, result.evidence.toJson(), "probe")
+        val verdict =
+            result.report
+                .lineSequence()
+                .first { it.startsWith("VERDICT: ") }
+                .removePrefix("VERDICT: ")
+
+        fun row(
+            name: String,
+            count: Int,
+            note: String,
+        ) = ProbeResult(api = "ScanPipeline.$name", count = count, fieldPresent = true, elapsedMs = ms, note = note)
+        return listOf(
+            row("findings", result.findings.size, "verdict $verdict"),
+            row("high", result.findings.count { it.severity.name == "HIGH" }, "high"),
+            row("medium", result.findings.count { it.severity.name == "MEDIUM" }, "medium"),
+            row("low", result.findings.count { it.severity.name == "LOW" }, "low"),
+            row("reportBytes", result.report.length, "exported ${exported.reportUri.lastPathSegment ?: "?"}"),
+        ) +
+            // Rule ids are the engine's vocabulary, not the owner's apps; counts per rule say which rules fired without naming packages.
+            result.findings.groupingBy { it.ruleId }.eachCount().toSortedMap().map { (rule, n) ->
+                row(
+                    "rule.$rule",
+                    n,
+                    result.findings
+                        .first { it.ruleId == rule }
+                        .severity.name
+                        .lowercase(),
+                )
+            } + iocDiagnostics(result)
+    }
+
+    /** For IOC matches only: which indicator kind matched and what kind of app it is. Counts, never names. */
+    private fun iocDiagnostics(result: ScanPipeline.Result): List<ProbeResult> {
+        val ioc =
+            IocSet.parse(
+                context.assets
+                    .open("iocs/${IocSet.ASSET}")
+                    .bufferedReader(Charsets.UTF_8)
+                    .use { it.readText() },
+            )
+        val matcher = IocMatcher(ioc)
+        val matched =
+            result.findings.filter { it.ruleId == "ioc_match" }.mapNotNull { f ->
+                result.evidence.apps.firstOrNull {
+                    it.packageName ==
+                        f.packageName
+                }
+            }
+
+        fun row(
+            name: String,
+            count: Int,
+            note: String,
+        ) = ProbeResult(api = "IocMatch.$name", count = count, fieldPresent = true, elapsedMs = 0, note = note)
+        if (matched.isEmpty()) return emptyList()
+        return listOf(
+            row("byPackageId", matched.count { matcher.packageHit(it.packageName) }, "matched on package id"),
+            row("byCert", matched.count { matcher.certHit(it.signingCertSha256) }, "matched on signing cert"),
+            row("system", matched.count { it.isSystem }, "on the system partition"),
+            row("withLauncherIcon", matched.count { it.hasLauncherIcon }, "has an icon"),
+            row(
+                "sameCertAsOthers",
+                result.evidence.apps.count { a ->
+                    a.signingCertSha256.any { c ->
+                        matched.any { m ->
+                            c in
+                                m.signingCertSha256
+                        }
+                    }
+                },
+                "apps on the phone sharing a matched cert",
+            ),
+        ) +
+            matched.groupingBy { it.installSource.name }.eachCount().map { (src, n) ->
+                row("source.$src", n, "install source of matched apps")
+            } +
+            matched.flatMap { matcher.sourcesFor(it.packageName) }.groupingBy { it }.eachCount().map { (list, n) ->
+                row("list", n, "listed by: $list")
+            }
     }
 }

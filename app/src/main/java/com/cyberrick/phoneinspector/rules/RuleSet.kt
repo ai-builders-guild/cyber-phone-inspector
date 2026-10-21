@@ -1,5 +1,6 @@
 package com.cyberrick.phoneinspector.rules
 
+import com.cyberrick.phoneinspector.core.model.CheckKind
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -8,6 +9,10 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 data class Rule(
     val id: String,
+    /** The check (report section) this finding belongs to. */
+    val check: CheckKind,
+    /** Orders findings of equal severity; lower first. The top finding supplies the report's single next step. */
+    val priority: Int = 100,
     val severity: Severity,
     val bucket: Bucket,
     /** Plain language, may contain {package}. */

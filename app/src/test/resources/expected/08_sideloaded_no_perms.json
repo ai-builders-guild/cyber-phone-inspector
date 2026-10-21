@@ -1,8 +1,10 @@
 [
     {
         "ruleId": "sideloaded_no_sensitive",
+        "check": "APPS",
         "packageName": "org.fdroid.example.reader",
         "severity": "LOW",
+        "priority": 100,
         "bucket": "SAFE",
         "reason": "org.fdroid.example.reader was installed outside an app store but holds no microphone, camera or location grant.",
         "remediation": "Nothing to do if you installed it on purpose.",

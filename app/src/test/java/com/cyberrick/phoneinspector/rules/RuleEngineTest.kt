@@ -20,7 +20,13 @@ class RuleEngineTest {
     private val now = 1_792_411_200_000L
     private val rulesAsset = File(System.getProperty("user.dir") ?: ".", "src/main/assets/${RuleSet.ASSET}")
     private val rules = RuleSet.parse(rulesAsset.readText(Charsets.UTF_8))
-    private val iocs = IocSet(packages = setOf("com.example.ioc.match"), domains = emptySet(), certs = setOf("sha256:deadbeef"))
+    private val iocs =
+        IocSet(
+            packages = setOf("com.example.ioc.match"),
+            domains = emptySet(),
+            certs = setOf("sha256:deadbeef"),
+            packageSources = mapOf("com.example.ioc.match" to listOf("Test list A", "Test list B")),
+        )
     private val engine = RuleEngine(rules, IocMatcher(iocs))
 
     private fun app(
@@ -113,6 +119,20 @@ class RuleEngineTest {
         val ioc = findings.single { it.ruleId == "ioc_match" }
         assertThat(ioc.severity).isEqualTo(Severity.HIGH)
         assertThat(ioc.bucket).isEqualTo(Bucket.NEEDS_PROFESSIONAL)
+    }
+
+    @Test
+    fun `ioc match reason names the lists that carry the package`() {
+        val findings = engine.evaluate(evidence(listOf(app("com.example.ioc.match", InstallSource.UNKNOWN))))
+
+        assertThat(findings.single { it.ruleId == "ioc_match" }.reason).contains("listed by: Test list A, Test list B")
+    }
+
+    @Test
+    fun `ioc cert only match says which lists when known or signing certificate otherwise`() {
+        val findings = engine.evaluate(evidence(listOf(app("com.innocent.name", certs = listOf("sha256:deadbeef")))))
+
+        assertThat(findings.single { it.ruleId == "ioc_match" }.reason).contains("listed by: signing certificate match")
     }
 
     @Test

@@ -27,7 +27,16 @@ class GoldenFindingsTest {
         val rules = RuleSet.parse(File(moduleDir, "src/main/assets/${RuleSet.ASSET}").readText(Charsets.UTF_8))
         val shipped = IocSet.parse(File(moduleDir, "src/main/assets/iocs/${IocSet.ASSET}").readText(Charsets.UTF_8))
         // The test only package id is added here and never ships (IocMatcherTest proves it).
-        RuleEngine(rules, IocMatcher(shipped.copy(packages = shipped.packages + "com.example.ioc.match")))
+        RuleEngine(
+            rules,
+            IocMatcher(
+                shipped.copy(
+                    packages = shipped.packages + "com.example.ioc.match",
+                    packageSources =
+                        shipped.packageSources + ("com.example.ioc.match" to listOf("Test only list")),
+                ),
+            ),
+        )
     }
 
     private fun fixtures() = fixtureDir.listFiles { f -> f.extension == "json" }.orEmpty().sortedBy { it.name }

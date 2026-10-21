@@ -87,6 +87,7 @@ def extract(stix: dict) -> dict[str, set[str]]:
 def build_snapshot(index_text: str, fetcher=fetch) -> tuple[dict, list[dict]]:
     sources = parse_index(index_text)
     merged: dict[str, set[str]] = {"packages": set(), "domains": set(), "certs": set(), "ips": set()}
+    package_sources: dict[str, set[str]] = {}
     report = []
     for src in sources:
         url = source_url(src)
@@ -97,8 +98,11 @@ def build_snapshot(index_text: str, fetcher=fetch) -> tuple[dict, list[dict]]:
             continue
         for k in merged:
             merged[k] |= found[k]
+        for pkg in found["packages"]:
+            package_sources.setdefault(pkg, set()).add(src.get("name", url))
         report.append({"name": src.get("name", url), "ref": f"{src['owner']}/{src['repo']}@{src['branch']}:{src['path']}", **{k: len(v) for k, v in found.items()}})
     merged["packages"].discard(TEST_ONLY_PACKAGE)
+    package_sources.pop(TEST_ONLY_PACKAGE, None)
     snapshot = {
         "generatedAt": dt.date.today().isoformat(),
         "sources": [r["ref"] for r in report if "ref" in r],
@@ -106,6 +110,8 @@ def build_snapshot(index_text: str, fetcher=fetch) -> tuple[dict, list[dict]]:
         "domains": sorted(merged["domains"]),
         "certs": sorted(merged["certs"]),
         "ips": sorted(merged["ips"]),
+        # Which published list named each package, so the report can say "listed by ..." and the reader can judge dual use tools.
+        "packageSources": {pkg: sorted(names) for pkg, names in sorted(package_sources.items())},
     }
     return snapshot, report
 

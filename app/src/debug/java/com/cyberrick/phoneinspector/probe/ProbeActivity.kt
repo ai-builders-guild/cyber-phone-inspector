@@ -57,6 +57,7 @@ class ProbeActivity : ComponentActivity() {
             "control" -> runCollectorProbe { CollectorProbe(this).control() }
             "permissions" -> runCollectorProbe { CollectorProbe(this).permissions() }
             "persistence" -> runCollectorProbe { CollectorProbe(this).persistence() }
+            "scan" -> runCollectorProbe { CollectorProbe(this).scanAndExport() }
         }
     }
 

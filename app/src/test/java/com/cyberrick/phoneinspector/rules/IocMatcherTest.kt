@@ -43,4 +43,23 @@ class IocMatcherTest {
         assertThat(m.domainHit("notevil.example")).isFalse()
         assertThat(m.domainHit("evil.example.com")).isFalse()
     }
+
+    @Test
+    fun `sources for a matched package name the lists that carry it`() {
+        val m =
+            IocMatcher(
+                IocSet(
+                    packages = setOf("com.bad.app"),
+                    domains = emptySet(),
+                    certs = emptySet(),
+                    packageSources =
+                        mapOf(
+                            "com.bad.app" to listOf("Echap stalkerware", "Other list"),
+                        ),
+                ),
+            )
+
+        assertThat(m.sourcesFor("com.bad.app")).containsExactly("Echap stalkerware", "Other list").inOrder()
+        assertThat(m.sourcesFor("com.unknown")).isEmpty()
+    }
 }

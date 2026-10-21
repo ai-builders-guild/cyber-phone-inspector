@@ -1,5 +1,6 @@
 package com.cyberrick.phoneinspector.rules
 
+import com.cyberrick.phoneinspector.core.model.CheckKind
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,8 +20,10 @@ enum class Bucket { SAFE, WORTH_REMOVING, NEEDS_PROFESSIONAL }
 @Serializable
 data class Finding(
     val ruleId: String,
+    val check: CheckKind,
     val packageName: String?,
     val severity: Severity,
+    val priority: Int = 100,
     val bucket: Bucket,
     val reason: String,
     val remediation: String,

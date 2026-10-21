@@ -1,10 +1,12 @@
 [
     {
         "ruleId": "ioc_match",
+        "check": "APPS",
         "packageName": "com.example.ioc.match",
         "severity": "HIGH",
+        "priority": 10,
         "bucket": "NEEDS_PROFESSIONAL",
-        "reason": "com.example.ioc.match matches a published indicator of known stalkerware or spyware (package id or signing certificate).",
+        "reason": "com.example.ioc.match matches a published indicator of stalkerware or spyware (listed by: Test only list). Some lists also include dual use tools such as remote access or family monitoring apps; the list name tells you which.",
         "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.",
         "evidenceRef": [
             "app:com.example.ioc.match"
@@ -12,8 +14,10 @@
     },
     {
         "ruleId": "sideloaded_no_sensitive",
+        "check": "APPS",
         "packageName": "com.example.ioc.match",
         "severity": "LOW",
+        "priority": 100,
         "bucket": "SAFE",
         "reason": "com.example.ioc.match was installed outside an app store but holds no microphone, camera or location grant.",
         "remediation": "Nothing to do if you installed it on purpose.",
