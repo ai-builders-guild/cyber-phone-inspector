@@ -1,5 +1,39 @@
 <resources>
     <string name="app_name">Cyber Phone Inspector</string>
-    <string name="placeholder_title">Cyber Phone Inspector</string>
-    <string name="placeholder_body">Phase 1 scaffold. Scanning arrives in later phases.</string>
+    <string name="notification_channel">Scan progress</string>
+    <string name="notification_scanning">Scanning this phone. Nothing is being changed.</string>
+
+    <string name="consent_title">Before the first scan</string>
+    <string name="consent_body">This app looks for anything on this phone that could watch you: hidden apps, apps with deep control, apps holding microphone, camera or location access they do not need, apps that run constantly, and where apps send data. It only reads. It never installs, removes or changes anything.</string>
+    <string name="consent_usage">Usage access (optional): lets the app see which apps ran in the background this week. Android asks you on a Settings screen. Without it the Persistence check is reported as not checked.</string>
+    <string name="consent_vpn">Local network monitor (coming in a later version): a local VPN that watches which names apps look up. Android asks you with a system dialog. It stops when the scan ends and never redirects or stores your traffic.</string>
+    <string name="consent_readonly">Every report lists exactly what the scan touched.</string>
+    <string name="consent_continue">Continue</string>
+
+    <string name="home_body">One tap scans the phone and writes a plain language report: a verdict, three lists, and the single most important thing to do next.</string>
+    <string name="usage_access_granted">Usage access: granted.</string>
+    <string name="usage_access_missing">Usage access: not granted. The Persistence check will be reported as not checked.</string>
+    <string name="open_usage_access">Open usage access settings</string>
+    <string name="start_scan">Start scan</string>
+    <string name="home_network_note">The Network check is not part of this version yet. The report says so.</string>
+
+    <string name="scanning_title">Scanning</string>
+    <string name="check_apps">Apps</string>
+    <string name="check_control">Deep control</string>
+    <string name="check_permissions">Permissions</string>
+    <string name="check_persistence">Persistence</string>
+    <string name="check_network">Network</string>
+    <string name="check_done">done</string>
+    <string name="check_pending">waiting</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="report_counts">High: %1$d. Medium: %2$d. Low: %3$d.</string>
+    <string name="share_report">Share report</string>
+    <string name="save_report">Save to Downloads</string>
+    <string name="scan_again">Scan again</string>
+    <string name="saved_to_downloads">Saved to Download/%1$s</string>
+    <string name="save_failed">Could not save: %1$s</string>
+
+    <string name="failed_title">The scan could not finish</string>
+    <string name="try_again">Try again</string>
 </resources>

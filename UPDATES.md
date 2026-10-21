@@ -208,3 +208,28 @@ What failed and how it was fixed
 
 Queued next
 - Phase 10: scan UI. Rick to read the first real report on the phone and tune rules if the two IOC matches are dual use tools he installed himself.
+
+## 2026-10-21 — Phase 10: Scan UI (branch phase-10-scan-ui)
+
+What ran
+- `ScanPipeline` made suspend with the four collectors in parallel coroutines and per check progress; `ScanResult`; `ScanViewModel` + `ScanState`; `ScanService` (special use foreground type); `MainActivity` with Consent, Home, Scanning, Report and Failed screens; strings; FileProvider and service in the manifest.
+- `ScanViewModelTest` (6 tests, written first) with a fake scanner on a test dispatcher.
+- Recorded Rick's decision on known dual use tools (DECISIONS.md, BACKLOG.md).
+
+What was verified (validation gate, API 36.1 emulator, driven by uiautomator)
+- First run shows the consent explainer before anything is asked; Continue leads to Home.
+- Full scan from tap to the verdict heading: about 2 s (gate: under 20 s), one `ScanService start` in logcat.
+- Rotation 0.4 s into a scan: the report still appeared and logcat shows exactly one service start, so the scan did not restart.
+- Usage access denied: Home says "not granted" with an "Open usage access settings" button; the report section reads NOT CHECKED and the verdict says it does not cover Persistence.
+- Notification permission: both Allow and Don't allow lead to exactly one scan.
+- Every clickable has a label on itself or a descendant (0 missing) on Consent, Home and Report screens.
+- No ScanService entry remains after the scan.
+- Full `./gradlew check` green before commit (gated); 129 unit tests.
+
+What failed and how it was fixed
+- The uiautomator helper matched "Allow" inside the dialog's message text and tapped the message; exact match first fixed the driver, not the app.
+- A zsh variable holding "python3 path" did not word split; replaced with a shell function.
+- Lint: special use type constant needs an API 34 guard; counts string rephrased to avoid a plural candidate; preferences edit via KTX; ForegroundServiceType false positive suppressed with reason.
+
+Queued next
+- Phase 11: DNS tunnel network monitor. Rick to try the UI build on his phone.

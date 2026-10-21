@@ -6,3 +6,4 @@
 - iOS companion via sysdiagnose import plus Network Extension.
 - Scheduled rescans and change diffs between reports.
 - In app refresh of the indicator snapshot. Needs YAML index and STIX2 parsing on device; v1 ships a snapshot refreshed by tools/fetch_iocs.py at build time.
+- v1.1: per app "I installed this myself" acknowledgement for IOC matches (DECISIONS.md 2026-10-21, known dual use tools). Local only, never suppresses, always listed in the report.
