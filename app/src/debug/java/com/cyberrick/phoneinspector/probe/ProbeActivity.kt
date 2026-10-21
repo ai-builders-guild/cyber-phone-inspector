@@ -52,6 +52,19 @@ class ProbeActivity : ComponentActivity() {
         }
         if (intent.getBooleanExtra(EXTRA_AUTORUN, false)) runProbes()
         if (intent.getBooleanExtra(EXTRA_VPN, false)) requestVpnConsent()
+        if (intent.getStringExtra(EXTRA_COLLECTOR) == "apps") runCollectorProbe { CollectorProbe(this).apps() }
+    }
+
+    private fun runCollectorProbe(body: () -> List<ProbeResult>) {
+        report = "Running collector..."
+        lifecycleScope.launch {
+            val md =
+                withContext(Dispatchers.IO) {
+                    val results = body()
+                    ProbeReport.render(runner.device(), results).also { File(filesDir, COLLECTOR_FILE).writeText(it, Charsets.UTF_8) }
+                }
+            report = md
+        }
     }
 
     /** Probes run off the main thread: the socket probe would otherwise hit NetworkOnMainThreadException. */
@@ -104,6 +117,8 @@ class ProbeActivity : ComponentActivity() {
     companion object {
         const val EXTRA_AUTORUN = "autorun"
         const val EXTRA_VPN = "vpn"
+        const val EXTRA_COLLECTOR = "collector"
+        const val COLLECTOR_FILE = "collector_probe.md"
         const val RUN_FILE = "probe_run.json"
         const val REPORT_FILE = "probe_report.md"
     }

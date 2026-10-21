@@ -62,7 +62,8 @@ Collectors are pure functions of Android system services that emit immutable evi
 | Condition | Severity | Bucket |
 |---|---|---|
 | IOC match on package name or signing cert | high | needsProfessional |
-| Hidden launcher AND (accessibility OR device admin OR mic/camera/location granted) | high | needsProfessional |
+| Hidden launcher AND install source not Play, vendor store, or web app AND (accessibility OR device admin OR mic/camera/location granted) | high | needsProfessional |
+| Hidden launcher on a Play, vendor store, or web app install AND (accessibility OR device admin) | medium | worthRemoving |
 | Accessibility service enabled on a non system, non accessibility category app | high | needsProfessional |
 | Device admin held by a non system app that is not a profile owner (no work profile) | medium | worthRemoving |
 | Disguised system name on a user installed app | medium | worthRemoving |

@@ -86,3 +86,15 @@ Rationale: `collectedAt` is 2026-10-21T12:00:00Z and installs start 2026-09-01T0
 
 ## 2026-10-21 / IOC fixture uses a test only package id
 `04_ioc_package_match` uses `com.example.ioc.match`. Phase 8 adds that id to a test only indicator file, never to the shipped snapshot, so the match path is tested without naming a real stalkerware package in the repo.
+
+## 2026-10-21 / Hidden launcher is common on legitimate installs; the high rule needs install source
+Phase 4 probe on Rick's Galaxy S24 Ultra: 13 non system packages have no launcher icon, 3 from Play, 5 from the Samsung store, 5 from carrier or OEM installers. Google speech, AR and device health services are Play installed, icon less, and hold mic or location. The severity table now requires a non store install source for the high "hidden" rule; store installed hidden apps with a control grant are medium. Counts only were recorded; no package names left the phone.
+
+## 2026-10-21 / Install source: WEB_APP added, carrier and OEM module installers are VENDOR_STORE
+Phase 4 probe showed 44 "sideloaded" packages on the S24 Ultra: 20 WebAPKs (installed web apps, Chrome is the installer), 20 carrier preloads via LogiaDeck, 3 Samsung Good Lock modules. None are sideloads in the brief's sense. `org.chromium.webapk.*` maps to WEB_APP; LogiaDeck, Good Lock, the Samsung preload installer and the OMC agent map to VENDOR_STORE. An APK installed through Chrome's downloads keeps SIDELOADED. Installer package ids were read from logcat and never written to a file.
+
+## 2026-10-21 / Disguised check exempts Play Store installs
+Play policy forbids impersonating system apps and names like "Sync for Reddit" are common there; the rule is for sideloaded and unknown source apps labelled System Update, Sync Service and the like.
+
+## 2026-10-21 / Apps collector adapter does per package work in parallel
+Label loading and signing cert hashing for 800 packages took 5 to 6 s cold on the S24 Ultra; a parallel stream in the adapter brings a cold run to 2 to 3 s. The collector itself stays pure and sequential.
