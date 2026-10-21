@@ -1,6 +1,5 @@
 package com.cyberrick.phoneinspector.probe
 
-import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.admin.DevicePolicyManager
 import android.app.usage.NetworkStatsManager
@@ -26,11 +25,7 @@ import java.net.Socket
 /**
  * Phase 2: call every data source PROJECT.md plans to use and record counts, field presence and timing.
  * Nothing here writes to the phone. Nothing here records the identity of any package.
- *
- * MissingPermission is suppressed on purpose: ACCESS_NETWORK_STATE is not on the PROJECT.md allowlist,
- * and the probe exists to record what the ConnectivityManager calls do without it.
  */
-@SuppressLint("MissingPermission")
 class ProbeRunner(
     private val context: Context,
 ) {

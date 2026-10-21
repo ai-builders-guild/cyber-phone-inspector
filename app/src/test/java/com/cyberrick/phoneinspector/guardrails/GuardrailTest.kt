@@ -84,6 +84,8 @@ class GuardrailTest {
                 "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
                 "android.permission.INTERNET",
                 "android.permission.POST_NOTIFICATIONS",
+                // Approved by Rick 2026-10-21 (DECISIONS.md): needed by every ConnectivityManager read in the network check.
+                "android.permission.ACCESS_NETWORK_STATE",
             )
 
         val FORBIDDEN_SYMBOLS =
