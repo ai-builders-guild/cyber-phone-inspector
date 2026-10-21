@@ -10,8 +10,11 @@ Requirements: Android Studio 2025.3 or newer (its bundled JDK is used; no system
 
 ```bash
 export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+export ANDROID_HOME="$HOME/Library/Android/sdk"
 ./gradlew assembleDebug test
 ```
+
+`ANDROID_HOME` tells Gradle where the SDK is. Alternatively create `local.properties` (gitignored) containing `sdk.dir=/Users/<you>/Library/Android/sdk`.
 
 The wrapper launcher needs `JAVA_HOME` because this Mac has no system Java; `gradle.properties` then points the build itself at the same bundled JDK via `org.gradle.java.home`. If your Android Studio lives elsewhere, change both.
 
