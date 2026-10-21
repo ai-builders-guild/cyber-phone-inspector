@@ -1,0 +1,9 @@
+[project]
+name = "cpi-tools"
+version = "0.1.0"
+description = "Off device helper scripts for Cyber Phone Inspector: fixture and indicator snapshot generation."
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.ruff]
+line-length = 100

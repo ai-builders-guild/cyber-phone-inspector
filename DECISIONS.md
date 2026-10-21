@@ -35,3 +35,21 @@ Rationale: Rick's canonical guardrails; only the title and the Python venv lines
 
 ## 2026-10-21 / Build environment facts
 Android Studio installed with bundled JBR 21.0.9; SDK platforms 34, 35, 36, 36.1; build tools 35.0.0 and 36.1.0; emulator image 36.1 only (API 29 image to be added in Phase 2); no system Java; 65 GB free. adb lives at `~/Library/Android/sdk/platform-tools/adb`, not on PATH.
+
+## 2026-10-21 / Phase 1 toolchain pins
+Gradle 8.14, AGP 8.13.1, Kotlin 2.2.20, Compose BOM 2025.10.00. Rationale: AGP and Kotlin were already in the Gradle cache and Android Studio 2025.3.2 supports them; Gradle 8.14 was the cached distribution, so the wrapper was generated offline. Alternatives: AGP 9.x (not cached, no need yet).
+
+## 2026-10-21 / JVM target 17 on the bundled JDK 21, no toolchain provisioning
+Rationale: the only JDK on the Mac is Android Studio's JBR 21. `jvmToolchain(17)` demands a real JDK 17 and toolchain auto download is off. Compile options and Kotlin `jvmTarget` 17 on JDK 21 give the same bytecode. The wrapper launcher needs `JAVA_HOME` exported (README).
+
+## 2026-10-21 / Lint checks AndroidGradlePluginVersion and GradleDependency disabled
+Rationale: with `warningsAsErrors` they turn every upstream release into a build failure. Versions are pinned deliberately (CLAUDE.md); upgrades are a decision, not a lint fix. All other lint checks stay fatal.
+
+## 2026-10-21 / Backup and device transfer disabled for all app data
+Rationale: PROJECT.md says everything stays on the phone. `dataExtractionRules` and `fullBackupContent` exclude every domain, so no scan evidence ever reaches a cloud backup or a new device.
+
+## 2026-10-21 / ktlint official style with Composable naming exemption
+Rationale: `.editorconfig` sets `ktlint_official` and exempts functions annotated `@Composable` from the lowercase rule, the Compose convention. Formatter runs via `./gradlew ktlintFormat`; check is part of `./gradlew check`.
+
+## 2026-10-21 / Dependency allowlist is a Gradle task over the resolved release graph
+Rationale: a unit test cannot see the resolved classpath. The task walks `releaseRuntimeClasspath` and fails on any external group outside `androidx.*`, `org.jetbrains*`, and the four transitive annotation/guava groups AndroidX pulls in. Baseline: 101 components, all on the list.

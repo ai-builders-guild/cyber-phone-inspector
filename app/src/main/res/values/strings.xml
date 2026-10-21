@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Cyber Phone Inspector</string>
+    <string name="placeholder_title">Cyber Phone Inspector</string>
+    <string name="placeholder_body">Phase 1 scaffold. Scanning arrives in later phases.</string>
+</resources>
