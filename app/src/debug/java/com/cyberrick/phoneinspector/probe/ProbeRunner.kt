@@ -61,6 +61,7 @@ class ProbeRunner(
             usageEvents(),
             usageStats(),
             networkStats(),
+            networkStatsMobile(),
             connectionOwnerUid(),
             connectionOwnerUidLoopbackTcp(),
             privateDns(),
@@ -185,6 +186,23 @@ class ProbeRunner(
             val nsm = context.getSystemService(NetworkStatsManager::class.java)
             val end = System.currentTimeMillis()
             val stats = nsm.querySummary(ConnectivityManager.TYPE_WIFI, null, end - DAY_MS, end)
+            var n = 0
+            val bucket =
+                android.app.usage.NetworkStats
+                    .Bucket()
+            while (stats.hasNextBucket()) {
+                stats.getNextBucket(bucket)
+                n++
+            }
+            stats.close()
+            n to (n > 0)
+        }
+
+    private fun networkStatsMobile() =
+        probe("NetworkStatsManager.querySummary(MOBILE) last 24h", note = "count = uid buckets") {
+            val nsm = context.getSystemService(NetworkStatsManager::class.java)
+            val end = System.currentTimeMillis()
+            val stats = nsm.querySummary(ConnectivityManager.TYPE_MOBILE, null, end - DAY_MS, end)
             var n = 0
             val bucket =
                 android.app.usage.NetworkStats

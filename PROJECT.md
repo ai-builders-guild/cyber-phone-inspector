@@ -78,6 +78,16 @@ Verification: nothing is verified yet. Phase 1 builds a throwaway probe activity
 | Network: "known service?" classification | Bundled allowlist of well known domains (Google, Apple, Meta, Microsoft, Amazon, Cloudflare, major CDNs), reverse DNS from observed DNS answers, raw IP with no DNS flagged, non standard ports flagged, fixed interval beacons detected by inter arrival regularity | Raw IPs, odd ports, scheduled reporting | none | Allowlist is finite; unknown is "unrecognized", not "malicious" |
 | Known spyware | MVT STIX2 IOCs (package names, domains, cert hashes) pinned snapshot | High confidence stalkerware hits | In app refresh, user toggled | Snapshot date shown in the report |
 
+### Phase 2 verification notes (2026-10-21, see PROBE_RESULTS.md)
+
+- Every data source above returned usable data on Rick's Galaxy S24 Ultra (Android 16) and on API 29 and API 36 emulators, with these adjustments:
+  - `getConnectionOwnerUid` works only inside the VPN service, only for other apps' flows. Never from the activity.
+  - `NetworkStatsManager` must be queried for both Wi Fi and mobile and summed per uid.
+  - `getActiveAdmins` and `ENABLED_ACCESSIBILITY_SERVICES` return null for "none"; treat as empty.
+  - `getInstallSourceInfo` is API 30+; on API 29 "no installer" is `unknown`, never `sideloaded`.
+  - Private DNS was in automatic (opportunistic) mode on Rick's phone; Phase 11 verifies the plain DNS fallback there.
+- OPEN: every `ConnectivityManager` read needs `ACCESS_NETWORK_STATE`, which is not on the allowlist above. Rick decides. Until then private DNS detection and programmatic tunnel teardown confirmation are NOT CHECKED.
+
 ### Known dead, blocked, or fragile sources (do not rediscover)
 
 - `ActivityManager.getRunningServices` / `getRunningAppProcesses` return only the caller's own processes since Android 8. Do not plan anything on them.
