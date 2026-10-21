@@ -17,18 +17,32 @@ class GuardrailTest {
     @Test
     fun `manifest declares exactly the permission allowlist`() {
         assertThat(manifest.exists()).isTrue()
-        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(manifest)
+        assertThat(declaredPermissions(manifest)).containsExactlyElementsIn(PERMISSION_ALLOWLIST)
+    }
+
+    @Test
+    fun `no other source set manifest adds a permission`() {
+        val others =
+            File(moduleDir, "src")
+                .listFiles { f -> f.isDirectory && f.name != "main" }
+                .orEmpty()
+                .map { File(it, "AndroidManifest.xml") }
+                .filter { it.exists() }
+        val added = others.flatMap { m -> declaredPermissions(m).map { "${m.parentFile.name}: $it" } }
+        assertThat(added).isEmpty()
+    }
+
+    private fun declaredPermissions(file: File): Set<String> {
+        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
         val nodes = doc.getElementsByTagName("uses-permission")
-        val declared =
-            (0 until nodes.length)
-                .map {
-                    nodes
-                        .item(it)
-                        .attributes
-                        .getNamedItem("android:name")
-                        .nodeValue
-                }.toSet()
-        assertThat(declared).containsExactlyElementsIn(PERMISSION_ALLOWLIST)
+        return (0 until nodes.length)
+            .map {
+                nodes
+                    .item(it)
+                    .attributes
+                    .getNamedItem("android:name")
+                    .nodeValue
+            }.toSet()
     }
 
     @Test

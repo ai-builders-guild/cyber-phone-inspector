@@ -53,3 +53,12 @@ Rationale: `.editorconfig` sets `ktlint_official` and exempts functions annotate
 
 ## 2026-10-21 / Dependency allowlist is a Gradle task over the resolved release graph
 Rationale: a unit test cannot see the resolved classpath. The task walks `releaseRuntimeClasspath` and fails on any external group outside `androidx.*`, `org.jetbrains*`, and the four transitive annotation/guava groups AndroidX pulls in. Baseline: 101 components, all on the list.
+
+## 2026-10-21 / Phase 2 probe results drive the collectors (see PROBE_RESULTS.md)
+Verified on API 29 and API 36 emulators; Rick's phone pending (not visible over USB this session). `getConnectionOwnerUid` resolves only other apps' flows and only while this app is the active VPN; the VPN app's own sockets are invisible to it. `getActiveAdmins` and `ENABLED_ACCESSIBILITY_SERVICES` return null for "none". `getInstallSourceInfo` needs API 30; on API 29 "no installer" means unknown, not sideloaded. Usage and network stats work with usage access on both levels. Socket work must run off the main thread.
+
+## 2026-10-21 / ACCESS_NETWORK_STATE is required for the network check; permission allowlist change PENDING Rick
+Every ConnectivityManager read throws SecurityException without it. It is a normal (install time, no dialog) permission that reveals only whether the device is on Wi Fi or mobile and whether a VPN or private DNS is active. Phase 11 needs it to detect strict private DNS before starting the tunnel and to confirm teardown. Not added: PROJECT.md says any permission outside the allowlist stops the run. Rick decides; if yes, PROJECT.md, INITIAL_INSTRUCTIONS.md and GuardrailTest change together in one commit.
+
+## 2026-10-21 / Probe activity lives in the debug source set
+Rationale: release builds never carry it; the debug manifest adds no permissions and GuardrailTest now checks every source set's manifest, not only main.
