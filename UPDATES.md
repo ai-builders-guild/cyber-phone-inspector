@@ -128,3 +128,20 @@ What failed and how it was fixed
 
 Queued next
 - Phase 6: Permissions collector and need heuristic.
+
+## 2026-10-21 — Phase 6: Permissions collector and need heuristic (branch phase-06-permissions-collector)
+
+What ran
+- `collect/PermissionsCollector.kt` (pure, over `PermissionSource`), `PermissionExpectations.kt` + `assets/permission_expectations.json`, `AndroidPermissionSource.kt`, probe hook `--es collector permissions`.
+- `PermissionsCollectorTest` (12 tests, written first).
+
+What was verified (validation gate)
+- Maps app with background location: granted, expected. Calculator with mic: granted, unexpected. Zero requested permissions: four records, none granted. Requested but denied: never unexpected. Null flags: not granted, uncertain. System apps never unexpected. Label never consulted (an app named like a maps app with no category is unexpected).
+- Real phone: 800 apps, 3,200 records, 0 uncertain, 465 ms. Granted counts: location 109, background 28, mic 64, camera 85. Unexpected: 27, 2, 7, 15.
+- Full `./gradlew check` green before commit (gated).
+
+What failed and how it was fixed
+- Nothing failed. The unexpected counts on a clean phone drove a severity table amendment (DECISIONS.md).
+
+Queued next
+- Phase 7: Persistence collector.

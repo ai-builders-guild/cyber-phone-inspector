@@ -4,11 +4,15 @@ import android.content.Context
 import android.util.Log
 import com.cyberrick.phoneinspector.collect.AndroidControlSource
 import com.cyberrick.phoneinspector.collect.AndroidPackageSource
+import com.cyberrick.phoneinspector.collect.AndroidPermissionSource
 import com.cyberrick.phoneinspector.collect.AppsCollector
 import com.cyberrick.phoneinspector.collect.ControlCollector
+import com.cyberrick.phoneinspector.collect.PermissionExpectations
+import com.cyberrick.phoneinspector.collect.PermissionsCollector
 import com.cyberrick.phoneinspector.collect.SystemPackages
 import com.cyberrick.phoneinspector.core.model.ControlKind
 import com.cyberrick.phoneinspector.core.model.InstallSource
+import com.cyberrick.phoneinspector.core.model.SensitiveGroup
 
 private const val TAG = "CPIProbe"
 
@@ -80,5 +84,37 @@ class CollectorProbe(
                 },
                 "sinceAtLatest earlier than collection",
             )
+    }
+
+    fun permissions(): List<ProbeResult> {
+        val expectations =
+            context.assets.open(PermissionExpectations.ASSET).bufferedReader(Charsets.UTF_8).use {
+                PermissionExpectations.parse(it.readText())
+            }
+        val start = System.nanoTime()
+        val result = PermissionsCollector(AndroidPermissionSource(context), expectations).collect()
+        val ms = (System.nanoTime() - start) / 1_000_000
+        val r = result.records
+
+        fun row(
+            name: String,
+            count: Int,
+            note: String,
+        ) = ProbeResult(api = "PermissionsCollector.$name", count = count, fieldPresent = true, elapsedMs = ms, note = note)
+        return listOf(
+            row("records", r.size, "status ${result.check.status}"),
+            row("apps", r.map { it.packageName }.distinct().size, "distinct packages"),
+            row("uncertain", r.count { it.uncertain }, "flags null"),
+        ) +
+            SensitiveGroup.entries.flatMap { g ->
+                listOf(
+                    row("${g.name}.granted", r.count { it.group == g && it.granted }, "granted"),
+                    row(
+                        "${g.name}.unexpected",
+                        r.count { it.group == g && it.unexpected },
+                        "granted outside expected categories, non system",
+                    ),
+                )
+            }
     }
 }
