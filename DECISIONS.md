@@ -104,3 +104,12 @@ A package holding admin, device owner and profile owner yields three records wit
 
 ## 2026-10-21 / Component parsing mirrors ComponentName.unflattenFromString in pure Kotlin
 Rationale: keeps the collector testable on the JVM without Robolectric. "pkg/.Cls" expands to "pkg/pkg.Cls".
+
+## 2026-10-21 / Permissions: four records per app, always
+Every app yields one record per sensitive group (location, background location, microphone, camera) even when nothing is requested, so "no record" can never be mistaken for "nothing granted". Granted means the REQUESTED_PERMISSION_GRANTED flag; null flags mean not granted and uncertain. The app label is never an input.
+
+## 2026-10-21 / Need heuristic is category plus a first party family list, system apps exempt
+`assets/permission_expectations.json` maps each group to the ApplicationInfo categories that plausibly need it and lists package prefixes of well known messaging, maps, camera and wearable apps that are expected regardless of category (most do not set a category). System partition apps are never "unexpected". Outside the list means the report says "looks odd for this kind of app", never "malicious". Expect false positives on store apps with no category; the rule engine treats unexpected alone as medium, and Rick reviews the first real report for tuning.
+
+## 2026-10-21 / "Unexpected" permission alone on a store install is low, not medium
+Phase 6 probe on Rick's clean S24 Ultra: 27 location, 2 background location, 7 microphone and 15 camera grants fall outside the expected categories, nearly all store apps with no category set. Twenty four mediums on a clean phone would bury the real findings. Severity table amended: medium only when the app is not from Play, a vendor store or a web app, or when combined with another finding on the same app.

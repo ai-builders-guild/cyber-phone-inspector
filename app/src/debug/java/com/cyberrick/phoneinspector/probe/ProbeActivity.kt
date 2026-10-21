@@ -55,6 +55,7 @@ class ProbeActivity : ComponentActivity() {
         when (intent.getStringExtra(EXTRA_COLLECTOR)) {
             "apps" -> runCollectorProbe { CollectorProbe(this).apps() }
             "control" -> runCollectorProbe { CollectorProbe(this).control() }
+            "permissions" -> runCollectorProbe { CollectorProbe(this).permissions() }
         }
     }
 

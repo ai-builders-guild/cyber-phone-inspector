@@ -69,7 +69,8 @@ Collectors are pure functions of Android system services that emit immutable evi
 | Disguised system name on a user installed app | medium | worthRemoving |
 | Sideloaded (installer unknown or not a known store) AND any sensitive permission granted | medium | worthRemoving |
 | Notification listener on an app outside expected categories | medium | worthRemoving |
-| Background location, mic, or camera granted outside expected category | medium | worthRemoving |
+| Background location, mic, or camera granted outside expected category AND install source not Play, vendor store, or web app | medium | worthRemoving |
+| Background location, mic, or camera granted outside expected category on a store install, alone | low | safe (listed with the note) |
 | Boot receiver AND backgroundHeavy outside expected category | medium | worthRemoving |
 | Fixed interval beacon to an unrecognized host | medium | worthRemoving |
 | bytes sent with no DNS seen (rawIpSuspect) | medium | worthRemoving |
