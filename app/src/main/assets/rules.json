@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "description": "Severity table from INITIAL_INSTRUCTIONS.md as data. Facts come from rules/Facts.kt. Wording is plain language and hedged: 'looks', 'can', never 'is malicious'.",
+  "rules": [
+    {
+      "id": "ioc_match",
+      "severity": "HIGH",
+      "bucket": "NEEDS_PROFESSIONAL",
+      "reason": "{package} matches a published indicator of known stalkerware or spyware (package id or signing certificate).",
+      "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.",
+      "evidence": ["app"],
+      "when": {"any": [{"fact": "iocPackage", "eq": true}, {"fact": "iocCert", "eq": true}]}
+    },
+    {
+      "id": "ioc_domain_contact",
+      "severity": "HIGH",
+      "bucket": "NEEDS_PROFESSIONAL",
+      "reason": "{package} contacted a domain published as spyware infrastructure.",
+      "remediation": "Preserve the phone as evidence and contact a digital security professional.",
+      "evidence": ["app", "flow"],
+      "when": {"fact": "iocDomain", "eq": true}
+    },
+    {
+      "id": "hidden_nonstore_with_power",
+      "severity": "HIGH",
+      "bucket": "NEEDS_PROFESSIONAL",
+      "reason": "{package} has no icon, did not come from an app store, and holds accessibility, device admin, or a microphone, camera or location grant. This is the shape of stalkerware.",
+      "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional.",
+      "evidence": ["app", "control", "permission"],
+      "when": {"all": [
+        {"fact": "hidden", "eq": true},
+        {"fact": "storeInstall", "eq": false},
+        {"any": [{"fact": "control.ACCESSIBILITY", "eq": true}, {"fact": "control.DEVICE_ADMIN", "eq": true}, {"fact": "anySensitiveGranted", "eq": true}]}
+      ]}
+    },
+    {
+      "id": "hidden_store_with_control",
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "reason": "{package} has no icon and holds accessibility or device admin control. It came from an app store, which makes stalkerware less likely but not impossible.",
+      "remediation": "Open Settings > Apps, find {package}, and decide whether you installed it on purpose. Remove its accessibility or admin access if not.",
+      "evidence": ["app", "control"],
+      "when": {"all": [
+        {"fact": "hidden", "eq": true},
+        {"fact": "storeInstall", "eq": true},
+        {"any": [{"fact": "control.ACCESSIBILITY", "eq": true}, {"fact": "control.DEVICE_ADMIN", "eq": true}]}
+      ]}
+    },
+    {
+      "id": "accessibility_non_system",
+      "severity": "HIGH",
+      "bucket": "NEEDS_PROFESSIONAL",
+      "reason": "{package} is an enabled accessibility service and is not an accessibility app. Accessibility services can read everything on screen and type on your behalf.",
+      "remediation": "If you do not use {package} for accessibility, turn it off in Settings > Accessibility. If you do not recognise it, contact a professional first.",
+      "evidence": ["app", "control"],
+      "when": {"all": [
+        {"fact": "control.ACCESSIBILITY", "eq": true},
+        {"fact": "isSystem", "eq": false},
+        {"fact": "inInventory", "eq": true},
+        {"not": {"fact": "category", "eq": "ACCESSIBILITY"}}
+      ]}
+    },
+    {
+      "id": "control_on_unknown_package",
+      "severity": "MEDIUM",
+      "bucket": "NEEDS_PROFESSIONAL",
+      "reason": "{package} holds a control grant (admin, accessibility or notification access) but is not in the app inventory. The inventory may be incomplete on this phone, or the package is hiding.",
+      "remediation": "Show this report to a professional. Do not change anything yet.",
+      "evidence": ["control"],
+      "when": {"all": [{"fact": "anyControl", "eq": true}, {"fact": "inInventory", "eq": false}]}
+    },
+    {
+      "id": "device_admin_no_profile",
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "reason": "{package} is a device administrator and is not managing a work profile. Device admins can lock or wipe the phone and resist uninstall.",
+      "remediation": "If you did not set up {package} as an anti theft or work tool, remove its admin rights in Settings > Security > Device admin apps, then uninstall it.",
+      "evidence": ["app", "control"],
+      "when": {"all": [
+        {"fact": "control.DEVICE_ADMIN", "eq": true},
+        {"fact": "control.PROFILE_OWNER", "eq": false},
+        {"fact": "control.DEVICE_OWNER", "eq": false},
+        {"fact": "isSystem", "eq": false},
+        {"fact": "inInventory", "eq": true}
+      ]}
+    },
+    {
+      "id": "work_profile_present",
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "reason": "{package} manages a work profile on this phone. Your employer can see and control the work side, not the personal side.",
+      "remediation": "Nothing to do if this is your employer's management app.",
+      "evidence": ["app", "control"],
+      "when": {"fact": "control.PROFILE_OWNER", "eq": true}
+    },
+    {
+      "id": "disguised_system_name",
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "reason": "{package} is named like a system component but is not one and did not come from an app store.",
+      "remediation": "Uninstall {package} from Settings > Apps unless you know exactly what it is.",
+      "evidence": ["app"],
+      "when": {"fact": "disguised", "eq": true}
+    },
+    {
+      "id": "sideloaded_with_sensitive",
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "reason": "{package} was installed outside an app store and holds a microphone, camera or location grant.",
+      "remediation": "If you did not install {package} yourself, uninstall it. If you did, revoke the permissions it does not need.",
+      "evidence": ["app", "permission"],
+      "when": {"all": [{"fact": "installSource", "in": ["SIDELOADED", "UNKNOWN"]}, {"fact": "anySensitiveGranted", "eq": true}]}
+    },
+    {
+      "id": "sideloaded_no_sensitive",
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "reason": "{package} was installed outside an app store but holds no microphone, camera or location grant.",
+      "remediation": "Nothing to do if you installed it on purpose.",
+      "evidence": ["app"],
+      "when": {"all": [{"fact": "installSource", "in": ["SIDELOADED", "UNKNOWN"]}, {"fact": "anySensitiveGranted", "eq": false}, {"fact": "isSystem", "eq": false}]}
+    },
+    {
+      "id": "unexpected_grant_nonstore",
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "reason": "{package} did not come from an app store and holds a microphone, camera or location grant that looks odd for this kind of app.",
+      "remediation": "Revoke the permission in Settings > Apps > {package} > Permissions, or uninstall it.",
+      "evidence": ["app", "permission"],
+      "when": {"all": [{"fact": "anyUnexpectedGranted", "eq": true}, {"fact": "storeInstall", "eq": false}, {"fact": "isSystem", "eq": false}]}
+    },
+    {
+      "id": "unexpected_grant_store",
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "reason": "{package} holds a microphone, camera or location grant that looks odd for this kind of app. It came from an app store.",
+      "remediation": "Check Settings > Apps > {package} > Permissions and revoke anything it does not need.",
+      "evidence": ["app", "permission"],
+      "when": {"all": [{"fact": "anyUnexpectedGranted", "eq": true}, {"fact": "storeInstall", "eq": true}]}
+    },
+    {
+      "id": "boot_and_background_heavy",
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "reason": "{package} starts itself at boot and ran in the background for more than 6 hours this week, and it is not a music, messaging, navigation or accessibility app.",
+      "remediation": "Open Settings > Apps > {package} > Battery and check whether the activity makes sense. Uninstall if you do not use it.",
+      "evidence": ["app", "persistence"],
+      "when": {"all": [{"fact": "bootReceiver", "eq": true}, {"fact": "backgroundHeavy", "eq": true}]}
+    },
+    {
+      "id": "background_heavy_alone",
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "reason": "{package} ran in the background for more than 6 hours this week.",
+      "remediation": "Nothing to do if you use it a lot.",
+      "evidence": ["app", "persistence"],
+      "when": {"all": [{"fact": "backgroundHeavy", "eq": true}, {"fact": "bootReceiver", "eq": false}]}
+    },
+    {
+      "id": "notification_listener_nonstore",
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "reason": "{package} can read every notification, including messages, did not come from an app store, and is not a messaging or accessibility app.",
+      "remediation": "Turn off its notification access in Settings > Notifications > Device and app notifications, then uninstall it if you do not recognise it.",
+      "evidence": ["app", "control"],
+      "when": {"all": [
+        {"fact": "control.NOTIFICATION_LISTENER", "eq": true},
+        {"fact": "isSystem", "eq": false},
+        {"fact": "inInventory", "eq": true},
+        {"fact": "storeInstall", "eq": false},
+        {"not": {"fact": "category", "in": ["SOCIAL", "ACCESSIBILITY"]}}
+      ]}
+    },
+    {
+      "id": "notification_listener_store",
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "reason": "{package} can read every notification. It came from an app store and is not a messaging app; watch and car companions commonly need this.",
+      "remediation": "Nothing to do if you set it up. Otherwise turn off its notification access.",
+      "evidence": ["app", "control"],
+      "when": {"all": [
+        {"fact": "control.NOTIFICATION_LISTENER", "eq": true},
+        {"fact": "isSystem", "eq": false},
+        {"fact": "storeInstall", "eq": true},
+        {"not": {"fact": "category", "in": ["SOCIAL", "ACCESSIBILITY"]}}
+      ]}
+    },
+    {
+      "id": "duplicate_package",
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "reason": "{package} appears twice in the inventory, usually a leftover from a second user or a failed update.",
+      "remediation": "Nothing to do. Mention it if you talk to a professional.",
+      "evidence": ["app"],
+      "when": {"fact": "duplicate", "eq": true}
+    }
+  ]
+}

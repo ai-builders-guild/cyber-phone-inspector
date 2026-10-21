@@ -39,6 +39,10 @@ android {
     }
     testOptions {
         unitTests.isIncludeAndroidResources = true
+        unitTests.all { test ->
+            // ./gradlew test -Pcpi.updateGolden=true rewrites expected findings and golden reports from the fixtures.
+            test.systemProperty("cpi.updateGolden", project.findProperty("cpi.updateGolden")?.toString() ?: "false")
+        }
     }
     lint {
         warningsAsErrors = true

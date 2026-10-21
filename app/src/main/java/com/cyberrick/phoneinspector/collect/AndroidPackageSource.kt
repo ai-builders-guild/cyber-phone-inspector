@@ -51,9 +51,12 @@ class AndroidPackageSource(
     private fun certHashes(info: PackageInfo): List<String> {
         val signing = info.signingInfo ?: return emptyList()
         val signatures = if (signing.hasMultipleSigners()) signing.apkContentsSigners else signing.signingCertificateHistory
-        return signatures.orEmpty().map { sig ->
-            val digest = MessageDigest.getInstance("SHA-256") // not thread safe; one per call
-            "sha256:" + digest.digest(sig.toByteArray()).joinToString("") { "%02x".format(it) }
+        // Both digests: the bundled indicators carry SHA-1 for most certs and SHA-256 for a few.
+        return signatures.orEmpty().flatMap { sig ->
+            listOf("sha256" to "SHA-256", "sha1" to "SHA-1").map { (prefix, algorithm) ->
+                val digest = MessageDigest.getInstance(algorithm) // not thread safe; one per call
+                "$prefix:" + digest.digest(sig.toByteArray()).joinToString("") { "%02x".format(it) }
+            }
         }
     }
 }

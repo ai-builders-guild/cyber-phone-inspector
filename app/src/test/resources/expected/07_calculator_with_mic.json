@@ -1,0 +1,14 @@
+[
+    {
+        "ruleId": "unexpected_grant_store",
+        "packageName": "com.quickcalc.pro",
+        "severity": "LOW",
+        "bucket": "SAFE",
+        "reason": "com.quickcalc.pro holds a microphone, camera or location grant that looks odd for this kind of app. It came from an app store.",
+        "remediation": "Check Settings > Apps > com.quickcalc.pro > Permissions and revoke anything it does not need.",
+        "evidenceRef": [
+            "app:com.quickcalc.pro",
+            "permission:MICROPHONE:com.quickcalc.pro"
+        ]
+    }
+]

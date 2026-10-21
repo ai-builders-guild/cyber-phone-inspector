@@ -58,7 +58,7 @@ Cyber Phone Inspector/
 ## Architecture in one paragraph
 Collectors are pure functions of Android system services that emit immutable evidence records into one `Evidence` envelope. The rule engine is generic: it reads `rules.json`, evaluates each rule's condition against the evidence, and emits immutable `Finding`s with `ruleId`, `severity`, `bucket`, `evidenceRef`. The renderer is a pure function of findings plus evidence to a string. Nothing downstream of collectors touches Android APIs, so JVM tests cover everything but the collectors' adapters. All state is created new, never mutated.
 
-## Severity table (Phase 8 implements this exactly)
+## Severity table (implemented as data in app/src/main/assets/rules.json; this table and that file must agree)
 | Condition | Severity | Bucket |
 |---|---|---|
 | IOC match on package name or signing cert | high | needsProfessional |
@@ -75,6 +75,10 @@ Collectors are pure functions of Android system services that emit immutable evi
 | Fixed interval beacon to an unrecognized host | medium | worthRemoving |
 | bytes sent with no DNS seen (rawIpSuspect) | medium | worthRemoving |
 | Any single oddity alone (sideloaded with no sensitive perms, unrecognized host alone, boot receiver alone) | low | safe (listed with the note) |
+| Control grant (admin, accessibility, listener) on a package missing from the inventory | medium | needsProfessional |
+| Profile owner present (work profile) | low | safe (listed with the note) |
+| Duplicate package entry | low | safe (listed with the note) |
+| App contacted a domain on the IOC list | high | needsProfessional |
 | Check NOT_CHECKED | n/a | reported as unknown, verdict cannot say clean for that check |
 
 Verdict: `compromised` if any high. Otherwise `clean`, with mediums in "Worth removing". Next step rule: the highest severity finding's remediation text; if none, "Nothing to do. Rescan after installing anything new."

@@ -45,6 +45,11 @@ category = "AUDIO"
 packageName = "com.google.android.apps.maps"
 label = "Maps"
 category = "MAPS"
+[[apps]]
+packageName = "com.google.android.marvin.talkback"
+label = "TalkBack"
+isSystem = true
+category = "ACCESSIBILITY"
 [[controls]]
 kind = "ACCESSIBILITY"
 packageName = "com.google.android.marvin.talkback"

@@ -1,0 +1,13 @@
+[
+    {
+        "ruleId": "duplicate_package",
+        "packageName": "com.whatsapp",
+        "severity": "LOW",
+        "bucket": "SAFE",
+        "reason": "com.whatsapp appears twice in the inventory, usually a leftover from a second user or a failed update.",
+        "remediation": "Nothing to do. Mention it if you talk to a professional.",
+        "evidenceRef": [
+            "app:com.whatsapp"
+        ]
+    }
+]

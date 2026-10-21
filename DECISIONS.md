@@ -122,3 +122,15 @@ Always on categories: AUDIO, SOCIAL, ACCESSIBILITY, MAPS (music, messaging, acce
 
 ## 2026-10-21 / Usage access missing makes the whole Persistence check NOT_CHECKED
 Boot receiver facts are still available without usage access, but reporting them as a complete check would let the verdict call persistence clean on half the evidence. The reason string carries the Settings action so the UI can deep link.
+
+## 2026-10-21 / Rules are JSON with a six operator condition language over per package facts
+`rules.json` holds id, severity, bucket, plain language reason and remediation, the evidence kinds that back the finding, and a `when` tree of eq, in, gt, not, all, any. `Facts.kt` flattens the evidence into one map per package and is the only place that knows the record types; adding a fact is a code change, adding or tuning a rule is a data change. Conditions are parsed at load so a typo fails at startup, not mid scan.
+
+## 2026-10-21 / Expected findings per fixture are committed golden files
+`GoldenFindingsTest` compares the engine output for all 16 fixtures to `src/test/resources/expected/*.json` byte for byte. `-Pcpi.updateGolden=true` regenerates them; the diff is reviewed by eye and the review is the acceptance step. First review 2026-10-21: every file matched its scenario's intent.
+
+## 2026-10-21 / IOC snapshot: MVT public index, 19 STIX2 sources, stdlib fetch, test only id never ships
+`tools/fetch_iocs.py` reads only the pinned index and only raw.githubusercontent.com sources named by it, extracts app ids, domains (including url hosts), SHA-1 and SHA-256 signing certs and IPv4 addresses, drops `com.example.ioc.match`, and writes `assets/iocs/snapshot.json` plus `SNAPSHOT.md`. First snapshot 2026-10-21: 680 packages, 6,548 domains, 497 certs, 73 IPs. Certs in the feed are mostly SHA-1, so the Apps adapter now hashes signing certs both ways. In app refresh is BACKLOG; the guardrail's single pinned URL stays reserved for it.
+
+## 2026-10-21 / Two rules beyond the original table
+`control_on_unknown_package` (a grant on a package the inventory does not list: medium, needs a professional, because OEMs hide packages and so does malware) and `ioc_domain_contact` (high). Both are in INITIAL_INSTRUCTIONS.md now.

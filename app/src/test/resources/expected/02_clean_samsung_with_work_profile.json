@@ -1,0 +1,15 @@
+[
+    {
+        "ruleId": "work_profile_present",
+        "packageName": "com.google.android.apps.work.clouddpc",
+        "severity": "LOW",
+        "bucket": "SAFE",
+        "reason": "com.google.android.apps.work.clouddpc manages a work profile on this phone. Your employer can see and control the work side, not the personal side.",
+        "remediation": "Nothing to do if this is your employer's management app.",
+        "evidenceRef": [
+            "app:com.google.android.apps.work.clouddpc",
+            "control:PROFILE_OWNER:com.google.android.apps.work.clouddpc",
+            "control:DEVICE_ADMIN:com.google.android.apps.work.clouddpc"
+        ]
+    }
+]

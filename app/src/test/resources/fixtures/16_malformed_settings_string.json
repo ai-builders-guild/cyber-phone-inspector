@@ -175,6 +175,28 @@
       ],
       "versionCode": 1,
       "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": "ACCESSIBILITY",
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788912000000,
+      "hasLauncherIcon": false,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "TalkBack",
+      "lastUpdateAt": 1788912000000,
+      "packageName": "com.google.android.marvin.talkback",
+      "signingCertSha256": [
+        "sha256:0365d8ad4cc5326e"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
     }
   ],
   "checks": [
