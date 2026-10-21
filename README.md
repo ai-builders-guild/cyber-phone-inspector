@@ -29,3 +29,9 @@ See `.env.example`. Nothing is required for a debug build. Release signing reads
 ## Helper scripts
 
 `tools/` is a uv managed Python project for fixture and indicator generation. It runs on the Mac, never on the phone.
+
+```bash
+uv run --project tools python tools/make_fixture.py          # regenerate test fixtures from tools/scenarios/*.toml
+uv run --project tools python tools/make_fixture.py --check  # verify committed fixtures match the scenarios
+uv run --project tools python -m unittest discover -s tools -p 'test_*.py'
+```

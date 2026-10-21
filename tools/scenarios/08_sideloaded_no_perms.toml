@@ -1,0 +1,14 @@
+name = "08_sideloaded_no_perms"
+description = "Single sideloaded app with no sensitive permissions and no other oddity. Expected low, safe with a note."
+[device]
+manufacturer = "Google"
+model = "Pixel 9"
+androidRelease = "16"
+sdkInt = 36
+
+[[apps]]
+packageName = "org.fdroid.example.reader"
+label = "Reader"
+installerPackage = "com.android.packageinstaller"
+installSource = "SIDELOADED"
+category = "NEWS"

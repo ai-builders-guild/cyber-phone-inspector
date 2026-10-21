@@ -1,0 +1,352 @@
+{
+  "apps": [
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": null,
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788220800000,
+      "hasLauncherIcon": false,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "System UI",
+      "lastUpdateAt": 1788220800000,
+      "packageName": "com.android.systemui",
+      "signingCertSha256": [
+        "sha256:a6b9513b47c92380"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": null,
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788307200000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "Settings",
+      "lastUpdateAt": 1788307200000,
+      "packageName": "com.android.settings",
+      "signingCertSha256": [
+        "sha256:48f96ab723a440c7"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": null,
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788393600000,
+      "hasLauncherIcon": false,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "Google Play services",
+      "lastUpdateAt": 1788393600000,
+      "packageName": "com.google.android.gms",
+      "signingCertSha256": [
+        "sha256:e5182720425068e4"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": null,
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788480000000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "Google Play Store",
+      "lastUpdateAt": 1788480000000,
+      "packageName": "com.android.vending",
+      "signingCertSha256": [
+        "sha256:6bc560052007dfb4"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": null,
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788566400000,
+      "hasLauncherIcon": false,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "Phone",
+      "lastUpdateAt": 1788566400000,
+      "packageName": "com.android.phone",
+      "signingCertSha256": [
+        "sha256:bc0c3e5347a0272a"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": "SOCIAL",
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788652800000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "WhatsApp",
+      "lastUpdateAt": 1788652800000,
+      "packageName": "com.whatsapp",
+      "signingCertSha256": [
+        "sha256:04a1f5ddc4e1c6d0"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": "AUDIO",
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788739200000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "Spotify",
+      "lastUpdateAt": 1788739200000,
+      "packageName": "com.spotify.music",
+      "signingCertSha256": [
+        "sha256:be0ca287362158a5"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": "MAPS",
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788825600000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "Maps",
+      "lastUpdateAt": 1788825600000,
+      "packageName": "com.google.android.apps.maps",
+      "signingCertSha256": [
+        "sha256:61f5747032f2d387"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "category": null,
+      "collectedAt": 1792411200000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788912000000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "UNKNOWN",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "Battery Saver",
+      "lastUpdateAt": 1788912000000,
+      "packageName": "com.example.ioc.match",
+      "signingCertSha256": [
+        "sha256:62858af8776bd768"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    }
+  ],
+  "checks": [
+    {
+      "check": "APPS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "CONTROL",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERMISSIONS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERSISTENCE",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "NETWORK",
+      "reason": null,
+      "status": "CHECKED"
+    }
+  ],
+  "collectedAt": 1792411200000,
+  "controls": [],
+  "device": {
+    "androidRelease": "16",
+    "manufacturer": "Google",
+    "model": "Pixel 9",
+    "sdkInt": 36
+  },
+  "flows": [
+    {
+      "answerIps": [
+        "157.240.1.60"
+      ],
+      "api": "DnsTunnelService",
+      "bytesSent": null,
+      "collectedAt": 1792411200000,
+      "host": "g.whatsapp.net",
+      "observedAt": 1792410560000,
+      "packageName": "com.whatsapp",
+      "protocol": "udp",
+      "remotePort": 53,
+      "uid": 10101
+    },
+    {
+      "answerIps": [
+        "157.240.1.60"
+      ],
+      "api": "DnsTunnelService",
+      "bytesSent": null,
+      "collectedAt": 1792411200000,
+      "host": "g.whatsapp.net",
+      "observedAt": 1792410697000,
+      "packageName": "com.whatsapp",
+      "protocol": "udp",
+      "remotePort": 53,
+      "uid": 10101
+    },
+    {
+      "answerIps": [
+        "157.240.1.60"
+      ],
+      "api": "DnsTunnelService",
+      "bytesSent": null,
+      "collectedAt": 1792411200000,
+      "host": "g.whatsapp.net",
+      "observedAt": 1792410834000,
+      "packageName": "com.whatsapp",
+      "protocol": "udp",
+      "remotePort": 53,
+      "uid": 10101
+    },
+    {
+      "answerIps": [
+        "35.186.224.25"
+      ],
+      "api": "DnsTunnelService",
+      "bytesSent": null,
+      "collectedAt": 1792411200000,
+      "host": "api.spotify.com",
+      "observedAt": 1792410600000,
+      "packageName": "com.spotify.music",
+      "protocol": "udp",
+      "remotePort": 53,
+      "uid": 10102
+    }
+  ],
+  "iocSnapshotDate": "2026-10-21",
+  "permissions": [
+    {
+      "api": "PackageInfo.requestedPermissionsFlags",
+      "collectedAt": 1792411200000,
+      "granted": true,
+      "group": "MICROPHONE",
+      "packageName": "com.whatsapp",
+      "requested": true,
+      "uncertain": false,
+      "unexpected": false
+    },
+    {
+      "api": "PackageInfo.requestedPermissionsFlags",
+      "collectedAt": 1792411200000,
+      "granted": true,
+      "group": "CAMERA",
+      "packageName": "com.whatsapp",
+      "requested": true,
+      "uncertain": false,
+      "unexpected": false
+    },
+    {
+      "api": "PackageInfo.requestedPermissionsFlags",
+      "collectedAt": 1792411200000,
+      "granted": true,
+      "group": "LOCATION",
+      "packageName": "com.google.android.apps.maps",
+      "requested": true,
+      "uncertain": false,
+      "unexpected": false
+    }
+  ],
+  "persistence": [
+    {
+      "api": "UsageStatsManager.queryEvents",
+      "backgroundHeavy": false,
+      "bootReceiver": true,
+      "collectedAt": 1792411200000,
+      "droppedEvents": 0,
+      "foregroundServiceMinutes7d": 900,
+      "lastForegroundServiceStartAt": null,
+      "packageName": "com.spotify.music"
+    },
+    {
+      "api": "UsageStatsManager.queryEvents",
+      "backgroundHeavy": false,
+      "bootReceiver": true,
+      "collectedAt": 1792411200000,
+      "droppedEvents": 0,
+      "foregroundServiceMinutes7d": 40,
+      "lastForegroundServiceStartAt": null,
+      "packageName": "com.whatsapp"
+    }
+  ],
+  "scenario": "04_ioc_package_match",
+  "schemaVersion": 1
+}

@@ -74,3 +74,15 @@ Rationale: an adb server started from the sandbox enumerates emulators (TCP) but
 
 ## 2026-10-21 / ACCESS_NETWORK_STATE added to the permission allowlist (Rick's decision)
 Rationale: Phase 2 showed every ConnectivityManager read throws without it on API 29 and API 36. It is an install time permission with no dialog that reveals only network type and whether a VPN or private DNS is active. Enables strict private DNS detection before the tunnel starts and programmatic teardown confirmation. Changed together: PROJECT.md, INITIAL_INSTRUCTIONS.md, AndroidManifest.xml, GuardrailTest. Allowlist is now seven entries.
+
+## 2026-10-21 / Scenario specs are TOML, not YAML
+Rationale: Python 3.11+ reads TOML from the stdlib (`tomllib`); YAML would add PyYAML. CLAUDE.md says prefer stdlib. `tools/scenarios/*.toml` → `tools/make_fixture.py` → `app/src/test/resources/fixtures/*.json`. `--check` mode fails when committed fixtures drift from their scenarios.
+
+## 2026-10-21 / Evidence model shape
+One `Evidence` envelope with five record lists (apps, controls, permissions, persistence, flows) plus a `CheckResult` per check (CHECKED, PARTIAL, NOT_CHECKED with reason). Every record implements `Provenanced` (api, collectedAt epoch millis UTC). Timestamps are `Long` only; a quoted string fails at the boundary with `EvidenceParseError` naming the file and field. Unknown JSON fields are ignored so older fixtures survive additive changes. Duplicate package ids are flagged by the loader, not by collectors, so a collector cannot forget. Fields from this phase on are additive only.
+
+## 2026-10-21 / Fixture timestamps are fixed constants
+Rationale: `collectedAt` is 2026-10-21T12:00:00Z and installs start 2026-09-01T00:00:00Z, one day apart per app, so fixtures and golden reports never change between runs. The DST test in Phase 7 builds its own event stream around 2026-11-01.
+
+## 2026-10-21 / IOC fixture uses a test only package id
+`04_ioc_package_match` uses `com.example.ioc.match`. Phase 8 adds that id to a test only indicator file, never to the shipped snapshot, so the match path is tested without naming a real stalkerware package in the repo.

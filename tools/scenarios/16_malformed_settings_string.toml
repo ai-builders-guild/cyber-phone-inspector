@@ -1,0 +1,50 @@
+name = "16_malformed_settings_string"
+description = "Edge: accessibility settings string was malformed (double colon, trailing colon). Control check PARTIAL with reason; one parsed entry without component."
+[checks]
+CONTROL = "PARTIAL"
+[check_reasons]
+CONTROL = "ENABLED_ACCESSIBILITY_SERVICES contained 2 unparseable entries"
+[device]
+manufacturer = "samsung"
+model = "SM-S928U"
+androidRelease = "16"
+sdkInt = 36
+oemSkin = "One UI 8.5"
+
+[[apps]]
+packageName = "com.android.systemui"
+label = "System UI"
+isSystem = true
+[[apps]]
+packageName = "com.android.settings"
+label = "Settings"
+isSystem = true
+hasLauncherIcon = true
+[[apps]]
+packageName = "com.google.android.gms"
+label = "Google Play services"
+isSystem = true
+[[apps]]
+packageName = "com.android.vending"
+label = "Google Play Store"
+isSystem = true
+hasLauncherIcon = true
+[[apps]]
+packageName = "com.android.phone"
+label = "Phone"
+isSystem = true
+[[apps]]
+packageName = "com.whatsapp"
+label = "WhatsApp"
+category = "SOCIAL"
+[[apps]]
+packageName = "com.spotify.music"
+label = "Spotify"
+category = "AUDIO"
+[[apps]]
+packageName = "com.google.android.apps.maps"
+label = "Maps"
+category = "MAPS"
+[[controls]]
+kind = "ACCESSIBILITY"
+packageName = "com.google.android.marvin.talkback"

@@ -176,6 +176,7 @@ class ProbeRunner(
             list.size to list.isNotEmpty()
         }
 
+    @Suppress("DEPRECATION") // TYPE_WIFI is the documented NetworkStatsManager selector; no replacement for querySummary
     private fun networkStats() =
         probe("NetworkStatsManager.querySummary(WIFI) last 24h", note = "count = uid buckets") {
             val nsm = context.getSystemService(NetworkStatsManager::class.java)
@@ -193,6 +194,7 @@ class ProbeRunner(
             n to (n > 0)
         }
 
+    @Suppress("DEPRECATION")
     private fun networkStatsMobile() =
         probe("NetworkStatsManager.querySummary(MOBILE) last 24h", note = "count = uid buckets") {
             val nsm = context.getSystemService(NetworkStatsManager::class.java)
@@ -263,6 +265,7 @@ class ProbeRunner(
         return caps?.hasTransport(NetworkCapabilities.TRANSPORT_VPN) == true
     }
 
+    @Suppress("DEPRECATION") // unsafeCheckOpNoThrow is the only variant that works for the app's own op on API 29
     fun hasUsageAccess(): Boolean {
         val appOps = context.getSystemService(AppOpsManager::class.java)
         val mode = appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
