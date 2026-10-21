@@ -55,7 +55,7 @@ The VPN never routes traffic anywhere but straight out the device's normal inter
 
 ## Permissions the app declares (allowlist, anything else is a build failure)
 
-`QUERY_ALL_PACKAGES`, `PACKAGE_USAGE_STATS` (special access), `BIND_VPN_SERVICE` (service), `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_SPECIAL_USE` (monitor runs while the user watches), `INTERNET` (IOC refresh only, off by default), `POST_NOTIFICATIONS` (scan progress). Nothing else.
+`QUERY_ALL_PACKAGES`, `PACKAGE_USAGE_STATS` (special access), `BIND_VPN_SERVICE` (service), `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_SPECIAL_USE` (monitor runs while the user watches), `INTERNET` (IOC refresh only, off by default), `POST_NOTIFICATIONS` (scan progress), `ACCESS_NETWORK_STATE` (install time, no dialog; approved by Rick 2026-10-21 after Phase 2 showed every ConnectivityManager read needs it). Nothing else.
 
 ## Data sources, verification status, fallbacks
 
@@ -86,7 +86,7 @@ Verification: nothing is verified yet. Phase 1 builds a throwaway probe activity
   - `getActiveAdmins` and `ENABLED_ACCESSIBILITY_SERVICES` return null for "none"; treat as empty.
   - `getInstallSourceInfo` is API 30+; on API 29 "no installer" is `unknown`, never `sideloaded`.
   - Private DNS was in automatic (opportunistic) mode on Rick's phone; Phase 11 verifies the plain DNS fallback there.
-- OPEN: every `ConnectivityManager` read needs `ACCESS_NETWORK_STATE`, which is not on the allowlist above. Rick decides. Until then private DNS detection and programmatic tunnel teardown confirmation are NOT CHECKED.
+- RESOLVED 2026-10-21: `ACCESS_NETWORK_STATE` added to the allowlist by Rick so private DNS detection and tunnel teardown confirmation work.
 
 ### Known dead, blocked, or fragile sources (do not rediscover)
 

@@ -71,3 +71,6 @@ Rationale: on the S24 Ultra the shell uid's loopback connection resolved to INVA
 
 ## 2026-10-21 / The adb server must run outside the sandboxed shell
 Rationale: an adb server started from the sandbox enumerates emulators (TCP) but not USB devices. Smoke scripts note it. Also: Samsung phones enumerate as a mass storage CD image until USB mode is set to Transferring files; no adb interface exists in that mode.
+
+## 2026-10-21 / ACCESS_NETWORK_STATE added to the permission allowlist (Rick's decision)
+Rationale: Phase 2 showed every ConnectivityManager read throws without it on API 29 and API 36. It is an install time permission with no dialog that reveals only network type and whether a VPN or private DNS is active. Enables strict private DNS detection before the tunnel starts and programmatic teardown confirmation. Changed together: PROJECT.md, INITIAL_INSTRUCTIONS.md, AndroidManifest.xml, GuardrailTest. Allowlist is now seven entries.
