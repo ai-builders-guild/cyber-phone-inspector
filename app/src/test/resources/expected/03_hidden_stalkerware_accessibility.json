@@ -1,20 +1,10 @@
 [
     {
-        "ruleId": "accessibility_non_system",
-        "packageName": "com.sysconfig.service",
-        "severity": "HIGH",
-        "bucket": "NEEDS_PROFESSIONAL",
-        "reason": "com.sysconfig.service is an enabled accessibility service and is not an accessibility app. Accessibility services can read everything on screen and type on your behalf.",
-        "remediation": "If you do not use com.sysconfig.service for accessibility, turn it off in Settings > Accessibility. If you do not recognise it, contact a professional first.",
-        "evidenceRef": [
-            "app:com.sysconfig.service",
-            "control:ACCESSIBILITY:com.sysconfig.service"
-        ]
-    },
-    {
         "ruleId": "hidden_nonstore_with_power",
+        "check": "APPS",
         "packageName": "com.sysconfig.service",
         "severity": "HIGH",
+        "priority": 20,
         "bucket": "NEEDS_PROFESSIONAL",
         "reason": "com.sysconfig.service has no icon, did not come from an app store, and holds accessibility, device admin, or a microphone, camera or location grant. This is the shape of stalkerware.",
         "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional.",
@@ -26,9 +16,25 @@
         ]
     },
     {
+        "ruleId": "accessibility_non_system",
+        "check": "CONTROL",
+        "packageName": "com.sysconfig.service",
+        "severity": "HIGH",
+        "priority": 30,
+        "bucket": "NEEDS_PROFESSIONAL",
+        "reason": "com.sysconfig.service is an enabled accessibility service and is not an accessibility app. Accessibility services can read everything on screen and type on your behalf.",
+        "remediation": "If you do not use com.sysconfig.service for accessibility, turn it off in Settings > Accessibility. If you do not recognise it, contact a professional first.",
+        "evidenceRef": [
+            "app:com.sysconfig.service",
+            "control:ACCESSIBILITY:com.sysconfig.service"
+        ]
+    },
+    {
         "ruleId": "boot_and_background_heavy",
+        "check": "PERSISTENCE",
         "packageName": "com.sysconfig.service",
         "severity": "MEDIUM",
+        "priority": 100,
         "bucket": "WORTH_REMOVING",
         "reason": "com.sysconfig.service starts itself at boot and ran in the background for more than 6 hours this week, and it is not a music, messaging, navigation or accessibility app.",
         "remediation": "Open Settings > Apps > com.sysconfig.service > Battery and check whether the activity makes sense. Uninstall if you do not use it.",
@@ -39,8 +45,10 @@
     },
     {
         "ruleId": "disguised_system_name",
+        "check": "APPS",
         "packageName": "com.sysconfig.service",
         "severity": "MEDIUM",
+        "priority": 100,
         "bucket": "WORTH_REMOVING",
         "reason": "com.sysconfig.service is named like a system component but is not one and did not come from an app store.",
         "remediation": "Uninstall com.sysconfig.service from Settings > Apps unless you know exactly what it is.",
@@ -50,8 +58,10 @@
     },
     {
         "ruleId": "sideloaded_with_sensitive",
+        "check": "APPS",
         "packageName": "com.sysconfig.service",
         "severity": "MEDIUM",
+        "priority": 100,
         "bucket": "WORTH_REMOVING",
         "reason": "com.sysconfig.service was installed outside an app store and holds a microphone, camera or location grant.",
         "remediation": "If you did not install com.sysconfig.service yourself, uninstall it. If you did, revoke the permissions it does not need.",
@@ -63,8 +73,10 @@
     },
     {
         "ruleId": "unexpected_grant_nonstore",
+        "check": "PERMISSIONS",
         "packageName": "com.sysconfig.service",
         "severity": "MEDIUM",
+        "priority": 100,
         "bucket": "WORTH_REMOVING",
         "reason": "com.sysconfig.service did not come from an app store and holds a microphone, camera or location grant that looks odd for this kind of app.",
         "remediation": "Revoke the permission in Settings > Apps > com.sysconfig.service > Permissions, or uninstall it.",

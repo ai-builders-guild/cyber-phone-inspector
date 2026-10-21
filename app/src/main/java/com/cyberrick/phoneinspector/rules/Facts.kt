@@ -55,6 +55,19 @@ object Facts {
                 put("iocPackage", ioc.packageHit(pkg))
                 put("iocCert", app?.let { ioc.certHit(it.signingCertSha256) } ?: false)
                 put("iocDomain", hosts.any { ioc.domainHit(it) })
+                val sources = ioc.sourcesFor(pkg)
+                put(
+                    "iocSources",
+                    if (sources.isNotEmpty()) {
+                        sources.joinToString(", ")
+                    } else if (app != null &&
+                        ioc.certHit(app.signingCertSha256)
+                    ) {
+                        "signing certificate match"
+                    } else {
+                        ""
+                    },
+                )
             }
         }
     }

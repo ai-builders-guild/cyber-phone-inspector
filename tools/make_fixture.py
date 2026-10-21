@@ -22,7 +22,7 @@ SCENARIO_DIR = PROJECT_ROOT / "tools" / "scenarios"
 FIXTURE_DIR = PROJECT_ROOT / "app" / "src" / "test" / "resources" / "fixtures"
 
 # 2026-10-21T12:00:00Z and 2026-09-01T00:00:00Z, epoch milliseconds. Fixed so output never drifts.
-COLLECTED_AT = 1792411200000
+COLLECTED_AT = 1792584000000
 INSTALLED_AT = 1788220800000
 DAY_MS = 86_400_000
 

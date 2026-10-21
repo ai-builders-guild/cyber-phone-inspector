@@ -184,3 +184,27 @@ What failed and how it was fixed
 
 Queued next
 - Phase 9: report renderer in the brief's exact contract, including NOT_CHECKED handling and the verdict rule.
+
+## 2026-10-21 — Phase 9: Report renderer and export (branch phase-09-report)
+
+What ran
+- `report/ReportRenderer.kt` (pure, fixed order: header, what the scan touched, five check sections with the five fields per flag, verdict, three lists, single next step, cannot see footer), `Verdict.kt`, `ReportInput.kt`, `ReportExporter.kt` (MediaStore Downloads + share intent via FileProvider), `scan/ScanPipeline.kt` (collectors → engine → renderer on a device).
+- Rules gained `check` and `priority`; `Finding` carries both. IOC snapshot gained per package source attribution; `ioc_match` reason names the list.
+- `ReportRendererTest` (13), `VerdictTest` (3), all written first; golden REPORT.md for all 16 fixtures reviewed and committed; probe hook `--es collector scan` runs the whole pipeline and exports.
+
+What was verified (validation gate)
+- Golden reports byte identical for 16 fixtures. The brief's END WITH block appears in order; each flag has the five fields in order.
+- Clean fixture: `VERDICT: clean`, "- none" in both removal lists, "Nothing to do" next step. Medium only fixture: clean with Worth removing populated. Stalkerware fixture: compromised, next step "preserve the phone as evidence".
+- NOT_CHECKED fixture: section reads "NOT CHECKED: Usage access not granted" and the verdict says it does not cover Persistence.
+- Emulator: export landed in Download/CyberPhoneInspector (3.5 KB report, 690 KB evidence) and was read back by the shell user, a different app.
+- Real phone: full pipeline 1.5 to 6.6 s, 30 KB report exported to Downloads; counts in DECISIONS.md.
+- Full `./gradlew check` green before commit (gated).
+
+What failed and how it was fixed
+- Fixture clock two days off → generator constant corrected, everything regenerated.
+- Next step chose the alphabetically first high rule → rule priority added.
+- IOC matches on the real phone came from a list that includes dual use tools → snapshot and reason now name the list, so the reader can judge.
+- Three patches missed their anchors after ktlint formatting → re-applied by regex or by file tail; noted as a working pattern: format first, then patch.
+
+Queued next
+- Phase 10: scan UI. Rick to read the first real report on the phone and tune rules if the two IOC matches are dual use tools he installed himself.

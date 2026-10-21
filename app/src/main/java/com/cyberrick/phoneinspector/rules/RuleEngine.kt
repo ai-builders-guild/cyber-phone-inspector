@@ -11,24 +11,34 @@ class RuleEngine(
         val facts = Facts.perPackage(evidence, ioc)
         return facts
             .flatMap { (pkg, f) ->
-                rules.rules.filter { it.condition.evaluate(f) }.map { rule -> finding(rule, pkg, evidence) }
-            }.sortedWith(compareBy({ -it.severity.rank }, { it.packageName }, { it.ruleId }))
+                rules.rules.filter { it.condition.evaluate(f) }.map { rule -> finding(rule, pkg, evidence, f) }
+            }.sortedWith(compareBy({ -it.severity.rank }, { it.priority }, { it.packageName }, { it.ruleId }))
     }
 
     private fun finding(
         rule: Rule,
         pkg: String,
         evidence: Evidence,
+        facts: Map<String, Any?>,
     ): Finding =
         Finding(
             ruleId = rule.id,
+            check = rule.check,
             packageName = pkg,
             severity = rule.severity,
+            priority = rule.priority,
             bucket = rule.bucket,
-            reason = rule.reason.replace("{package}", pkg),
-            remediation = rule.remediation.replace("{package}", pkg),
+            reason = fill(rule.reason, pkg, facts),
+            remediation = fill(rule.remediation, pkg, facts),
             evidenceRef = rule.evidence.flatMap { refs(it, pkg, evidence) }.ifEmpty { listOf("package:$pkg") },
         )
+
+    /** {package} and {iocSources} are the only placeholders rules may use. */
+    private fun fill(
+        template: String,
+        pkg: String,
+        facts: Map<String, Any?>,
+    ): String = template.replace("{package}", pkg).replace("{iocSources}", facts["iocSources"]?.toString().orEmpty())
 
     private fun refs(
         kind: String,

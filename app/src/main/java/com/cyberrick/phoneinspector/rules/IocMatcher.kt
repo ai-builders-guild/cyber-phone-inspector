@@ -13,6 +13,8 @@ data class IocSet(
     /** "sha1:<hex>" or "sha256:<hex>", lower case. */
     val certs: Set<String>,
     val ips: Set<String> = emptySet(),
+    /** Which published lists name each package, so the report can say "listed by ...". */
+    val packageSources: Map<String, List<String>> = emptyMap(),
 ) {
     companion object {
         const val ASSET = "snapshot.json"
@@ -29,6 +31,7 @@ class IocMatcher(
     private val domains = set.domains.map { it.lowercase() }.toSet()
     private val certs = set.certs.map { it.lowercase() }.toSet()
     private val ips = set.ips
+    private val packageSources = set.packageSources
 
     fun packageHit(packageName: String): Boolean = packageName in packages
 
@@ -47,4 +50,6 @@ class IocMatcher(
     }
 
     fun ipHit(ip: String): Boolean = ip in ips
+
+    fun sourcesFor(packageName: String): List<String> = packageSources[packageName].orEmpty()
 }

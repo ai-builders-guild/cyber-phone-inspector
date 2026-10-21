@@ -61,6 +61,7 @@ class FetchIocsTest(unittest.TestCase):
         self.assertIn("com.bad.app", snapshot["packages"])
         self.assertEqual(len([r for r in report if "error" in r]), 1)
         self.assertEqual(snapshot["sources"], ["ExampleOrg/investigations@master:2021/one.stix2"])
+        self.assertEqual(snapshot["packageSources"], {"com.bad.app": ["Source One"]})
 
     def test_refuses_any_other_index_url(self):
         self.assertEqual(fi.main(["--index", "https://example.com/other.yaml"]), 2)

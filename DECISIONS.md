@@ -134,3 +134,21 @@ Boot receiver facts are still available without usage access, but reporting them
 
 ## 2026-10-21 / Two rules beyond the original table
 `control_on_unknown_package` (a grant on a package the inventory does not list: medium, needs a professional, because OEMs hide packages and so does malware) and `ioc_domain_contact` (high). Both are in INITIAL_INSTRUCTIONS.md now.
+
+## 2026-10-21 / Verdict: compromised iff any high; NOT_CHECKED checks are named under the verdict line
+The verdict word is strictly `clean` or `compromised` (the brief asks for one line). A check that did not run is listed right under it as "This verdict does not cover: ...", so a clean verdict never silently covers a check that was skipped.
+
+## 2026-10-21 / Rules carry a priority; the top finding supplies the single next step
+Equal severity findings sorted alphabetically put "turn off the accessibility service" ahead of "preserve the phone as evidence" for the stalkerware fixture. IOC and hidden stalkerware rules now have priorities 10 to 30; everything else 100. The first finding after sorting by severity then priority supplies the report's single most important next step.
+
+## 2026-10-21 / IOC matches name the list that published them
+The MVT index merges sources with very different meanings: Amnesty's Pegasus and Predator domains, and the community "Stalkerware Indicators of Compromise" list, which also names dual use tools such as remote access and family monitoring apps. The snapshot now records which list names each package and the ioc_match reason says "listed by: ...". 648 of the 680 package ids come from the stalkerware list. The reader, not the tool, judges a dual use match; the remediation still says preserve evidence and ask a professional.
+
+## 2026-10-21 / Fixture clock constant corrected
+The generator's COLLECTED_AT was 2026-10-19T12:00Z, two days off the intended 2026-10-21T12:00Z. Corrected; all fixtures, expected findings and golden reports regenerated. No test depended on the wrong value.
+
+## 2026-10-21 / Export: MediaStore Downloads plus a share sheet intent, never a network send
+Report and evidence JSON are written to Download/CyberPhoneInspector via MediaStore (no storage permission on API 29+) and offered through the system share sheet from the app's cache via FileProvider. The app itself never transmits either file.
+
+## 2026-10-21 / First real report on Rick's phone (counts only recorded here)
+45 findings: 2 high (both `ioc_match`, both Play Store installs with launcher icons, both named by the stalkerware community list, one also by signing cert), 4 medium (boot and background heavy 1, device admin without profile 1, sideloaded with sensitive 1, unexpected grant off store 1), 39 low (37 unexpected grants on store installs, 2 sideloaded without sensitive grants). Verdict: compromised. The report is in the phone's Downloads for Rick to read; no package names were written to the repo, Open Brain, Obsidian, or this log. The 37 lows confirm the Phase 6 decision to keep store install oddities low.
