@@ -81,3 +81,30 @@ Queued next
 
 Surprises
 - None in the model. The fixture corpus took more design than the model: the scenarios are the spec the rule engine will be judged against.
+
+## 2026-10-21 — Phase 4: Apps collector (branch phase-04-apps-collector)
+
+What ran
+- `collect/AppsCollector.kt` (pure, over `PackageSource`), `AndroidPackageSource.kt` (PackageManager adapter, parallel per package work), `SystemPackages.kt` + `assets/system_packages.json` (111 packages that legitimately carry system style names), `CollectorResult`.
+- `AppsCollectorTest` (14 tests, written first) with `FakePackageSource`; `SystemPackagesTest`.
+- Debug probe hook `--es collector apps` runs the real collector on a device and records counts and timing only.
+
+What was verified (validation gate)
+- Hidden stalkerware test: exactly one hidden record, the planted one. Clean test: 0 hidden, 0 disguised.
+- Real phone: collector count 800 equals `pm list packages` 800 exactly; system 497 equals `pm list packages -s` 497. Delta zero.
+- Cold run 2.0 to 3.0 s for 800 packages on the S24 Ultra (gate: under 3 s for 400).
+- Per package installer failure keeps the record as UNKNOWN; an inventory failure yields NOT_CHECKED with the reason.
+- 2,000 fake packages collect under 500 ms on the JVM.
+
+What failed and how it was fixed
+- First phone run 6.4 s → adapter parallelized (2.0 to 3.0 s).
+- 44 packages read as SIDELOADED were WebAPKs, carrier preloads and Good Lock modules → WEB_APP source added, installers added to the vendor list.
+- 13 icon less non system packages on a clean phone → severity table amended so hidden alone, or hidden on a store install, is never high.
+- A formatter rewrap made a patch miss its anchor; caught by the compile error.
+
+Queued next
+- Phase 5: Deep control collector.
+
+Surprises
+- Chrome is the installer of record for installed web apps.
+- Carrier preload agents (LogiaDeck) install dozens of packages that look sideloaded to a naive check.

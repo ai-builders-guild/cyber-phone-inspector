@@ -22,8 +22,9 @@ data class CheckResult(
     val reason: String? = null,
 )
 
+/** WEB_APP: a WebAPK (installed progressive web app); Chrome is its installer. VENDOR_STORE includes carrier and OEM module installers. */
 @Serializable
-enum class InstallSource { PLAY_STORE, VENDOR_STORE, SYSTEM, SIDELOADED, UNKNOWN }
+enum class InstallSource { PLAY_STORE, VENDOR_STORE, WEB_APP, SYSTEM, SIDELOADED, UNKNOWN }
 
 /** Non identifying device facts. Never a serial, IMEI, or account. */
 @Serializable
