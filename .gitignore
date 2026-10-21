@@ -1,0 +1,36 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python helpers
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# node (not expected, kept per universal rule)
+node_modules/
+dist/
+build/
+
+# android / gradle
+.gradle/
+*/build/
+local.properties
+.idea/
+*.iml
+.kotlin/
+captures/
+*.apk
+*.aab
+*.jks
+*.keystore
+app/release/
+
+# project specific
+fixtures/live/
+PROBE_RESULTS_RAW/
+*.pcap
+*.log
+.DS_Store
