@@ -101,6 +101,7 @@ What failed and how it was fixed
 - 44 packages read as SIDELOADED were WebAPKs, carrier preloads and Good Lock modules → WEB_APP source added, installers added to the vendor list.
 - 13 icon less non system packages on a clean phone → severity table amended so hidden alone, or hidden on a store install, is never high.
 - A formatter rewrap made a patch miss its anchor; caught by the compile error.
+- Process slip: the Phase 4 merge ran although ktlint had failed on a file name rule, because the commit chain was not gated on the check result. Fixed in a follow up merge within minutes; commit chains are now gated on BUILD SUCCESSFUL.
 
 Queued next
 - Phase 5: Deep control collector.
@@ -108,3 +109,22 @@ Queued next
 Surprises
 - Chrome is the installer of record for installed web apps.
 - Carrier preload agents (LogiaDeck) install dozens of packages that look sideloaded to a naive check.
+
+## 2026-10-21 — Phase 5: Deep control collector (branch phase-05-control-collector)
+
+What ran
+- `collect/ControlCollector.kt` (pure, over `ControlSource`), `AndroidControlSource.kt`, probe hook `--es collector control`.
+- `ControlCollectorTest` (10 tests, written first) with `FakeControlSource`.
+
+What was verified (validation gate)
+- Work profile case: one PROFILE_OWNER record plus the agent's DEVICE_ADMIN record, correct component expansion.
+- Accessibility stalkerware case: one ACCESSIBILITY record on the planted package with install time as the bound.
+- Malformed settings ("::garbage-no-slash:com.a/.X::", ":"): one parsed record, PARTIAL with "1 unparseable", no throw. Null admins and empty settings: no records, CHECKED.
+- Real phone: 2 DEVICE_ADMIN, 3 NOTIFICATION_LISTENER, 0 ACCESSIBILITY, 0 owners, all 5 with an install time bound, 32 ms. Matches the Phase 2 probe counts.
+- Full `./gradlew check` green before commit (gated).
+
+What failed and how it was fixed
+- Nothing failed in this phase.
+
+Queued next
+- Phase 6: Permissions collector and need heuristic.

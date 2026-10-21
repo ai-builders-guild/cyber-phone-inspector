@@ -2,9 +2,12 @@ package com.cyberrick.phoneinspector.probe
 
 import android.content.Context
 import android.util.Log
+import com.cyberrick.phoneinspector.collect.AndroidControlSource
 import com.cyberrick.phoneinspector.collect.AndroidPackageSource
 import com.cyberrick.phoneinspector.collect.AppsCollector
+import com.cyberrick.phoneinspector.collect.ControlCollector
 import com.cyberrick.phoneinspector.collect.SystemPackages
+import com.cyberrick.phoneinspector.core.model.ControlKind
 import com.cyberrick.phoneinspector.core.model.InstallSource
 
 private const val TAG = "CPIProbe"
@@ -56,5 +59,26 @@ class CollectorProbe(
             row("withCerts", r.count { it.signingCertSha256.isNotEmpty() }, "signing cert hashes present"),
             row("withCategory", r.count { it.category != null }, "category mapped"),
         )
+    }
+
+    fun control(): List<ProbeResult> {
+        val start = System.nanoTime()
+        val result = ControlCollector(AndroidControlSource(context)).collect()
+        val ms = (System.nanoTime() - start) / 1_000_000
+
+        fun row(
+            name: String,
+            count: Int,
+            note: String,
+        ) = ProbeResult(api = "ControlCollector.$name", count = count, fieldPresent = true, elapsedMs = ms, note = note)
+        return listOf(row("records", result.records.size, "status ${result.check.status}; reason ${result.check.reason ?: "none"}")) +
+            ControlKind.entries.map { kind -> row(kind.name, result.records.count { it.kind == kind }, "records of this kind") } +
+            row(
+                "withInstallBound",
+                result.records.count {
+                    it.sinceAtLatest < result.records.first().collectedAt
+                },
+                "sinceAtLatest earlier than collection",
+            )
     }
 }
