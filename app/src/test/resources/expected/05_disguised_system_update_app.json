@@ -1,0 +1,24 @@
+[
+    {
+        "ruleId": "disguised_system_name",
+        "packageName": "com.update.core",
+        "severity": "MEDIUM",
+        "bucket": "WORTH_REMOVING",
+        "reason": "com.update.core is named like a system component but is not one and did not come from an app store.",
+        "remediation": "Uninstall com.update.core from Settings > Apps unless you know exactly what it is.",
+        "evidenceRef": [
+            "app:com.update.core"
+        ]
+    },
+    {
+        "ruleId": "sideloaded_no_sensitive",
+        "packageName": "com.update.core",
+        "severity": "LOW",
+        "bucket": "SAFE",
+        "reason": "com.update.core was installed outside an app store but holds no microphone, camera or location grant.",
+        "remediation": "Nothing to do if you installed it on purpose.",
+        "evidenceRef": [
+            "app:com.update.core"
+        ]
+    }
+]

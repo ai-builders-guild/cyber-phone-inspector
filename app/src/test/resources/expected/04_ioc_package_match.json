@@ -1,0 +1,24 @@
+[
+    {
+        "ruleId": "ioc_match",
+        "packageName": "com.example.ioc.match",
+        "severity": "HIGH",
+        "bucket": "NEEDS_PROFESSIONAL",
+        "reason": "com.example.ioc.match matches a published indicator of known stalkerware or spyware (package id or signing certificate).",
+        "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.",
+        "evidenceRef": [
+            "app:com.example.ioc.match"
+        ]
+    },
+    {
+        "ruleId": "sideloaded_no_sensitive",
+        "packageName": "com.example.ioc.match",
+        "severity": "LOW",
+        "bucket": "SAFE",
+        "reason": "com.example.ioc.match was installed outside an app store but holds no microphone, camera or location grant.",
+        "remediation": "Nothing to do if you installed it on purpose.",
+        "evidenceRef": [
+            "app:com.example.ioc.match"
+        ]
+    }
+]

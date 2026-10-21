@@ -34,4 +34,7 @@ See `.env.example`. Nothing is required for a debug build. Release signing reads
 uv run --project tools python tools/make_fixture.py          # regenerate test fixtures from tools/scenarios/*.toml
 uv run --project tools python tools/make_fixture.py --check  # verify committed fixtures match the scenarios
 uv run --project tools python -m unittest discover -s tools -p 'test_*.py'
+uv run --project tools python tools/fetch_iocs.py          # refresh app/src/main/assets/iocs/snapshot.json from the MVT indicator index
+uv run --project tools python tools/fetch_iocs.py --check  # fail if the committed snapshot is older than 90 days
+./gradlew :app:testDebugUnitTest -Pcpi.updateGolden=true  # regenerate expected findings after a deliberate rule change, then review the diff
 ```

@@ -1,5 +1,5 @@
 name = "07_calculator_with_mic"
-description = "Productivity app with microphone granted and no plausible need. Expected medium, worth removing."
+description = "Productivity app with microphone granted and no plausible need. Expected low on a store install (severity table amended after Phase 6)."
 [device]
 manufacturer = "Google"
 model = "Pixel 9"

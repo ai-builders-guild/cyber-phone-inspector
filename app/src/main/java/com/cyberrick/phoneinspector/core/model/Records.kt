@@ -46,6 +46,7 @@ data class AppRecord(
     val lastUpdateAt: Long,
     val installerPackage: String? = null,
     val installSource: InstallSource,
+    /** "sha256:<hex>" entries, and "sha1:<hex>" entries since Phase 8 because published indicators are mostly SHA-1. */
     val signingCertSha256: List<String> = emptyList(),
     val isSystem: Boolean,
     val hasLauncherIcon: Boolean,

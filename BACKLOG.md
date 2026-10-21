@@ -5,3 +5,4 @@
 - Google Play listing and the QUERY_ALL_PACKAGES declaration form.
 - iOS companion via sysdiagnose import plus Network Extension.
 - Scheduled rescans and change diffs between reports.
+- In app refresh of the indicator snapshot. Needs YAML index and STIX2 parsing on device; v1 ships a snapshot refreshed by tools/fetch_iocs.py at build time.

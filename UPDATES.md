@@ -163,3 +163,24 @@ What failed and how it was fixed
 
 Queued next
 - Phase 8: rule engine, severity table, IOC matching. Inputs from the collectors: hidden store installs are common (13), unexpected grants on a clean phone are common (24), one genuinely heavy background app exists on Rick's phone.
+
+## 2026-10-21 — Phase 8: Rule engine, severity table, IOC matching (branch phase-08-rule-engine)
+
+What ran
+- `rules/Condition.kt` (eq, in, gt, not, all, any), `Finding.kt`, `RuleSet.kt`, `Facts.kt`, `RuleEngine.kt`, `IocMatcher.kt`; `assets/rules.json` (18 rules); `assets/iocs/snapshot.json` + `SNAPSHOT.md`.
+- `tools/fetch_iocs.py` (stdlib, pinned index only) with 6 unittest cases; `ConditionTest` (6), `RuleEngineTest` (19), `IocMatcherTest` (4), `GoldenFindingsTest` (5), all written first.
+- Apps adapter now emits SHA-1 as well as SHA-256 cert hashes to match the feed.
+
+What was verified (validation gate)
+- The MVT feed was fetched and tallied before the script was written: 19 sources, 11,632 indicators.
+- Golden findings for all 16 fixtures reviewed by eye and committed; 0 findings above low on the two clean fixtures and on the maps fixture; highs on the stalkerware and IOC fixtures.
+- Snapshot loads offline with a date; the shipped snapshot never contains the test only id; the fetch script refuses any index but the pinned one (exit 2) and any host but raw.githubusercontent.com.
+- 2,000 package fixture evaluates under 1 s.
+- Full `./gradlew check` green before commit (gated).
+
+What failed and how it was fixed
+- `Condition.Any` shadowed `kotlin.Any` across the package → renamed to AnyOf and AllOf.
+- A shell glob with no match aborted a multi step command before the golden test was written; the next run showed "no tests found". Re-applied.
+
+Queued next
+- Phase 9: report renderer in the brief's exact contract, including NOT_CHECKED handling and the verdict rule.

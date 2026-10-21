@@ -1,0 +1,14 @@
+[
+    {
+        "ruleId": "device_admin_no_profile",
+        "packageName": "com.cerberus.antitheft",
+        "severity": "MEDIUM",
+        "bucket": "WORTH_REMOVING",
+        "reason": "com.cerberus.antitheft is a device administrator and is not managing a work profile. Device admins can lock or wipe the phone and resist uninstall.",
+        "remediation": "If you did not set up com.cerberus.antitheft as an anti theft or work tool, remove its admin rights in Settings > Security > Device admin apps, then uninstall it.",
+        "evidenceRef": [
+            "app:com.cerberus.antitheft",
+            "control:DEVICE_ADMIN:com.cerberus.antitheft"
+        ]
+    }
+]
