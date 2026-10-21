@@ -145,3 +145,21 @@ What failed and how it was fixed
 
 Queued next
 - Phase 7: Persistence collector.
+
+## 2026-10-21 — Phase 7: Persistence collector (branch phase-07-persistence-collector)
+
+What ran
+- `collect/PersistenceCollector.kt` (pure, over `PersistenceSource`), `AndroidPersistenceSource.kt` (boot receivers, RECEIVE_BOOT_COMPLETED, usage events), probe hook `--es collector persistence`.
+- `PersistenceCollectorTest` (14 tests, written first) including the 2026-11-01 US fall back interval and overlapping services.
+
+What was verified (validation gate)
+- DST: a 3 hour run across the fall back transition sums to 180 minutes. Unmatched STOP dropped and counted. START before the window clipped. START still running counts until now. Beacon app: boot receiver and backgroundHeavy both true; music app with 19 h is not heavy; clean case has none. Usage access denied → NOT_CHECKED with the Settings action in the reason.
+- Real phone: 800 records, 441 boot receivers, 12 apps with foreground service time, 1 over 6 h (about 67 h in 7 d, non system, outside always on categories), 5 dropped events, 441 ms.
+- Full `./gradlew check` green before commit (gated).
+
+What failed and how it was fixed
+- First phone run reported 50 dropped events; a 7 day lookback raised it to 71, proving they were not window edges. Root cause: per package START/STOP pairing breaks when one app runs two services at once. Replaced with a running counter (test first: 30 vs expected 50 minutes, then green). Dropped events on the phone: 5.
+- A test fake edit missed its anchor after formatting; replaced with a regex anchored edit.
+
+Queued next
+- Phase 8: rule engine, severity table, IOC matching. Inputs from the collectors: hidden store installs are common (13), unexpected grants on a clean phone are common (24), one genuinely heavy background app exists on Rick's phone.

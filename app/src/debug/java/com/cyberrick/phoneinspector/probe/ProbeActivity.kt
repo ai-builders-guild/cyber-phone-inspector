@@ -56,6 +56,7 @@ class ProbeActivity : ComponentActivity() {
             "apps" -> runCollectorProbe { CollectorProbe(this).apps() }
             "control" -> runCollectorProbe { CollectorProbe(this).control() }
             "permissions" -> runCollectorProbe { CollectorProbe(this).permissions() }
+            "persistence" -> runCollectorProbe { CollectorProbe(this).persistence() }
         }
     }
 

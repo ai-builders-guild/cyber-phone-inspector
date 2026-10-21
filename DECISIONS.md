@@ -113,3 +113,12 @@ Every app yields one record per sensitive group (location, background location, 
 
 ## 2026-10-21 / "Unexpected" permission alone on a store install is low, not medium
 Phase 6 probe on Rick's clean S24 Ultra: 27 location, 2 background location, 7 microphone and 15 camera grants fall outside the expected categories, nearly all store apps with no category set. Twenty four mediums on a clean phone would bury the real findings. Severity table amended: medium only when the app is not from Play, a vendor store or a web app, or when combined with another finding on the same app.
+
+## 2026-10-21 / Persistence time is summed in epoch milliseconds with a running service counter per package
+START increments and STOP decrements a per package counter; time counts while the counter is above zero, so two services of one app overlapping count once. Events are fetched with a 7 day lookback before the 7 day window and clipped to the window start; a run still open at collection time runs until now; a STOP with nothing running is dropped and counted in `droppedEvents`. On Rick's phone naive per package pairing produced 71 orphans; the counter model produces 5. Because all arithmetic is epoch based, the 2026-11-01 US fall back (tested) and any other local clock change cannot distort the sum.
+
+## 2026-10-21 / Background heavy means over 6 hours in 7 days, non system, outside always on categories
+Always on categories: AUDIO, SOCIAL, ACCESSIBILITY, MAPS (music, messaging, accessibility, navigation). The threshold and list live as constants in the collector; the rule engine combines `backgroundHeavy` with `bootReceiver` for a medium, never alone.
+
+## 2026-10-21 / Usage access missing makes the whole Persistence check NOT_CHECKED
+Boot receiver facts are still available without usage access, but reporting them as a complete check would let the verdict call persistence clean on half the evidence. The reason string carries the Settings action so the UI can deep link.
