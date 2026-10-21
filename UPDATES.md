@@ -29,3 +29,28 @@ Queued next
 
 Surprises
 - Debug APK is 29 MB; the release size gate (under 15 MB) is a Phase 13 concern with minify on.
+
+## 2026-10-21 — Phase 2: API probe on real hardware (branch phase-02-probe)
+
+What ran
+- Debug only `ProbeActivity` + `ProbeVpnService` (never in release). `ProbeReport` renders a sanitized table; `ProbeResult` rejects notes that look like package ids at construction (5 JVM tests, written first).
+- API 29 system image downloaded, `CPI_API29` AVD created. Probes run on API 29 and API 36.1 emulators and on Rick's Galaxy S24 Ultra (Android 16).
+- Usage access and VPN consent on the phone were tapped by Rick. The tool opened the usage access Settings screen and showed the system VPN dialog; it sent no taps.
+
+What was verified (validation gate)
+- Phone: 800 packages (> 100), 392 with a known installer, admins list returned (2), accessibility setting readable, 2,436 usage events in 24 h after consent, VpnService.prepare returned an intent, tun opened in 20 to 30 ms and closed, no tun interface left (`ip link` over adb).
+- Emulators: all rows populated on both API levels; VPN consent exercised on both; attribution resolved for a foreign uid on both.
+- GuardrailTest extended to every source set manifest; `./gradlew check` green with the probe code (9 unit tests).
+
+What failed and how it was fixed
+- Phone invisible to the Mac: charge only cable, then Samsung mass storage USB mode, then a sandboxed adb server. Fixed in turn; documented in DECISIONS.md.
+- `getConnectionOwnerUid` returned INVALID_UID for own sockets (by design) and for the shell uid on Samsung; a real app peer resolved. Design for Phase 11 unchanged.
+- `NetworkOnMainThreadException` on the socket probe; probes moved to Dispatchers.IO.
+- Wi Fi traffic buckets empty on mobile data; mobile probe added.
+
+Queued next
+- Rick's decision on `ACCESS_NETWORK_STATE` (DECISIONS.md). Then Phase 3: evidence model and fixture corpus.
+
+Surprises
+- Samsung exposes a Smart Switch CD image over USB by default; adb only appears after choosing Transferring files.
+- Private DNS automatic mode on the phone makes the Phase 11 fallback check mandatory on this exact device.
