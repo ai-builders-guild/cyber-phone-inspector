@@ -5,10 +5,12 @@ import android.util.Log
 import com.cyberrick.phoneinspector.collect.AndroidControlSource
 import com.cyberrick.phoneinspector.collect.AndroidPackageSource
 import com.cyberrick.phoneinspector.collect.AndroidPermissionSource
+import com.cyberrick.phoneinspector.collect.AndroidPersistenceSource
 import com.cyberrick.phoneinspector.collect.AppsCollector
 import com.cyberrick.phoneinspector.collect.ControlCollector
 import com.cyberrick.phoneinspector.collect.PermissionExpectations
 import com.cyberrick.phoneinspector.collect.PermissionsCollector
+import com.cyberrick.phoneinspector.collect.PersistenceCollector
 import com.cyberrick.phoneinspector.collect.SystemPackages
 import com.cyberrick.phoneinspector.core.model.ControlKind
 import com.cyberrick.phoneinspector.core.model.InstallSource
@@ -116,5 +118,27 @@ class CollectorProbe(
                     ),
                 )
             }
+    }
+
+    fun persistence(): List<ProbeResult> {
+        val start = System.nanoTime()
+        val result = PersistenceCollector(AndroidPersistenceSource(context)).collect()
+        val ms = (System.nanoTime() - start) / 1_000_000
+        val r = result.records
+
+        fun row(
+            name: String,
+            count: Int,
+            note: String,
+        ) = ProbeResult(api = "PersistenceCollector.$name", count = count, fieldPresent = true, elapsedMs = ms, note = note)
+        return listOf(
+            row("records", r.size, "status ${result.check.status}"),
+            row("bootReceiver", r.count { it.bootReceiver }, "relaunch on boot"),
+            row("withForegroundService", r.count { it.foregroundServiceMinutes7d > 0 }, "any foreground service time in 7 d"),
+            row("over6h", r.count { it.foregroundServiceMinutes7d > PersistenceCollector.HEAVY_MINUTES }, "more than 6 h in 7 d"),
+            row("backgroundHeavy", r.count { it.backgroundHeavy }, "over 6 h, non system, outside always on categories"),
+            row("droppedEvents", r.sumOf { it.droppedEvents }, "unmatched stop events"),
+            row("maxMinutes", r.maxOfOrNull { it.foregroundServiceMinutes7d }?.toInt() ?: 0, "largest 7 d total"),
+        )
     }
 }
