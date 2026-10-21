@@ -98,3 +98,9 @@ Play policy forbids impersonating system apps and names like "Sync for Reddit" a
 
 ## 2026-10-21 / Apps collector adapter does per package work in parallel
 Label loading and signing cert hashing for 800 packages took 5 to 6 s cold on the S24 Ultra; a parallel stream in the adapter brings a cold run to 2 to 3 s. The collector itself stays pure and sequential.
+
+## 2026-10-21 / Control records: one per grant kind, deduplicated by kind and component
+A package holding admin, device owner and profile owner yields three records with the same component, so the rule engine can reason per kind. Accessibility is the union of the raw setting and AccessibilityManager, deduplicated. Blank entries in the colon separated settings are skipped silently; an entry without a slash is counted and surfaces as PARTIAL with the count, never a crash.
+
+## 2026-10-21 / Component parsing mirrors ComponentName.unflattenFromString in pure Kotlin
+Rationale: keeps the collector testable on the JVM without Robolectric. "pkg/.Cls" expands to "pkg/pkg.Cls".

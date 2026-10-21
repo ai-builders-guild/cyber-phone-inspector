@@ -52,7 +52,10 @@ class ProbeActivity : ComponentActivity() {
         }
         if (intent.getBooleanExtra(EXTRA_AUTORUN, false)) runProbes()
         if (intent.getBooleanExtra(EXTRA_VPN, false)) requestVpnConsent()
-        if (intent.getStringExtra(EXTRA_COLLECTOR) == "apps") runCollectorProbe { CollectorProbe(this).apps() }
+        when (intent.getStringExtra(EXTRA_COLLECTOR)) {
+            "apps" -> runCollectorProbe { CollectorProbe(this).apps() }
+            "control" -> runCollectorProbe { CollectorProbe(this).control() }
+        }
     }
 
     private fun runCollectorProbe(body: () -> List<ProbeResult>) {
