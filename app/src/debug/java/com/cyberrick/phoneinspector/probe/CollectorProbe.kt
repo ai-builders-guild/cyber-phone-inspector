@@ -19,6 +19,8 @@ import com.cyberrick.phoneinspector.report.ReportExporter
 import com.cyberrick.phoneinspector.rules.IocMatcher
 import com.cyberrick.phoneinspector.rules.IocSet
 import com.cyberrick.phoneinspector.scan.ScanPipeline
+import com.cyberrick.phoneinspector.scan.ScanResult
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "CPIProbe"
 
@@ -149,7 +151,7 @@ class CollectorProbe(
     /** Full pipeline on the device, exported to Downloads. Only counts and the verdict word come back to the probe report. */
     fun scanAndExport(): List<ProbeResult> {
         val start = System.nanoTime()
-        val result = ScanPipeline(context).run()
+        val result = runBlocking { ScanPipeline(context).run() }
         val ms = (System.nanoTime() - start) / 1_000_000
         val exported = ReportExporter(context).exportToDownloads(result.report, result.evidence.toJson(), "probe")
         val verdict =
@@ -184,7 +186,7 @@ class CollectorProbe(
     }
 
     /** For IOC matches only: which indicator kind matched and what kind of app it is. Counts, never names. */
-    private fun iocDiagnostics(result: ScanPipeline.Result): List<ProbeResult> {
+    private fun iocDiagnostics(result: ScanResult): List<ProbeResult> {
         val ioc =
             IocSet.parse(
                 context.assets

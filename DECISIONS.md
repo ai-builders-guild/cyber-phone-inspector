@@ -152,3 +152,22 @@ Report and evidence JSON are written to Download/CyberPhoneInspector via MediaSt
 
 ## 2026-10-21 / First real report on Rick's phone (counts only recorded here)
 45 findings: 2 high (both `ioc_match`, both Play Store installs with launcher icons, both named by the stalkerware community list, one also by signing cert), 4 medium (boot and background heavy 1, device admin without profile 1, sideloaded with sensitive 1, unexpected grant off store 1), 39 low (37 unexpected grants on store installs, 2 sideloaded without sensitive grants). Verdict: compromised. The report is in the phone's Downloads for Rick to read; no package names were written to the repo, Open Brain, Obsidian, or this log. The 37 lows confirm the Phase 6 decision to keep store install oddities low.
+
+## 2026-10-21 / Known dual use tools (Rick's call after reading the first real report)
+Rick confirmed both IOC matches on his phone are apps he installed himself and knows. Handling:
+1. An IOC match stays high on first sight. The tool cannot know who installed an app, and a dual use remote access or monitoring tool installed by someone else is exactly the stalkerware case. Downgrading on install source would blind the check.
+2. The report names the list ("listed by: Stalkerware Indicators of Compromise") and says in the same sentence that this list also carries dual use tools, so the reader can judge. Done in Phase 9.
+3. v1.1 (BACKLOG): an "I installed this myself" acknowledgement per app, stored only in the app's own data, that turns the finding into a medium "known dual use tool, review its access" note on later scans and lists it under Worth removing with that wording. Acknowledgements never suppress a finding entirely and are listed in the report's "What this scan touched" section so a reviewer sees them.
+4. Never a global allowlist of "safe" dual use apps in the repo: that is the attacker's shopping list.
+
+## 2026-10-21 / Scan UI: a state machine in a ViewModel, screens as pure functions of state
+`ScanViewModel` owns the scan job (idempotent start, structured cancel, Failed on exception) so rotation never restarts a scan; the scanner is an injected suspend lambda so the state machine is JVM tested. Four screens (Consent on first run, Home, Scanning, Report) are composables of state only. No navigation library is needed for a four state flow; the dependency stays out.
+
+## 2026-10-21 / Foreground service during the scan, special use type
+`ScanService` keeps the process foreground while the view model runs the pipeline. Declared with `foregroundServiceType="specialUse"` and the required subtype property; `startForeground` passes the type on API 34+ and omits it below. Lint's ForegroundServiceType detector does not recognise special use and is suppressed at the call site with the reason. Notification permission is requested before the first scan; denial does not block the scan, the notification is simply hidden.
+
+## 2026-10-21 / Consent explainer once, stored in the app's own preferences
+The first run explains usage access and the future local VPN before anything is asked. The flag lives in app private SharedPreferences, the only state the app persists apart from exports the user requests.
+
+## 2026-10-21 / The tool reports itself
+The emulator report lists com.cyberrick.phoneinspector as a sideloaded app (installed by adb). Left in on purpose: the tool must not exempt itself from its own rules, and a reader should see it.
