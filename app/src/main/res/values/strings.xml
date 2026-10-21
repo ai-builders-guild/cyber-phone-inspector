@@ -15,7 +15,6 @@
     <string name="usage_access_missing">Usage access: not granted. The Persistence check will be reported as not checked.</string>
     <string name="open_usage_access">Open usage access settings</string>
     <string name="start_scan">Start scan</string>
-    <string name="home_network_note">The Network check is not part of this version yet. The report says so.</string>
 
     <string name="scanning_title">Scanning</string>
     <string name="check_apps">Apps</string>
@@ -36,4 +35,17 @@
 
     <string name="failed_title">The scan could not finish</string>
     <string name="try_again">Try again</string>
+
+    <string name="monitor_channel">Network monitor</string>
+    <string name="monitor_notification">Network monitor running. Window in minutes: %1$d. Only DNS lookups are observed.</string>
+    <string name="monitor_no_network">No active network.</string>
+    <string name="monitor_no_dns">The current network reports no DNS server.</string>
+    <string name="monitor_title">Network monitor</string>
+    <string name="monitor_body">Watches which names each app looks up through a local VPN, then stops. Window in minutes: %1$d. Nothing is redirected or stored beyond the names. The next scan uses the result.</string>
+    <string name="monitor_start">Start network monitor</string>
+    <string name="monitor_stop">Stop monitor now</string>
+    <string name="monitor_running">Running. Lookups so far: %1$d. Minutes left: %2$d.</string>
+    <string name="monitor_finished">Last run. Lookups: %1$d. Median answer time in ms: %2$d. The next scan includes it.</string>
+    <string name="monitor_refused">Could not start: %1$s</string>
+    <string name="monitor_idle">Not run yet. The Network check will be reported as not checked.</string>
 </resources>

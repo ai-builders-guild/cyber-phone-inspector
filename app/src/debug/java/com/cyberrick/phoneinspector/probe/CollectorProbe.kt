@@ -15,6 +15,8 @@ import com.cyberrick.phoneinspector.collect.SystemPackages
 import com.cyberrick.phoneinspector.core.model.ControlKind
 import com.cyberrick.phoneinspector.core.model.InstallSource
 import com.cyberrick.phoneinspector.core.model.SensitiveGroup
+import com.cyberrick.phoneinspector.net.DnsTunnelService
+import com.cyberrick.phoneinspector.net.FlowStore
 import com.cyberrick.phoneinspector.report.ReportExporter
 import com.cyberrick.phoneinspector.rules.IocMatcher
 import com.cyberrick.phoneinspector.rules.IocSet
@@ -233,5 +235,51 @@ class CollectorProbe(
             matched.flatMap { matcher.sourcesFor(it.packageName) }.groupingBy { it }.eachCount().map { (list, n) ->
                 row("list", n, "listed by: $list")
             }
+    }
+
+    fun monitorStart(minutes: Int): List<ProbeResult> {
+        DnsTunnelService.start(context, minutes)
+        return listOf(
+            ProbeResult(api = "DnsTunnelService.start", count = minutes, fieldPresent = true, elapsedMs = 0, note = "requested minutes"),
+        )
+    }
+
+    fun monitorStop(): List<ProbeResult> {
+        DnsTunnelService.stop(context)
+        return listOf(ProbeResult(api = "DnsTunnelService.stop", count = 1, fieldPresent = true, elapsedMs = 0, note = "stop requested"))
+    }
+
+    /** Counts and hosts the probe operator visited on an emulator; package names stay out of the report. */
+    fun monitorResult(): List<ProbeResult> {
+        val r =
+            FlowStore(context.filesDir).load()
+                ?: return listOf(
+                    ProbeResult(api = "MonitorResult", count = 0, fieldPresent = false, elapsedMs = 0, note = "no result saved"),
+                )
+
+        fun row(
+            name: String,
+            count: Int,
+            note: String,
+        ) = ProbeResult(
+            api = "MonitorResult.$name",
+            count = count,
+            fieldPresent = true,
+            elapsedMs =
+                r.endedAt - r.startedAt,
+            note = note,
+        )
+        val dns = r.flows.filter { it.protocol == "udp" }
+        return listOf(
+            row("lookups", r.lookups, "dns lookups relayed"),
+            row("medianLatencyMs", r.medianLatencyMs.toInt(), "query to answer"),
+            row("attributed", dns.count { it.uid >= 0 }, "lookups with an owner uid"),
+            row("withPackage", dns.count { it.packageName != null }, "lookups mapped to a package"),
+            row("distinctUids", dns.map { it.uid }.distinct().size, "apps seen"),
+            row("distinctHosts", dns.mapNotNull { it.host }.distinct().size, "names looked up"),
+            row("counters", r.flows.count { it.protocol == "counter" }, "per uid byte counters"),
+            row("droppedMalformed", r.droppedMalformed, "malformed packets dropped"),
+            row("resetsSent", r.resetsSent, "tcp resets answered (DoT probes)"),
+        )
     }
 }

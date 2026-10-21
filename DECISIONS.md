@@ -171,3 +171,21 @@ The first run explains usage access and the future local VPN before anything is 
 
 ## 2026-10-21 / The tool reports itself
 The emulator report lists com.cyberrick.phoneinspector as a sideloaded app (installed by adb). Left in on purpose: the tool must not exempt itself from its own rules, and a reader should see it.
+
+## 2026-10-21 / Network monitor: DNS only tunnel with transaction id rewriting
+The VpnService routes one /32 (its own resolver address) and sets itself as the DNS server, so the phone stays on its normal path for everything except DNS. Each query gets a fresh upstream id so two apps sharing an id cannot collide; the response is restored to the client's id and written back. Attribution uses `getConnectionOwnerUid` on the client's source tuple, which works because the app is the active VPN. Pure engine (`DnsRelay`) with 21 JVM tests over hand assembled packets; the service is a read loop around it.
+
+## 2026-10-21 / DNS over TLS probes are answered with a TCP reset
+In automatic private DNS mode the resolver probes port 853 on the tunnel resolver. A SYN gets an immediate RST+ACK so the probe fails in milliseconds and the resolver falls back to plain DNS instead of waiting for a timeout. Emulator: 2 resets per run, median query latency 12 ms, phone stayed online.
+
+## 2026-10-21 / Strict private DNS refuses the monitor on a configured server name, not on the active flag
+Strict mode whose TLS validation has not succeeded yet is still strict: Android hard fails DNS rather than fall back, so the monitor would take the phone's DNS down. The policy keys on `privateDnsServerName` alone. First emulator test used the active flag and let the monitor start under strict mode; corrected test first.
+
+## 2026-10-21 / A refused start still calls startForeground
+`startForegroundService` obliges the service to call `startForeground` before stopping, or Android kills the app with ForegroundServiceDidNotStartInTimeException about ten seconds later. The refusal path now goes foreground, publishes the Refused state, and stops cleanly. Caught on the emulator by the crash buffer.
+
+## 2026-10-21 / Apps with their own encrypted DNS bypass the monitor's name view
+Chrome on the emulator looked up Google service names through the system resolver but resolved the three sites I opened through its built in secure DNS, so those never crossed the tunnel. Documented in the report's "cannot see" footer. Their bytes still count in the per app totals from NetworkStatsManager.
+
+## 2026-10-21 / Monitor results are handed to the next scan through an app private file
+`FlowStore` writes `monitor_latest.json` atomically; a scan within 24 hours includes its flows and reports the Network check as CHECKED with the window and lookup count, otherwise NOT CHECKED. The monitor also stops when the app's task is removed or the VPN is revoked.

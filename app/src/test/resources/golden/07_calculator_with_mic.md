@@ -57,3 +57,4 @@ Check Settings > Apps > com.quickcalc.pro > Permissions and revoke anything it d
 - A physical tracker (AirTag, SmartTag) or a second phone. Use the Unknown tracker alerts in Settings for those.
 - What a work profile's administrator sees on the work side.
 - Traffic from apps that only sent data while the monitor was not running.
+- Name lookups by apps that bring their own encrypted DNS (some browsers, notably Chrome) and so never ask the phone's resolver. Their other traffic still counts in the per app byte totals.
