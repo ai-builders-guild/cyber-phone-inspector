@@ -344,3 +344,24 @@ Final state
 
 ## 2026-10-22 — GitHub remote
 - Private repository created at https://github.com/CyberRick-AI/cyber-phone-inspector and `main` pushed (43 commits). Tracked files were checked for secret files, password values and the phone serial before the push: none present.
+
+## 2026-10-22 — v1.1 Phase A: removal, eighth permission, feeds (branch phase-a-removal-feeds)
+
+What ran
+- `actions/RemovalFlow.kt` (pure state machine, blockers, step text), `SettingsLinks.kt` (targets with app info fallback), `RemoveAction.kt` (the single file allowed to name the uninstall intent). `REQUEST_DELETE_PACKAGES` added to manifest, PROJECT.md, INITIAL_INSTRUCTIONS.md and GuardrailTest in one change; GuardrailTest gained "the uninstall intent appears only in RemoveAction".
+- `tools/fetch_feeds.py` + tests; `assets/feeds/` (spyware.json, trackers.json, malware_hashes.json, malicious_hosts.json, FEEDS.md); public repo `cyber-phone-inspector-feeds` with the weekly Action; the guardrail's allowed URL list now includes the feeds repo and Exodus.
+- Debug probe hook `--es remove <package>` to drive the flow on a device.
+
+What was verified (validation gate)
+- Planted `ACTION_UNINSTALL_PACKAGE` in another file fails GuardrailTest naming it; reverted; green again.
+- API 36 emulator with a planted package: Cancel reads StillInstalled with the reason; Uninstall reads Gone and the package is gone; a system package reads NotRemovable and no dialog is shown.
+- Device admin two step path: covered by the RemovalFlow unit tests (NeedsSettings, afterSettings) and the resolver fallback test; no admin holder was available on the emulator, so the live walk is left to Phase C's instrumented run with the app's own test admin receiver.
+- Feeds: live run without a key gives 680 spyware packages and 428 trackers with the abuse.ch lists marked skipped; the Action runs green on the public repo; the raw address serves the lists without credentials; `./gradlew check` green (186 unit tests).
+
+What failed and how it was fixed
+- The Action's first run: `python -I` omits the script folder from sys.path → explicit sys.path insert.
+- The emulator dialog's button is "Uninstall", not "OK"; the driver was corrected, not the app.
+- Lint: KTX `toUri`, API 30 guard on the notification listener extra.
+
+Queued next
+- Phase B: hash and tracker collectors, rules v1.1, score, keep. Rick: add `ABUSECH_AUTH_KEY` as an Actions secret on the feeds repo when you have it; nothing waits on it.

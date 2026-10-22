@@ -21,6 +21,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.cyberrick.phoneinspector.actions.RemovalFlow
+import com.cyberrick.phoneinspector.actions.RemovalState
+import com.cyberrick.phoneinspector.actions.RemoveAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,6 +33,31 @@ import java.io.File
 class ProbeActivity : ComponentActivity() {
     private val runner by lazy { ProbeRunner(this) }
     private var report by mutableStateOf("Not run yet.")
+
+    private var removing: String? = null
+    private val removeDialog =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val pkg = removing ?: return@registerForActivityResult
+            val action = RemoveAction(this)
+            val state = RemovalFlow.afterDialog(pkg, action.isInstalled(pkg), action.blockerFor(pkg))
+            writeRemoval(state)
+        }
+
+    private fun writeRemoval(state: RemovalState) {
+        File(filesDir, REMOVAL_FILE).writeText(state.toString(), Charsets.UTF_8)
+        report = "Removal: $state\n\n$report"
+    }
+
+    /** Debug gate for Phase A: ask Android to uninstall [pkg]; the dialog decides, the file records the outcome. */
+    private fun removeProbe(pkg: String) {
+        val action = RemoveAction(this)
+        val state = RemovalFlow.onRequest(pkg, action.blockerFor(pkg))
+        writeRemoval(state)
+        if (state is RemovalState.Requested) {
+            removing = pkg
+            removeDialog.launch(action.uninstallIntent(pkg))
+        }
+    }
 
     private val vpnConsent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -52,6 +80,7 @@ class ProbeActivity : ComponentActivity() {
         }
         if (intent.getBooleanExtra(EXTRA_AUTORUN, false)) runProbes()
         if (intent.getBooleanExtra(EXTRA_VPN, false)) requestVpnConsent()
+        intent.getStringExtra(EXTRA_REMOVE)?.let { removeProbe(it) }
         when (intent.getStringExtra(EXTRA_COLLECTOR)) {
             "apps" -> runCollectorProbe { CollectorProbe(this).apps() }
             "control" -> runCollectorProbe { CollectorProbe(this).control() }
@@ -126,6 +155,8 @@ class ProbeActivity : ComponentActivity() {
     companion object {
         const val EXTRA_AUTORUN = "autorun"
         const val EXTRA_VPN = "vpn"
+        const val EXTRA_REMOVE = "remove"
+        const val REMOVAL_FILE = "removal_state.txt"
         const val EXTRA_COLLECTOR = "collector"
         const val COLLECTOR_FILE = "collector_probe.md"
         const val RUN_FILE = "probe_run.json"
