@@ -233,3 +233,29 @@ What failed and how it was fixed
 
 Queued next
 - Phase 11: DNS tunnel network monitor. Rick to try the UI build on his phone.
+
+## 2026-10-21 — Phase 11: DNS tunnel network monitor (branch phase-11-dns-tunnel)
+
+What ran
+- Pure: `DnsMessage` (compression, bounded pointers, A/AAAA/CNAME), `IpPacket` (IPv4/UDP/TCP parse and build with checksums, TCP reset), `DnsRelay` (id rewriting, pending expiry, counters, FlowRecords), `NetStatsCollector`, `FlowStore`, `PrivateDnsPolicy`, `MonitorWindow`. 27 JVM tests written first.
+- Android: `DnsTunnelService` (VpnService, special use foreground, bounded window, stops on task removal and revoke), `AndroidUidResolver`, `AndroidNetStatsSource`, `MonitorState`, Home screen monitor section with the system VPN consent, `ScanPipeline` reads the latest monitor result, probe hooks for headless control.
+
+What was verified (validation gate, API 36.1 emulator)
+- Monitor started from the UI through the system consent dialog; tun present while running; 17 lookups relayed in a 36 s window; all 17 attributed to a uid and a package across 3 apps; 9 distinct hosts; median query latency 12 ms (gate: 200 ms).
+- Two DNS over TLS probes answered with resets; name resolution kept working under automatic private DNS.
+- Stop from the UI: no tun interface remains; "Last run" shown; result saved and read by the next scan.
+- Strict private DNS (hostname mode): refused with the Private DNS message in the UI, no tun, app alive; monitor runs again after switching back to automatic.
+- Malformed and foreign packets dropped with counters (8 on the emulator, IPv6 and ICMP noise), never a throw.
+- Full `./gradlew check` green before commit (gated).
+
+What failed and how it was fixed
+- Refusal path crashed the app ten seconds later (ForegroundServiceDidNotStartInTimeException) → refusal now goes foreground first, then stops.
+- Strict mode slipped through when validation had not happened → policy keys on the configured server name.
+- Chrome resolved the test sites with its own secure DNS, so the "3 sites in the browser" case could not be observed through the tunnel; other apps' lookups were. Documented as a limitation in the report footer.
+- Two patches missed anchors after formatting; re-applied by position.
+
+Real phone (Galaxy S24 Ultra, private DNS automatic), started by Rick from the app
+- Full 600 s window, 65 lookups, all 65 attributed to a uid and package, 6 apps, 48 distinct hosts, median 51 ms, 2 DoT probes reset, 11 per uid byte counters, 12 malformed or foreign packets dropped, no crash, no ANR. The next scan reported the Network check as CHECKED and showed a host for a device admin app.
+
+Queued next
+- Rule tuning from the first full report (see DECISIONS.md), then Phase 12 network rules.

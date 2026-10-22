@@ -2,6 +2,7 @@ package com.cyberrick.phoneinspector.ui
 
 import android.Manifest
 import android.content.Intent
+import android.net.VpnService
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -23,6 +24,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.cyberrick.phoneinspector.collect.AndroidPersistenceSource
+import com.cyberrick.phoneinspector.net.DnsTunnelService
+import com.cyberrick.phoneinspector.net.MonitorWindow
 import com.cyberrick.phoneinspector.report.ReportExporter
 import com.cyberrick.phoneinspector.scan.ScanPipeline
 import com.cyberrick.phoneinspector.scan.ScanResult
@@ -48,6 +51,10 @@ class MainActivity : ComponentActivity() {
     private var usageAccess by mutableStateOf(false)
 
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { startScan() }
+    private val vpnConsent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) DnsTunnelService.start(this, MonitorWindow.DEFAULT_MINUTES)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +63,7 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val state by viewModel.state.collectAsState()
+                    val monitor by DnsTunnelService.stateFlow.collectAsState()
                     when {
                         !consentSeen ->
                             ConsentScreen(onContinue = {
@@ -68,6 +76,9 @@ class MainActivity : ComponentActivity() {
                                 usageAccessGranted = usageAccess,
                                 onOpenUsageAccess = { startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)) },
                                 onStartScan = { requestNotificationsThenScan() },
+                                monitor = monitor,
+                                onStartMonitor = { startMonitor() },
+                                onStopMonitor = { DnsTunnelService.stop(this) },
                             )
                         state is ScanState.Running ->
                             ScanningScreen(completed = (state as ScanState.Running).completed, onCancel = {
@@ -104,6 +115,12 @@ class MainActivity : ComponentActivity() {
         } else {
             startScan()
         }
+    }
+
+    /** The system VPN consent dialog is Android's; the app only asks. */
+    private fun startMonitor() {
+        val intent = VpnService.prepare(this)
+        if (intent == null) DnsTunnelService.start(this, MonitorWindow.DEFAULT_MINUTES) else vpnConsent.launch(intent)
     }
 
     private fun startScan() {

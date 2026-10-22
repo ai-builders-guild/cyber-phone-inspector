@@ -58,6 +58,9 @@ class ProbeActivity : ComponentActivity() {
             "permissions" -> runCollectorProbe { CollectorProbe(this).permissions() }
             "persistence" -> runCollectorProbe { CollectorProbe(this).persistence() }
             "scan" -> runCollectorProbe { CollectorProbe(this).scanAndExport() }
+            "monitorStart" -> runCollectorProbe { CollectorProbe(this).monitorStart(intent.getIntExtra("minutes", 10)) }
+            "monitorStop" -> runCollectorProbe { CollectorProbe(this).monitorStop() }
+            "monitorResult" -> runCollectorProbe { CollectorProbe(this).monitorResult() }
         }
     }
 

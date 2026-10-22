@@ -18,6 +18,7 @@ import com.cyberrick.phoneinspector.core.model.CheckStatus
 import com.cyberrick.phoneinspector.core.model.DeviceInfo
 import com.cyberrick.phoneinspector.core.model.Evidence
 import com.cyberrick.phoneinspector.core.model.FlowRecord
+import com.cyberrick.phoneinspector.net.FlowStore
 import com.cyberrick.phoneinspector.report.ReportInput
 import com.cyberrick.phoneinspector.report.ReportRenderer
 import com.cyberrick.phoneinspector.report.ScanTouched
@@ -46,13 +47,30 @@ class ScanPipeline(
             .bufferedReader(Charsets.UTF_8)
             .use { it.readText() }
 
+    /** The latest monitor result if it ended within [FlowStore.FRESH_MS]; otherwise the Network check is NOT_CHECKED. */
+    fun latestNetwork(): Pair<List<FlowRecord>, CheckResult> {
+        val store = FlowStore(context.filesDir)
+        val result = store.load()
+        return if (result != null && store.isFresh(FlowStore.FRESH_MS)) {
+            val minutes = ((result.endedAt - result.startedAt) / 60_000).coerceAtLeast(1)
+            result.flows to
+                CheckResult(
+                    CheckKind.NETWORK,
+                    CheckStatus.CHECKED,
+                    "monitor ran $minutes min, ${result.lookups} lookups, ended ${java.time.Instant.ofEpochMilli(result.endedAt)}",
+                )
+        } else {
+            emptyList<FlowRecord>() to CheckResult(CheckKind.NETWORK, CheckStatus.NOT_CHECKED, "network monitor not run in the last 24 h")
+        }
+    }
+
     suspend fun run(
         onProgress: (CheckKind) -> Unit = {},
-        flows: List<FlowRecord> = emptyList(),
-        networkStatus: CheckResult = CheckResult(CheckKind.NETWORK, CheckStatus.NOT_CHECKED, "network monitor not run"),
+        network: Pair<List<FlowRecord>, CheckResult> = latestNetwork(),
         zone: ZoneId = ZoneId.systemDefault(),
     ): ScanResult =
         withContext(io) {
+            val (flows, networkStatus) = network
             val systemPackages = SystemPackages.parse(asset(SystemPackages.ASSET))
             val expectations = PermissionExpectations.parse(asset(PermissionExpectations.ASSET))
             val ioc = IocSet.parse(asset("iocs/${IocSet.ASSET}"))

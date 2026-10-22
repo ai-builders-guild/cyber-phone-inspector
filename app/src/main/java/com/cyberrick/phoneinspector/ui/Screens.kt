@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.cyberrick.phoneinspector.R
 import com.cyberrick.phoneinspector.core.model.CheckKind
+import com.cyberrick.phoneinspector.net.MonitorState
+import com.cyberrick.phoneinspector.net.MonitorWindow
 import com.cyberrick.phoneinspector.scan.ScanResult
 
 private val checkLabels =
@@ -64,6 +66,9 @@ fun HomeScreen(
     usageAccessGranted: Boolean,
     onOpenUsageAccess: () -> Unit,
     onStartScan: () -> Unit,
+    monitor: MonitorState = MonitorState.Idle,
+    onStartMonitor: () -> Unit = {},
+    onStopMonitor: () -> Unit = {},
 ) {
     Page {
         Heading(stringResource(R.string.app_name))
@@ -79,7 +84,42 @@ fun HomeScreen(
             ) { Text(stringResource(R.string.open_usage_access)) }
         }
         Button(onClick = onStartScan, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.start_scan)) }
-        Text(stringResource(R.string.home_network_note), style = MaterialTheme.typography.bodySmall)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.monitor_title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.semantics { heading() },
+        )
+        Text(stringResource(R.string.monitor_body, MonitorWindow.DEFAULT_MINUTES), style = MaterialTheme.typography.bodySmall)
+        val status =
+            when (monitor) {
+                MonitorState.Idle -> stringResource(R.string.monitor_idle)
+                is MonitorState.Running ->
+                    stringResource(
+                        R.string.monitor_running,
+                        monitor.lookups,
+                        (
+                            (
+                                monitor.endsAt -
+                                    System.currentTimeMillis()
+                            ) /
+                                60_000
+                        ).coerceAtLeast(0).toInt(),
+                    )
+                is MonitorState.Finished ->
+                    stringResource(
+                        R.string.monitor_finished,
+                        monitor.result.lookups,
+                        monitor.result.medianLatencyMs.toInt(),
+                    )
+                is MonitorState.Refused -> stringResource(R.string.monitor_refused, monitor.message)
+            }
+        Text(status, style = MaterialTheme.typography.bodyMedium)
+        if (monitor is MonitorState.Running) {
+            OutlinedButton(onClick = onStopMonitor, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.monitor_stop)) }
+        } else {
+            OutlinedButton(onClick = onStartMonitor, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.monitor_start)) }
+        }
     }
 }
 
