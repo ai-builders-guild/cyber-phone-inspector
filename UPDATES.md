@@ -379,7 +379,7 @@ Done
 
 Validation
 - `./gradlew check` green: 215 unit tests, ktlint, lint, dependency allowlist. Instrumented tests on the API 36 emulator: 6 of 6.
-- Phone (Samsung S24 Ultra, Android 16, 800 packages, 303 non system): all 303 hashed, tracker histogram 0 to 35 kits per app, 4 apps over budget, no crash. Verdict clean, 0 high, the same 11 mediums as the v1 scan that morning, 232 lows (191 tracker notes). Timings with one tracker worker: cold scan 124 s, cached rescan 25 s (down from 137 s before the cache). The four worker build passed `check` and installed, but the phone was unplugged before its cold run finished, so its timing is unmeasured; Phase C's phone run will record it.
+- Phone (Samsung S24 Ultra, Android 16, 800 packages, 303 non system): all 303 hashed, tracker histogram 0 to 35 kits per app, 4 apps over budget, no crash. Verdict clean, 0 high, the same 11 mediums as the v1 scan that morning, 232 lows (191 tracker notes). Timings with one tracker worker: cold scan 124 s, cached rescan 25 s (down from 137 s before the cache). Four worker build, measured after the phone was reconnected and its app data cleared: cold scan 142 s, cached rescan 16 s, no crash. The workers did not shorten the cold run, so it is bound by reading several GB of game APKs for the hashes, not by parsing; Phase C shows progress during it and Phase D can consider hashing only apps below a size or sampling the file.
 
 What failed and how it was fixed
 - OutOfMemoryError on the first phone run: whole DEX files on the heap. Streaming reader (DECISIONS).
