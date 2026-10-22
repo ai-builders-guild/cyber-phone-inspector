@@ -318,3 +318,24 @@ What failed and how it was fixed
 
 Queued next
 - Rick runs SMOKE.md on the phone with `dist/app-release.apk` (uninstall the debug build first). Then Phase 14: docs, memory save.
+
+## 2026-10-22 — Smoke run on the Galaxy S24 Ultra (release 0.1.0) and one rule fix
+
+- Rick uninstalled the debug build and installed `dist/app-release.apk`. One launcher entry. First run, usage access, scans, save, share and the 10 minute monitor passed. Teardown read from adb: no tun interface, private DNS automatic, usage access granted.
+- The smoke scan showed one high: a visible store installed family app contacting its own server, whose domain is on the same published list as its package. The domain rule now follows the package visibility rule (DECISIONS.md 2026-10-22). Rescan: clean, mediums and lows only.
+- Skipped on the phone, covered by the emulator and instrumented tests: rotation mid scan, strict private DNS refusal, revoke usage access rescan.
+
+## 2026-10-22 — Phase 14: Docs and memory (branch phase-14-docs-memory)
+
+What ran
+- README rewritten for a reader starting from a clean checkout: what it checks, what it cannot see, build, release, instrumented tests, smoke, usage, privacy, guardrails, helper scripts, document map.
+- UPDATES and DECISIONS complete through the smoke run; BACKLOG holds everything deferred.
+- Obsidian folder `Brain/Cyber Phone Inspector/` filled from the web-project template; Open Brain thoughts captured; SOP .docx generated.
+
+What was verified (validation gate)
+- A fresh clone in a temp directory builds and tests with only the README's commands (recorded below).
+- No `{{placeholders}}` left in the Obsidian notes; every wikilink resolves; emoji filenames, tags and tables per the style rules.
+- Open Brain holds the project summary, decisions, locations, lessons and next steps.
+
+Final state
+- 14 of 14 phases merged to main. 178 unit tests, 6 instrumented tests on API 29 and API 36, release 0.1.0 signed and installed on Rick's phone, verdict clean.
