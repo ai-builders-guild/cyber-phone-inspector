@@ -221,3 +221,9 @@ On an emulator the instrumentation grants usage access and notifications with `a
 
 ## 2026-10-22 / Listed domain contact follows the same visibility rule as a listed package
 Rick's smoke scan showed one high: a visible, store installed family app contacting its own server, whose domain sits on the same published list as its package id. The package rule had already learned that an openly installed listed app is medium; the domain rule had not, so the same app was medium in Apps and high in Network. `ioc_domain_contact` now fires high only when the contacting app is hidden, disguised or not from a store; `ioc_domain_contact_visible_store` is medium with the same remediation as the package case. The report still names the domain under "Where it sends data".
+
+## 2026-10-22 / v1.1 planning: four phases, no review pauses except where Rick's hands are needed
+Rick found eight 30 to 90 minute phases excessive and asked for the work to be finished without checkpoints. Compressed to four (A removal and feeds, B collectors and rules, C screens, D refresh and release). The pauses that remain are physical: the abuse.ch secret, a look at the screenshots, the smoke run.
+
+## 2026-10-22 / Ship the data, not the key: a public feeds repo with the abuse.ch secret in its Action
+Guild members will clone, build and test the app, and a per person abuse.ch key is the wrong shape. The lists (CC0 from abuse.ch, attributed Exodus and MVT data) live in a public data only repository, `cyber-phone-inspector-feeds`, refreshed weekly by a GitHub Action that holds the only key as a repository secret. The app and every tester refresh from that repo's raw address without credentials; the code repo can stay private and later be pushed to the guild organisation as a new public repo (GitHub cannot make a fork of a private repo public).

@@ -136,72 +136,24 @@ Failure modes: none expected; if README diverges from reality, fix README, not t
 
 # v1.1 — Consumer UI, removal, local threat intelligence
 
-Design: `docs/superpowers/specs/2026-10-22-v1.1-consumer-ui-design.md` (approved by Rick 2026-10-22). Same rules as v1: 30 to 90 minutes per phase, feature branch `phase-NN-slug`, tests written first, `./gradlew check` green before commit (gated), UPDATES.md entry, DECISIONS.md for anything non obvious, validation gates name values.
+Design: `docs/superpowers/specs/2026-10-22-v1.1-consumer-ui-design.md` (approved by Rick 2026-10-22). Rick asked for fewer, larger phases and no pauses except where his hands are needed (the abuse.ch secret, the screenshot look, the smoke run). Same discipline otherwise: tests first, `./gradlew check` green before commit (gated), UPDATES.md and DECISIONS.md per phase, validation gates name values.
 
-Pinned additions to the boundary: the app may launch Android's uninstall confirmation and open Settings pages; it never removes or changes anything itself. All threat lists are checked on the phone; the phone sends nothing. The abuse.ch key lives only in `.env` on the Mac; the build and the app work without it.
+Pinned additions to the boundary: the app may launch Android's uninstall confirmation and open Settings pages; it never removes or changes anything itself. All threat lists are checked on the phone; the phone sends nothing. The abuse.ch key exists only as the feeds repo's Action secret and in Rick's `.env`; testers need no key.
 
-Dependency map: 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22. Phase 16 and Phase 19 share nothing and may run in parallel sessions; everything else is sequential because each phase changes the model or the rules the next one renders.
+Dependency map: A → B → C → D.
 
-## Phase 15 — Removal action and the eighth permission
-Goal: the app can ask Android to uninstall a package and open the right Settings list, with the guardrails updated deliberately.
-Deliverables: `REQUEST_DELETE_PACKAGES` in the manifest, PROJECT.md allowlist, INITIAL_INSTRUCTIONS.md and `GuardrailTest` (one commit); `actions/RemoveAction.kt` (the only file allowed to reference `ACTION_DELETE` / `ACTION_UNINSTALL_PACKAGE`, enforced by GuardrailTest); `actions/SettingsLinks.kt` (device admin list, accessibility list, notification access, app info page); `RemovalState` machine (requested, confirmed gone, still installed with reason); tests.
-Acceptance criteria: GuardrailTest fails on the uninstall intent anywhere but `RemoveAction.kt`; `RemoveAction` launches the system dialog and, on return, reports gone or still installed by rechecking the package; `SettingsLinks` resolves each target to an intent that exists on the device or falls back to the app info page.
-Dependencies: none.
-Validation gate: planted violation (uninstall intent in another file) fails the build and is reverted; on the API 36 emulator a tiny test APK installed by adb is removed through the dialog and `RemovalState` reads gone; a device admin holder (the emulator's own test admin app, or the planted APK registered as admin) reads still installed with reason "device admin active" and the two step link opens the Device admin apps list; nothing is removed without the dialog (asserted by attempting removal with the dialog dismissed).
-Failure modes: OEM installer ignores the intent → fall back to the app info page and say so in the state; this is the reason for the fallback, not an afterthought.
+## Phase A — Removal, the eighth permission, feeds script, feeds repo
+Deliverables: `REQUEST_DELETE_PACKAGES` across manifest, PROJECT.md, INITIAL_INSTRUCTIONS.md and GuardrailTest; `actions/RemoveAction.kt` (the only file allowed to reference the uninstall intent, enforced) and `actions/SettingsLinks.kt`; `RemovalState`; `tools/fetch_feeds.py` (MVT, Exodus, and abuse.ch when `CPI_ABUSECH_AUTH_KEY` or the Action secret exists) writing `feeds/` (`spyware.json`, `trackers.json`, `malware_hashes.json`, `malicious_hosts.json`, `FEEDS.md`) with dates and counts; the public data only repo `cyber-phone-inspector-feeds` with a weekly GitHub Action; the app bundles the same files under `assets/feeds/`; GuardrailTest's pinned URL list = the feeds repo raw address plus the two open sources.
+Validation gate: planted uninstall intent elsewhere fails the build (reverted); on the API 36 emulator a planted test APK is removed through the system dialog and `RemovalState` reads gone, and a device admin holder reads still installed with the reason and the two step link opens the admin list; Exodus parses to 400 or more trackers; without the key the abuse.ch files are written with `skipped` and the build passes; the Action runs green on the feeds repo (with the key once Rick adds it: 1,000 or more Android hashes and 1,000 or more hosts).
 
-## Phase 16 — Threat feeds: build script and snapshot v2
-Goal: one script fetches every list, with or without the abuse.ch key, into a dated, verifiable local snapshot.
-Deliverables: `tools/fetch_feeds.py` replacing `fetch_iocs.py` (MVT index as before; Exodus trackers; MalwareBazaar Android hashes with family and tags, URLhaus hosts and ThreatFox domains and IPs when `CPI_ABUSECH_AUTH_KEY` is set, otherwise skipped with a line in SNAPSHOT.md); `assets/feeds/` (`spyware.json`, `trackers.json`, `malware_hashes.json`, `malicious_hosts.json`, `FEEDS.md` with dates and counts); `.env.example` gains the key name; GuardrailTest's pinned URL becomes a pinned list of the open feed addresses; `--check` fails past 90 days per feed; unittest coverage with injected fetchers.
-Acceptance criteria: every feed file carries `generatedAt`, `source` and counts; the test only package and hash never ship; the script refuses any host outside the pinned set; without the key the three abuse.ch files are written empty with `skipped: "no key"` and the build still passes.
-Dependencies: none (parallel with 15).
-Validation gate: run with and without the key; Exodus file parses to 400 or more trackers with code signatures; with the key, the malware hash file holds Android hashes only (file type apk or dex) and at least 1,000 entries, and the hosts file at least 1,000; `./gradlew check` green with the new pinned URL list; a planted extra URL fails the guardrail test and is reverted.
-Failure modes: abuse.ch export format changes → the script fails loudly with the first unparsed line, never writes a partial file; the previous snapshot stays.
+## Phase B — Hash and tracker collectors, rules v1.1, score, keep
+Deliverables: `collect/ApkHashCollector.kt`, `collect/TrackerScanCollector.kt` (DEX string search, per app time cap, PARTIAL on budget), additive `AppRecord` fields, three new scenarios and fixtures; rules `known_malware_hash` (high), `malicious_host_contact` (high), `adware_heavy` (medium), `trackers_note` (low); `label` and `cardText` on every rule; high remediations reworded; `score/SafetyScore.kt`; `keep/KeepStore.kt` and the pre render transform with the kept line in the report; `expected/scores.json`; goldens regenerated and reviewed; probe hook and phone run.
+Validation gate: every high and medium across all fixtures has a label and non empty card text (test); score tests: clean 100, one app one high 70, one app two highs 70, mixed, kept excluded, usage declined cap 90, watch not run uncapped; keep returns on a stronger finding; verdict computed after keep; synthetic DEX finds a planted signature and misses a near miss; 50 MB synthetic DEX trips the cap; phone probe: 300 non system apps hashed under 10 s, tracker scan under 20 s, counts only.
 
-## Phase 17 — Hash and tracker collectors
-Goal: two new read only collectors feeding the evidence model.
-Deliverables: `collect/ApkHashCollector.kt` (SHA-256 of the base APK for non system apps, via the package's source path), `collect/TrackerScanCollector.kt` (DEX string pool search for Exodus code signature prefixes, per app time cap, PARTIAL with a count when the budget runs out), additive fields on `AppRecord` (`apkSha256`, `trackers: List<String>`, `scanBudgetHit`), fixtures and scenarios (`17_known_malware_hash`, `18_adware_heavy_trackers`, `19_tracker_budget_partial`), probe hook, phone run.
-Acceptance criteria: hashing 300 non system apps under 10 s on the S24 Ultra; tracker scan under 20 s with the budget; both run in parallel with the existing collectors; a split APK hashes its base and says so; an unreadable APK yields `null` and continues.
-Dependencies: 16 (signatures and hash set).
-Validation gate: JVM tests on synthetic DEX bytes find a planted signature and miss a near miss; a 50 MB synthetic DEX trips the per app cap and the record says `scanBudgetHit`; phone probe reports counts (apps hashed, apps scanned, trackers found, budget hits) and total time; fixtures regenerate and the model round trips.
-Failure modes: reading other apps' APKs blocked on some OEMs → the collector reports PARTIAL with the count of unreadable packages; the report says the check was partial.
+## Phase C — The screens
+Deliverables: `ui/theme` and components (ScoreRing with grey and dotted segments, ThreatCard, label pill, 56 dp primary buttons); Launch with the consent sheet on first Scan; Scanning with the five checks ticking; Result (score, headline, cards worst first, Remove all highs, the watch card, "N apps are fine"); Detail (label, name, why, four facts, Remove, Keep); two step path for admin and accessibility holders with re check on resume; silent rescan after the dialog; After screen with the protect yourself checklist; Kept apps screen; Full report entry with Share and Save; TalkBack labels; screenshots under `docs/screenshots/`.
+Validation gate: Result renders from fixture states in Compose previews; emulator: fresh install to result under 15 s, zero unlabelled clickables, rotation keeps state; planted app removed through the dialog, card gone, score up; admin holder walks the two step path; Keep clears the card and the golden report shows the kept line; Rick looks at the screenshots (the one pause in this phase).
 
-## Phase 18 — Rules v1.1, score, keep
-Goal: the engine speaks the consumer vocabulary and the score and keep logic exist as pure, tested functions.
-Deliverables: new rules in `rules.json` (`known_malware_hash` high, `malicious_host_contact` high, `adware_heavy` medium, `trackers_note` low) with `label` and `cardText` on every rule; high remediations reworded per the design; `score/SafetyScore.kt` (per app, 30/10/0, cap 90 when usage access declined, no cap for the watch); `keep/KeepStore.kt` and the pre render transform; the "kept" line under What this scan touched and in Safe; updated golden findings and reports, reviewed.
-Acceptance criteria: every high and medium finding across all fixtures maps to one of the labels and has a non empty `cardText` (test); score tests: clean 100, one app one high 70, one app two highs 70, mixed, kept excluded, usage declined cap 90, watch not run uncapped; keep returns on a stronger finding; verdict is computed after keep.
-Dependencies: 17.
-Validation gate: fixture 03 scores 60 (one app with highs, plus one medium app? state the exact expected per fixture in `expected/scores.json`); the known malware fixture is high with the family in the reason; goldens reviewed by eye and committed; wording tests pass (behavioural rules never "malicious").
-Failure modes: label mapping gaps → the test lists the rule ids missing a label; no rule ships without one.
-
-## Phase 19 — Design system and the first three screens
-Goal: the dark look with the ring: Launch, Scanning, Result.
-Deliverables: `ui/theme` (colours, type scale, 56 dp primary buttons), `ui/components` (ScoreRing with animated fill and grey and dotted segments, ThreatCard, Label pill), Launch screen with the consent sheet on first Scan, Scanning screen with the five checks ticking, Result screen with score, headline, cards worst first, Remove all highs, the watch card, "N apps are fine, see what was checked"; TalkBack labels everywhere.
-Acceptance criteria: Result renders from a `ScanResult` plus score with no Android calls (previewable); cards show label, name, `cardText`; headline logic per the design; the watch card leads to the VPN consent; no network UI prerequisite.
-Dependencies: 18 (labels, score).
-Validation gate: Compose previews for the five fixture states (clean, mixed, usage declined, watch not run, many threats); emulator: fresh install to result under 15 s; uiautomator check of zero unlabelled clickables; rotation keeps state; screenshot set saved under `docs/screenshots/` for Rick's review.
-Failure modes: the ring animation stutters on API 29 → fall back to a static ring below API 31.
-
-## Phase 20 — Detail, removal flow, after removal, kept apps
-Goal: the second half of the journey.
-Deliverables: Detail screen (label, name, why, four facts, Remove, Keep), two step path for admin and accessibility holders (open list, re check on resume, then uninstall), silent rescan after the dialog returns, After screen with the protect yourself checklist (local state), Kept apps screen with un keep, Full report entry with Share and Save, Remove all highs as one dialog at a time.
-Acceptance criteria: removing an app updates the list and the score without a manual rescan; still installed shows Android's reason and the next step; Keep removes the card, lowers nothing else, and the report shows the kept line; the checklist persists per phone.
-Dependencies: 15, 19.
-Validation gate: emulator: planted app removed through the dialog, card gone, score up; admin holder walks the two step path; Keep on a visible store IOC match clears it from cards and the golden report for that evidence shows the kept line; TalkBack order on Detail is label, name, why, facts, actions; SMOKE.md gains the removal and keep steps.
-Failure modes: the uninstall dialog returns before the package is gone → poll the package up to 3 s before deciding still installed.
-
-## Phase 21 — In app refresh of the open feeds
-Goal: the open lists stay fresh without a release.
-Deliverables: `feeds/FeedRefresher.kt` (pinned addresses only, HTTPS, verifies parse and size not smaller than the bundled copy, atomic replace into app files, dates), a Refresh entry in settings with the last refresh date and the oldest list date, an optional schedule the user picks (off by default), the result screen's oldest date line; tests with injected responses.
-Acceptance criteria: a refused host never connects (asserted by the guardrail pinned list and a unit test); a bad download leaves the previous file intact; the scan uses the refreshed files on the next run.
-Dependencies: 16, 19.
-Validation gate: emulator refresh against the live open feeds updates the dates; a simulated truncated download is rejected; the app makes no connection when refresh is off (monitor's own counter for the app stays at bytes near zero across a 10 minute window).
-Failure modes: feed too large for the phone → size cap with a clear message, previous file kept.
-
-## Phase 22 — Instrumented tests, smoke, release 0.2.0, docs and memory
-Goal: prove it on hardware and ship.
-Deliverables: instrumented tests for launch to result, detail to keep, detail to removal dialog, refresh; `SMOKE.md` v1.1; `dist/app-release.apk` 0.2.0; README, UPDATES, DECISIONS, PROBE_RESULTS updated; Obsidian notes and Open Brain refreshed; SOP v2.
-Acceptance criteria: `connectedCheck` green on API 29 and 36.1; smoke ticked on the S24 Ultra; release under 15 MB with the eight permission allowlist exactly; no traffic of the app's own with refresh off.
-Dependencies: 20, 21.
-Validation gate: every acceptance line in the design's final section has a named test or a ticked smoke box; a fresh clone builds from README; Rick's phone scores and reads as the design predicts (6 to review, nothing is stealing, or whatever the new lists add, reviewed by Rick).
-Failure modes: none expected beyond flaky emulator tests, quarantined with a reason.
+## Phase D — In app refresh, instrumented tests, smoke, release 0.2.0, docs
+Deliverables: `feeds/FeedRefresher.kt` (feeds repo pinned address only, HTTPS, parse and size checks, atomic replace, dates), Refresh entry with the oldest list date and an optional weekly schedule (off by default), the result screen's date line; instrumented tests for launch to result, detail to keep, detail to removal dialog, refresh; `SMOKE.md` v1.1; signed `dist/app-release.apk` 0.2.0; README (including the guild publish command), UPDATES, DECISIONS, PROBE_RESULTS, Obsidian, Open Brain, SOP v2.
+Validation gate: `connectedCheck` green on API 29 and 36.1; a refused host never connects; a truncated download is rejected and the previous file kept; the app makes no connection with refresh off (monitor's own counter near zero over 10 minutes); release under 15 MB with exactly the eight permission allowlist; smoke ticked on the S24 Ultra; a fresh clone builds from README.
