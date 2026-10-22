@@ -175,8 +175,8 @@ class ScanPipeline(
                     if (persistenceSource.usageAccessGranted()) add(ScanTouched.USAGE_ACCESS)
                     if (networkStatus.status != CheckStatus.NOT_CHECKED) add(ScanTouched.LOCAL_VPN)
                     add(ScanTouched.threatLists(intel))
-                    addAll(KeepTransform.touchedLines(kept, apps.records.associate { it.packageName to it.label }))
                 }
+            val labels = apps.records.associate { it.packageName to it.label }
             val evidence =
                 Evidence(
                     device = DeviceInfo(Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE, Build.VERSION.SDK_INT),
@@ -189,15 +189,37 @@ class ScanPipeline(
                     flows = flows,
                     iocSnapshotDate = ioc.generatedAt,
                 ).withDuplicatesFlagged()
-            val findings = KeepTransform.apply(RuleEngine(rules, IocMatcher(ioc), known, intel).evaluate(evidence), kept)
+            val raw = RuleEngine(rules, IocMatcher(ioc), known, intel).evaluate(evidence)
+            val findings = KeepTransform.apply(raw, kept)
+            val touchedAll = touched + KeepTransform.touchedLines(kept, labels)
             ScanResult(
                 evidence,
                 findings,
-                ReportRenderer.render(ReportInput(evidence, findings, touched, zone), known),
+                ReportRenderer.render(ReportInput(evidence, findings, touchedAll, zone), known),
                 SafetyScore.of(findings, evidence.checks),
                 kept,
+                rawFindings = raw,
+                touched = touched,
             )
         }
+
+    /** Re applies the kept list to a finished scan without rescanning: findings, report and score all change together. */
+    fun rekeep(
+        result: ScanResult,
+        zone: ZoneId = ZoneId.systemDefault(),
+    ): ScanResult {
+        val kept = KeepStore(context.filesDir).all()
+        val known = KnownServices.parse(asset(KnownServices.ASSET))
+        val labels = result.evidence.apps.associate { it.packageName to it.label }
+        val findings = KeepTransform.apply(result.rawFindings, kept)
+        val touched = result.touched + KeepTransform.touchedLines(kept, labels)
+        return result.copy(
+            findings = findings,
+            report = ReportRenderer.render(ReportInput(result.evidence, findings, touched, zone), known),
+            score = SafetyScore.of(findings, result.evidence.checks),
+            kept = kept,
+        )
+    }
 
     /** The DEX source restricted to one worker's share of the uncached packages. */
     private fun only(

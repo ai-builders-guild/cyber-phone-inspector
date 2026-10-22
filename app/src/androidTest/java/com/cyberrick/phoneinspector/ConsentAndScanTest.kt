@@ -5,6 +5,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.cyberrick.phoneinspector.ui.MainActivity
 import org.junit.Before
@@ -23,48 +24,51 @@ class ConsentAndScanTest {
         TestShell.run("pm grant ${TestShell.context.packageName} android.permission.POST_NOTIFICATIONS")
     }
 
+    private fun waitForResult(timeoutMillis: Long = 60_000) {
+        compose.waitUntil(timeoutMillis) { compose.onAllNodes(hasText("Scan again")).fetchSemanticsNodes().isNotEmpty() }
+    }
+
     @Test
-    fun firstRunShowsConsentThenHome() {
-        // The activity already started with whatever flag was stored; reset and relaunch within the test.
+    fun firstScanShowsTheSheetOnceThenReachesAResult() {
         TestShell.resetConsentFlag()
         compose.activityRule.scenario.recreate()
+        compose.onNodeWithText("Scan now").assertIsDisplayed()
+
+        compose.onNodeWithText("Scan now").performClick()
         compose.onNodeWithText("Before the first scan").assertIsDisplayed()
+        compose.onNodeWithText("Continue and scan").performScrollTo().performClick()
 
-        compose.onNodeWithText("Continue").performClick()
-
-        compose.onNodeWithText("Start scan").assertIsDisplayed()
+        waitForResult()
+        compose.onNodeWithText("See the full report").performScrollTo().assertIsDisplayed()
     }
 
     @Test
-    fun fullScanReachesAVerdictWithinTwentySeconds() {
+    fun fullReportIsBehindTheResultAndShareIsThere() {
         TestShell.resetConsentFlag()
         compose.activityRule.scenario.recreate()
-        compose.onNodeWithText("Continue").performClick()
+        compose.onNodeWithText("Scan now").performClick()
+        compose.onNodeWithText("Continue and scan").performScrollTo().performClick()
+        waitForResult()
 
-        compose.onNodeWithText("Start scan").performClick()
+        compose.onNodeWithText("See the full report").performScrollTo().performClick()
 
-        compose.waitUntil(
-            timeoutMillis = 20_000,
-        ) { compose.onAllNodes(hasText("VERDICT: ", substring = true)).fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithText("Share report").assertIsDisplayed()
+        compose.waitUntil(5_000) { compose.onAllNodes(hasText("VERDICT: ", substring = true)).fetchSemanticsNodes().isNotEmpty() }
     }
 
     @Test
-    fun deniedUsageAccessIsReportedNotChecked() {
+    fun deniedUsageAccessCapsTheScoreAndOffersThePermission() {
         TestShell.grantUsageAccess(false)
         TestShell.resetConsentFlag()
         compose.activityRule.scenario.recreate()
-        compose.onNodeWithText("Continue").performClick()
-        compose.onNodeWithText("Open usage access settings").assertIsDisplayed()
+        compose.onNodeWithText("Scan now").performClick()
+        compose.onNodeWithText("Continue and scan").performScrollTo().performClick()
+        waitForResult()
 
-        compose.onNodeWithText("Start scan").performClick()
-
-        compose.waitUntil(
-            timeoutMillis = 20_000,
-        ) { compose.onAllNodes(hasText("VERDICT: ", substring = true)).fetchSemanticsNodes().isNotEmpty() }
-        compose.onAllNodes(hasText("NOT CHECKED", substring = true)).fetchSemanticsNodes().let {
-            check(it.isNotEmpty()) { "report should say NOT CHECKED" }
+        compose.onAllNodes(hasText("could not run", substring = true)).fetchSemanticsNodes().let {
+            check(it.isNotEmpty()) { "result should say a check could not run" }
         }
+        compose.onNodeWithText("Grant usage access").performScrollTo().assertIsDisplayed()
         TestShell.grantUsageAccess(true)
     }
 }

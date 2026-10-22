@@ -1,11 +1,14 @@
 package com.cyberrick.phoneinspector.actions
 
 /**
- * Which Settings screen clears each blocker. Android exposes list pages, not per app pages, for admin and
- * accessibility; the step text names the app. When the preferred action does not resolve on a device, the app's
+ * Which Settings screen clears each blocker. Android has no public action for the Device admin apps list, so the
+ * AOSP Settings component is tried first and the Security page is the public fallback; accessibility has a public
+ * list page. The step text names the app. When the preferred action does not resolve on a device, the app's
  * own info page is the fallback. Pure: resolution is injected.
  */
 object SettingsLinks {
+    const val DEVICE_ADMIN_LIST_PACKAGE = "com.android.settings"
+    const val DEVICE_ADMIN_LIST_CLASS = "com.android.settings.Settings\$DeviceAdminSettingsActivity"
     const val SECURITY = "android.settings.SECURITY_SETTINGS"
     const val ACCESSIBILITY = "android.settings.ACCESSIBILITY_SETTINGS"
     const val NOTIFICATION_LISTENER_DETAIL = "android.settings.NOTIFICATION_LISTENER_DETAIL_SETTINGS"
