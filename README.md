@@ -98,6 +98,10 @@ uv run --project tools python tools/fetch_iocs.py --check  # fail if the committ
 ./gradlew :app:testDebugUnitTest -Pcpi.updateGolden=true  # regenerate expected findings and golden reports after a deliberate rule change, then review the diff
 ```
 
+## Repository
+
+Private: https://github.com/CyberRick-AI/cyber-phone-inspector
+
 ## Project documents
 
 CLAUDE.md (guardrails), PROJECT.md (limits and data sources), ROADMAP.md (phases and gates), INITIAL_INSTRUCTIONS.md (stack, severity table, assumptions), DECISIONS.md (why), UPDATES.md (what happened, per phase), PROBE_RESULTS.md (what each Android API returned on real hardware), BACKLOG.md (not in v1), SMOKE.md (manual checklist).
