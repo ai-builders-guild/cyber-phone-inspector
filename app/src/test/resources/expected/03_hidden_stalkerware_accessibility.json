@@ -8,13 +8,15 @@
         "bucket": "NEEDS_PROFESSIONAL",
         "summary": "hidden, not from a store, holds deep access",
         "reason": "com.sysconfig.service has no icon, did not come from an app store, and holds accessibility, device admin, or a microphone, camera or location grant. This is the shape of stalkerware.",
-        "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional.",
+        "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
         "evidenceRef": [
             "app:com.sysconfig.service",
             "control:ACCESSIBILITY:com.sysconfig.service",
             "permission:MICROPHONE:com.sysconfig.service",
             "permission:LOCATION_BACKGROUND:com.sysconfig.service"
-        ]
+        ],
+        "label": "Hidden",
+        "cardText": "No icon, not from a store, and holds deep control of this phone."
     },
     {
         "ruleId": "accessibility_non_system",
@@ -25,11 +27,13 @@
         "bucket": "NEEDS_PROFESSIONAL",
         "summary": "accessibility service, not an accessibility app",
         "reason": "com.sysconfig.service is an enabled accessibility service and is not an accessibility app. Accessibility services can read everything on screen and type on your behalf.",
-        "remediation": "If you do not use com.sysconfig.service for accessibility, turn it off in Settings > Accessibility. If you do not recognise it, contact a professional first.",
+        "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
         "evidenceRef": [
             "app:com.sysconfig.service",
             "control:ACCESSIBILITY:com.sysconfig.service"
-        ]
+        ],
+        "label": "Reads your screen",
+        "cardText": "Can read everything on your screen and act on your behalf, including in banking apps."
     },
     {
         "ruleId": "beacon_unrecognized_host",
@@ -44,7 +48,9 @@
         "evidenceRef": [
             "app:com.sysconfig.service",
             "flow:upd.srv-telemetry.top:com.sysconfig.service"
-        ]
+        ],
+        "label": "Review",
+        "cardText": "Reports to upd.srv-telemetry.top every 60 seconds, a host nobody recognises."
     },
     {
         "ruleId": "boot_and_background_heavy",
@@ -59,7 +65,9 @@
         "evidenceRef": [
             "app:com.sysconfig.service",
             "persistence:com.sysconfig.service"
-        ]
+        ],
+        "label": "Review",
+        "cardText": "Starts at boot and ran over 6 hours this week in the background."
     },
     {
         "ruleId": "disguised_system_name",
@@ -73,7 +81,9 @@
         "remediation": "Uninstall com.sysconfig.service from Settings > Apps unless you know exactly what it is.",
         "evidenceRef": [
             "app:com.sysconfig.service"
-        ]
+        ],
+        "label": "Hidden",
+        "cardText": "Named like a part of Android but is not one."
     },
     {
         "ruleId": "sideloaded_with_sensitive",
@@ -89,7 +99,9 @@
             "app:com.sysconfig.service",
             "permission:MICROPHONE:com.sysconfig.service",
             "permission:LOCATION_BACKGROUND:com.sysconfig.service"
-        ]
+        ],
+        "label": "Review",
+        "cardText": "Installed outside any store and can use your microphone, camera or location."
     },
     {
         "ruleId": "unexpected_grant_nonstore",
@@ -105,6 +117,8 @@
             "app:com.sysconfig.service",
             "permission:MICROPHONE:com.sysconfig.service",
             "permission:LOCATION_BACKGROUND:com.sysconfig.service"
-        ]
+        ],
+        "label": "Review",
+        "cardText": "Not from a store and holds a microphone, camera or location grant it has no clear use for."
     }
 ]

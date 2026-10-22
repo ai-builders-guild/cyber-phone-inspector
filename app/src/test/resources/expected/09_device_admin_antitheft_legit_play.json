@@ -12,6 +12,8 @@
         "evidenceRef": [
             "app:com.cerberus.antitheft",
             "control:DEVICE_ADMIN:com.cerberus.antitheft"
-        ]
+        ],
+        "label": "Can wipe this phone",
+        "cardText": "Can lock or wipe this phone. Keep it only if you set it up as anti theft or for work."
     }
 ]

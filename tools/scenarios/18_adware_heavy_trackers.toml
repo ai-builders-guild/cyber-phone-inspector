@@ -1,0 +1,43 @@
+name = "18_adware_heavy_trackers"
+description = "A Play game stuffed with advertising trackers, a sideloaded app with a profiling tracker, and an ordinary app with two trackers. Expected: the sideloaded profiling app is adware_heavy (medium); the store game with 7 advertising trackers is a trackers_note low; a store game with 16 is adware_heavy_store (low)."
+[device]
+manufacturer = "Samsung"
+model = "SM-S926B"
+androidRelease = "16"
+sdkInt = 36
+
+[[apps]]
+packageName = "com.android.systemui"
+label = "System UI"
+isSystem = true
+[[apps]]
+packageName = "com.sec.android.app.launcher"
+label = "One UI Home"
+isSystem = true
+[[apps]]
+packageName = "com.free.coin.game"
+label = "Coin Rush"
+category = "GAME"
+trackers = ["AppLovin (MAX and SparkLabs)", "Unity3d Ads", "IronSource", "Vungle", "AdColony", "Google AdMob", "Google Firebase Analytics"]
+[[apps]]
+packageName = "com.mega.slots.casino"
+label = "Mega Slots"
+installSource = "VENDOR_STORE"
+installerPackage = "com.sec.android.app.samsungapps"
+category = "GAME"
+trackers = ["AdColony", "AppLovin (MAX and SparkLabs)", "Fyber", "Google AdMob", "Mintegral", "Pangle", "Unity3d Ads", "Vungle", "Yandex Ad", "Appodeal Stack", "Adjoe", "AdTiming", "Google Firebase Analytics"]
+[[apps]]
+packageName = "com.cleaner.turbo"
+label = "Turbo Cleaner"
+installerPackage = "com.android.chrome"
+installSource = "SIDELOADED"
+trackers = ["Adbrix"]
+[[apps]]
+packageName = "com.spotify.music"
+label = "Spotify"
+category = "AUDIO"
+trackers = ["Google Firebase Analytics", "Google CrashLytics"]
+[[apps]]
+packageName = "com.whatsapp"
+label = "WhatsApp"
+category = "SOCIAL"

@@ -8,10 +8,12 @@
         "bucket": "NEEDS_PROFESSIONAL",
         "summary": "on a published spyware list",
         "reason": "com.example.ioc.match matches a published indicator of stalkerware or spyware (listed by: Test only list). Some lists also include dual use tools such as remote access or family monitoring apps; the list name tells you which.",
-        "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.",
+        "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
         "evidenceRef": [
             "app:com.example.ioc.match"
-        ]
+        ],
+        "label": "Steals data",
+        "cardText": "com.example.ioc.match is on a published list of spyware that copies what you do to someone else."
     },
     {
         "ruleId": "sideloaded_no_sensitive",
@@ -25,6 +27,8 @@
         "remediation": "Nothing to do if you installed it on purpose.",
         "evidenceRef": [
             "app:com.example.ioc.match"
-        ]
+        ],
+        "label": "Note",
+        "cardText": "Installed outside a store, no sensitive grants."
     }
 ]

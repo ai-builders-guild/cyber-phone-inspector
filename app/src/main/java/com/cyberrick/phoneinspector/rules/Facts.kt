@@ -13,6 +13,7 @@ object Facts {
         evidence: Evidence,
         ioc: IocMatcher,
         known: KnownServices = KnownServices(emptySet()),
+        intel: ThreatIntel = ThreatIntel.EMPTY,
     ): Map<String, Map<String, Any?>> {
         val packages =
             (
@@ -61,6 +62,31 @@ object Facts {
                 put("iocPackage", ioc.packageHit(pkg))
                 put("iocCert", app?.let { ioc.certHit(it.signingCertSha256) } ?: false)
                 put("iocDomain", hosts.any { ioc.domainHit(it) })
+                // v1.1 threat intelligence, all checked locally against the downloaded lists.
+                val malware = intel.malware.lookup(app?.apkSha256)
+                put("malwareHash", malware != null)
+                put(
+                    "malwareFamily",
+                    malware?.let { m -> (listOf(m.family) + m.tags).filter { it.isNotBlank() }.distinct().joinToString(", ") } ?: "",
+                )
+                val badHosts = hosts.filter { intel.hosts.domainHit(it) || intel.hosts.ipHit(it) }
+                put("maliciousHost", badHosts.isNotEmpty())
+                put("maliciousHostName", badHosts.firstOrNull() ?: "")
+                val trackers = app?.trackers.orEmpty()
+                val categories = trackers.flatMap { intel.trackers.categoriesOf[it].orEmpty() }
+                put("trackerCount", trackers.size)
+                put("trackerKits", if (trackers.size == 1) "1 tracker kit" else "${trackers.size} tracker kits")
+                put(
+                    "adTrackerCount",
+                    trackers.count { t ->
+                        intel.trackers.categoriesOf[t]
+                            .orEmpty()
+                            .any { it.equals("Advertisement", true) }
+                    },
+                )
+                put("profilingTrackerCount", categories.count { it.equals("Profiling", true) })
+                put("trackerList", trackers.take(6).joinToString(", ") + if (trackers.size > 6) " and ${trackers.size - 6} more" else "")
+                put("scanBudgetHit", app?.scanBudgetHit ?: false)
                 val net = NetworkFacts.forPackage(pkg, evidence.flows, known)
                 put("net.knownHosts", net.knownHosts.size)
                 put("net.unrecognizedHosts", net.unrecognizedHosts.size)

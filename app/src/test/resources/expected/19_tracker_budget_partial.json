@@ -1,0 +1,18 @@
+[
+    {
+        "ruleId": "trackers_note",
+        "check": "APPS",
+        "packageName": "com.whatsapp",
+        "severity": "LOW",
+        "priority": 200,
+        "bucket": "SAFE",
+        "summary": "trackers inside",
+        "reason": "com.whatsapp contains 1 tracker kit (Google Firebase Analytics). Most apps carry a few for analytics or crash reports.",
+        "remediation": "Nothing to do.",
+        "evidenceRef": [
+            "app:com.whatsapp"
+        ],
+        "label": "Note",
+        "cardText": "Trackers inside: 1."
+    }
+]

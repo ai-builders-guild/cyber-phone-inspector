@@ -12,6 +12,8 @@
         "evidenceRef": [
             "app:com.photo.filters.free",
             "flow:c2.metrics-collector.xyz:com.photo.filters.free"
-        ]
+        ],
+        "label": "Review",
+        "cardText": "Reports to c2.metrics-collector.xyz every 60 seconds, a host nobody recognises."
     }
 ]

@@ -11,6 +11,8 @@
         "remediation": "Nothing to do if you installed it on purpose.",
         "evidenceRef": [
             "app:org.fdroid.example.reader"
-        ]
+        ],
+        "label": "Note",
+        "cardText": "Installed outside a store, no sensitive grants."
     }
 ]

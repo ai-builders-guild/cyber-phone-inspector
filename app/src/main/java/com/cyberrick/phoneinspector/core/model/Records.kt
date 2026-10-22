@@ -55,6 +55,12 @@ data class AppRecord(
     val disguised: Boolean = false,
     val category: String? = null,
     val duplicate: Boolean = false,
+    /** v1.1: SHA-256 of the installed base APK (lower case hex), null when unreadable or a system app. */
+    val apkSha256: String? = null,
+    /** v1.1: tracker names found inside the app's code, from the Exodus catalog. */
+    val trackers: List<String> = emptyList(),
+    /** v1.1: the tracker scan ran out of its time budget for this app. */
+    val scanBudgetHit: Boolean = false,
     override val api: String,
     override val collectedAt: Long,
 ) : Provenanced

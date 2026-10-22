@@ -1,7 +1,166 @@
 {
-  "version": 1,
-  "description": "Severity table from INITIAL_INSTRUCTIONS.md as data. Facts come from rules/Facts.kt. Wording is plain language and hedged: 'looks', 'can', never 'is malicious'. Each rule names the check (report section) it belongs to. priority orders findings of equal severity (lower first); the top finding supplies the single next step. summary is the short form used in the three lists.",
+  "version": 2,
+  "description": "Severity table from INITIAL_INSTRUCTIONS.md as data. Facts come from rules/Facts.kt. Wording is plain language and hedged: 'looks', 'can', never 'is malicious'. Each rule names the check (report section) it belongs to. priority orders findings of equal severity (lower first); the top finding supplies the single next step. summary is the short form used in the three lists. v1.1: labels, card text, known malware hash, malicious hosts, trackers.",
   "rules": [
+    {
+      "id": "known_malware_hash",
+      "check": "APPS",
+      "priority": 1,
+      "severity": "HIGH",
+      "bucket": "WORTH_REMOVING",
+      "summary": "known malware",
+      "label": "Known malware",
+      "reason": "The installed package of {package} is byte for byte a sample on the MalwareBazaar malware list ({malwareFamily}). This is a match on the file itself, not a guess from behaviour.",
+      "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
+      "cardText": "Its installed file is on the malware list: {malwareFamily}.",
+      "evidence": [
+        "app"
+      ],
+      "when": {
+        "fact": "malwareHash",
+        "eq": true
+      }
+    },
+    {
+      "id": "malicious_host_contact",
+      "check": "NETWORK",
+      "priority": 5,
+      "severity": "HIGH",
+      "bucket": "WORTH_REMOVING",
+      "summary": "contacted a known malware host",
+      "label": "Steals data",
+      "reason": "{package} contacted {listedHost}, which is on the URLhaus or ThreatFox list of hosts that spread malware or receive stolen data.",
+      "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
+      "cardText": "Contacted {listedHost}, a host on the malware list.",
+      "evidence": [
+        "flow"
+      ],
+      "when": {
+        "fact": "maliciousHost",
+        "eq": true
+      }
+    },
+    {
+      "id": "adware_heavy",
+      "check": "APPS",
+      "priority": 60,
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "summary": "heavy with advertising or profiling trackers, not from a store",
+      "label": "Adware heavy",
+      "reason": "{package} contains {trackerKits} ({trackerList}) and did not come from an app store. Five or more advertising trackers, or a profiling tracker, in an app installed outside a store is the pattern of adware.",
+      "remediation": "If you do not need {package}, uninstall it. If you do, expect it to sell what you do inside it.",
+      "cardText": "Contains {trackerCount} advertising or profiling trackers that sell what you do.",
+      "evidence": [
+        "app"
+      ],
+      "when": {
+        "all": [
+          {
+            "any": [
+              {
+                "fact": "adTrackerCount",
+                "gt": 4
+              },
+              {
+                "fact": "profilingTrackerCount",
+                "gt": 0
+              }
+            ]
+          },
+          {
+            "fact": "storeInstall",
+            "eq": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "adware_heavy_store",
+      "check": "APPS",
+      "priority": 210,
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "summary": "adware heavy, from a store",
+      "label": "Note",
+      "reason": "{package} contains {trackerKits} ({trackerList}), ten or more of them advertising. It came from a store, so this is a note about what it sells, not a threat.",
+      "remediation": "If you do not need {package}, uninstall it. If you do, expect it to sell what you do inside it.",
+      "cardText": "Adware heavy: {adTrackerCount} advertising trackers inside.",
+      "evidence": [
+        "app"
+      ],
+      "when": {
+        "all": [
+          {
+            "fact": "adTrackerCount",
+            "gt": 9
+          },
+          {
+            "fact": "storeInstall",
+            "eq": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "trackers_note",
+      "check": "APPS",
+      "priority": 200,
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "summary": "trackers inside",
+      "label": "Note",
+      "reason": "{package} contains {trackerKits} ({trackerList}). Most apps carry a few for analytics or crash reports.",
+      "remediation": "Nothing to do.",
+      "cardText": "Trackers inside: {trackerCount}.",
+      "evidence": [
+        "app"
+      ],
+      "when": {
+        "all": [
+          {
+            "fact": "trackerCount",
+            "gt": 0
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "any": [
+                    {
+                      "fact": "adTrackerCount",
+                      "gt": 4
+                    },
+                    {
+                      "fact": "profilingTrackerCount",
+                      "gt": 0
+                    }
+                  ]
+                },
+                {
+                  "fact": "storeInstall",
+                  "eq": false
+                }
+              ]
+            }
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "fact": "adTrackerCount",
+                  "gt": 9
+                },
+                {
+                  "fact": "storeInstall",
+                  "eq": true
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     {
       "id": "ioc_match",
       "check": "APPS",
@@ -10,7 +169,7 @@
       "bucket": "NEEDS_PROFESSIONAL",
       "summary": "on a published spyware list",
       "reason": "{package} matches a published indicator of stalkerware or spyware (listed by: {iocSources}). Some lists also include dual use tools such as remote access or family monitoring apps; the list name tells you which.",
-      "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.",
+      "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
       "evidence": [
         "app"
       ],
@@ -35,7 +194,9 @@
             }
           }
         ]
-      }
+      },
+      "label": "Steals data",
+      "cardText": "{package} is on a published list of spyware that copies what you do to someone else."
     },
     {
       "id": "ioc_match_visible_store",
@@ -68,7 +229,9 @@
             "eq": true
           }
         ]
-      }
+      },
+      "label": "Review",
+      "cardText": "{package} is on a published monitoring list but is visible and from a store. Keep it only if you installed it."
     },
     {
       "id": "ioc_domain_contact",
@@ -78,7 +241,7 @@
       "bucket": "NEEDS_PROFESSIONAL",
       "summary": "contacted a published spyware domain",
       "reason": "{package} contacted a domain published as spyware infrastructure.",
-      "remediation": "Preserve the phone as evidence and contact a digital security professional.",
+      "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
       "evidence": [
         "app",
         "flow"
@@ -96,7 +259,9 @@
             }
           }
         ]
-      }
+      },
+      "label": "Steals data",
+      "cardText": "{package} contacted a server on a published spyware list."
     },
     {
       "id": "ioc_domain_contact_visible_store",
@@ -122,7 +287,9 @@
             "eq": true
           }
         ]
-      }
+      },
+      "label": "Review",
+      "cardText": "{package} contacted a server on a published monitoring list. Keep it only if you installed it."
     },
     {
       "id": "hidden_nonstore_with_power",
@@ -132,7 +299,7 @@
       "bucket": "NEEDS_PROFESSIONAL",
       "summary": "hidden, not from a store, holds deep access",
       "reason": "{package} has no icon, did not come from an app store, and holds accessibility, device admin, or a microphone, camera or location grant. This is the shape of stalkerware.",
-      "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional.",
+      "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
       "evidence": [
         "app",
         "control",
@@ -165,7 +332,9 @@
             ]
           }
         ]
-      }
+      },
+      "label": "Hidden",
+      "cardText": "No icon, not from a store, and holds deep control of this phone."
     },
     {
       "id": "hidden_store_with_control",
@@ -203,7 +372,9 @@
             ]
           }
         ]
-      }
+      },
+      "label": "Hidden",
+      "cardText": "Hides its icon and holds admin or accessibility control."
     },
     {
       "id": "accessibility_non_system",
@@ -213,7 +384,7 @@
       "bucket": "NEEDS_PROFESSIONAL",
       "summary": "accessibility service, not an accessibility app",
       "reason": "{package} is an enabled accessibility service and is not an accessibility app. Accessibility services can read everything on screen and type on your behalf.",
-      "remediation": "If you do not use {package} for accessibility, turn it off in Settings > Accessibility. If you do not recognise it, contact a professional first.",
+      "remediation": "Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.",
       "evidence": [
         "app",
         "control"
@@ -239,7 +410,9 @@
             }
           }
         ]
-      }
+      },
+      "label": "Reads your screen",
+      "cardText": "Can read everything on your screen and act on your behalf, including in banking apps."
     },
     {
       "id": "control_on_unknown_package",
@@ -264,7 +437,9 @@
             "eq": false
           }
         ]
-      }
+      },
+      "label": "Review",
+      "cardText": "Something not in the app list holds control of this phone."
     },
     {
       "id": "device_admin_no_profile",
@@ -302,7 +477,9 @@
             "eq": true
           }
         ]
-      }
+      },
+      "label": "Can wipe this phone",
+      "cardText": "Can lock or wipe this phone. Keep it only if you set it up as anti theft or for work."
     },
     {
       "id": "work_profile_present",
@@ -320,7 +497,9 @@
       "when": {
         "fact": "control.PROFILE_OWNER",
         "eq": true
-      }
+      },
+      "label": "Note",
+      "cardText": "Manages a work profile."
     },
     {
       "id": "disguised_system_name",
@@ -337,7 +516,9 @@
       "when": {
         "fact": "disguised",
         "eq": true
-      }
+      },
+      "label": "Hidden",
+      "cardText": "Named like a part of Android but is not one."
     },
     {
       "id": "sideloaded_with_sensitive",
@@ -366,7 +547,9 @@
             "eq": true
           }
         ]
-      }
+      },
+      "label": "Review",
+      "cardText": "Installed outside any store and can use your microphone, camera or location."
     },
     {
       "id": "sideloaded_no_sensitive",
@@ -398,7 +581,9 @@
             "eq": false
           }
         ]
-      }
+      },
+      "label": "Note",
+      "cardText": "Installed outside a store, no sensitive grants."
     },
     {
       "id": "unexpected_grant_nonstore",
@@ -428,7 +613,9 @@
             "eq": false
           }
         ]
-      }
+      },
+      "label": "Review",
+      "cardText": "Not from a store and holds a microphone, camera or location grant it has no clear use for."
     },
     {
       "id": "unexpected_grant_store",
@@ -462,7 +649,9 @@
             "eq": true
           }
         ]
-      }
+      },
+      "label": "Note",
+      "cardText": "Odd microphone or background location grant."
     },
     {
       "id": "boot_and_background_heavy",
@@ -488,7 +677,9 @@
             "eq": true
           }
         ]
-      }
+      },
+      "label": "Review",
+      "cardText": "Starts at boot and ran over 6 hours this week in the background."
     },
     {
       "id": "background_heavy_alone",
@@ -514,7 +705,9 @@
             "eq": false
           }
         ]
-      }
+      },
+      "label": "Note",
+      "cardText": "Ran over 6 h in the background this week."
     },
     {
       "id": "notification_listener_nonstore",
@@ -557,7 +750,9 @@
             }
           }
         ]
-      }
+      },
+      "label": "Reads your messages",
+      "cardText": "Can read every notification, including bank codes and messages, and is not from a store."
     },
     {
       "id": "notification_listener_store",
@@ -596,7 +791,9 @@
             }
           }
         ]
-      }
+      },
+      "label": "Note",
+      "cardText": "Reads all notifications (store app)."
     },
     {
       "id": "duplicate_package",
@@ -613,7 +810,9 @@
       "when": {
         "fact": "duplicate",
         "eq": true
-      }
+      },
+      "label": "Note",
+      "cardText": "Listed twice in the inventory."
     },
     {
       "id": "beacon_unrecognized_host",
@@ -631,7 +830,9 @@
       "when": {
         "fact": "net.beacon",
         "eq": true
-      }
+      },
+      "label": "Review",
+      "cardText": "Reports to {beaconHost} every {beaconInterval} seconds, a host nobody recognises."
     },
     {
       "id": "raw_ip_suspect",
@@ -649,7 +850,9 @@
       "when": {
         "fact": "net.rawIpSuspect",
         "eq": true
-      }
+      },
+      "label": "Review",
+      "cardText": "Sent {bytesSentMb} MB without looking up any name, the way hidden uploads do."
     },
     {
       "id": "unrecognized_host_with_oddity",
@@ -679,7 +882,9 @@
             "eq": false
           }
         ]
-      }
+      },
+      "label": "Review",
+      "cardText": "Talks to hosts nobody recognises and has another oddity."
     },
     {
       "id": "unrecognized_host_alone",
@@ -709,7 +914,9 @@
             "eq": false
           }
         ]
-      }
+      },
+      "label": "Note",
+      "cardText": "Talks to unrecognized hosts."
     }
   ]
 }

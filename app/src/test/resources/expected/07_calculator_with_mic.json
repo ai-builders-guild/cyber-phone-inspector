@@ -12,6 +12,8 @@
         "evidenceRef": [
             "app:com.quickcalc.pro",
             "permission:MICROPHONE:com.quickcalc.pro"
-        ]
+        ],
+        "label": "Note",
+        "cardText": "Odd microphone or background location grant."
     }
 ]

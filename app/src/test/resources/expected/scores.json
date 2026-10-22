@@ -1,0 +1,21 @@
+{
+  "01_clean_pixel": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "02_clean_samsung_with_work_profile": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "03_hidden_stalkerware_accessibility": {"score": 70, "threatApps": 1, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "04_ioc_package_match": {"score": 70, "threatApps": 1, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "05_disguised_system_update_app": {"score": 90, "threatApps": 0, "reviewApps": 1, "cappedBy": [], "watchNotRun": false},
+  "06_maps_background_location_legit": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "07_calculator_with_mic": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "08_sideloaded_no_perms": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "09_device_admin_antitheft_legit_play": {"score": 90, "threatApps": 0, "reviewApps": 1, "cappedBy": [], "watchNotRun": false},
+  "10_beacon_60s_unknown_host": {"score": 90, "threatApps": 0, "reviewApps": 1, "cappedBy": [], "watchNotRun": false},
+  "11_no_dns_bytes_sent": {"score": 90, "threatApps": 0, "reviewApps": 1, "cappedBy": [], "watchNotRun": false},
+  "12_usage_access_denied_not_checked": {"score": 90, "threatApps": 0, "reviewApps": 0, "cappedBy": ["PERSISTENCE"], "watchNotRun": false},
+  "13_empty_phone": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "14_two_thousand_packages": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "15_duplicate_package_ids": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "16_malformed_settings_string": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "17_known_malware_hash": {"score": 70, "threatApps": 1, "reviewApps": 0, "cappedBy": [], "watchNotRun": false},
+  "18_adware_heavy_trackers": {"score": 90, "threatApps": 0, "reviewApps": 1, "cappedBy": [], "watchNotRun": false},
+  "19_tracker_budget_partial": {"score": 100, "threatApps": 0, "reviewApps": 0, "cappedBy": [], "watchNotRun": false}
+}

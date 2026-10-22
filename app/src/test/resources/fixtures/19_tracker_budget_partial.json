@@ -1,0 +1,147 @@
+{
+  "apps": [
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": null,
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788220800000,
+      "hasLauncherIcon": false,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "System UI",
+      "lastUpdateAt": 1788220800000,
+      "packageName": "com.android.systemui",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:a6b9513b47c92380"
+      ],
+      "trackers": [],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": null,
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788307200000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "Google Play Store",
+      "lastUpdateAt": 1788307200000,
+      "packageName": "com.android.vending",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:6bc560052007dfb4"
+      ],
+      "trackers": [],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": "SOCIAL",
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788393600000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "SuperApp",
+      "lastUpdateAt": 1788393600000,
+      "packageName": "com.huge.superapp",
+      "scanBudgetHit": true,
+      "signingCertSha256": [
+        "sha256:3e28be5ff52d6bbd"
+      ],
+      "trackers": [],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": "SOCIAL",
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788480000000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "WhatsApp",
+      "lastUpdateAt": 1788480000000,
+      "packageName": "com.whatsapp",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:04a1f5ddc4e1c6d0"
+      ],
+      "trackers": [
+        "Google Firebase Analytics"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    }
+  ],
+  "checks": [
+    {
+      "check": "APPS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "CONTROL",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERMISSIONS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERSISTENCE",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "NETWORK",
+      "reason": null,
+      "status": "CHECKED"
+    }
+  ],
+  "collectedAt": 1792584000000,
+  "controls": [],
+  "device": {
+    "androidRelease": "16",
+    "manufacturer": "Google",
+    "model": "Pixel 9",
+    "sdkInt": 36
+  },
+  "flows": [],
+  "iocSnapshotDate": "2026-10-21",
+  "permissions": [],
+  "persistence": [],
+  "scenario": "19_tracker_budget_partial",
+  "schemaVersion": 1
+}

@@ -11,6 +11,8 @@
         "remediation": "Nothing to do. Mention it if you talk to a professional.",
         "evidenceRef": [
             "app:com.whatsapp"
-        ]
+        ],
+        "label": "Note",
+        "cardText": "Listed twice in the inventory."
     }
 ]

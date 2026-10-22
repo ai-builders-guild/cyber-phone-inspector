@@ -29,4 +29,8 @@ data class Finding(
     val reason: String,
     val remediation: String,
     val evidenceRef: List<String>,
+    /** v1.1: the word on the threat card, from [Labels]. */
+    val label: String = Labels.NOTE,
+    /** v1.1: one sentence for the card, second person. */
+    val cardText: String = "",
 )

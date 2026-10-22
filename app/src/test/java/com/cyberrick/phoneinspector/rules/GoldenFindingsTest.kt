@@ -1,6 +1,7 @@
 package com.cyberrick.phoneinspector.rules
 
 import com.cyberrick.phoneinspector.core.model.Evidence
+import com.cyberrick.phoneinspector.score.SafetyScore
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import kotlinx.serialization.builtins.ListSerializer
@@ -37,6 +38,7 @@ class GoldenFindingsTest {
                 ),
             ),
             KnownServices.parse(File(moduleDir, "src/main/assets/${KnownServices.ASSET}").readText(Charsets.UTF_8)),
+            intel = TestIntel.load(moduleDir),
         )
     }
 
@@ -45,7 +47,7 @@ class GoldenFindingsTest {
     @Test
     fun `findings for every fixture match the expected file exactly`() {
         val fixtures = fixtures()
-        assertThat(fixtures.size).isAtLeast(16)
+        assertThat(fixtures.size).isAtLeast(19)
         val mismatches = mutableListOf<String>()
         fixtures.forEach { f ->
             val findings = engine.evaluate(Evidence.load(f))
@@ -59,6 +61,25 @@ class GoldenFindingsTest {
             }
         }
         assertWithMessage("fixtures whose findings differ from src/test/resources/expected").that(mismatches).isEmpty()
+    }
+
+    /** v1.1: the safety score of every fixture, one file, so a scoring change is reviewed like a finding change. */
+    @Test
+    fun `safety scores for every fixture match expected scores json`() {
+        val lines =
+            fixtures().map { f ->
+                val evidence = Evidence.load(f)
+                val score = SafetyScore.of(engine.evaluate(evidence), evidence.checks)
+                val capped = score.cappedBy.joinToString(", ") { "\"$it\"" }
+                "  \"${f.nameWithoutExtension}\": {\"score\": ${score.value}, \"threatApps\": ${score.threatApps}, " +
+                    "\"reviewApps\": ${score.reviewApps}, \"cappedBy\": [$capped], \"watchNotRun\": ${score.watchNotRun}}"
+            }
+        val text = "{\n" + lines.joinToString(",\n") + "\n}\n"
+        val expected = File(expectedDir, "scores.json")
+        if (update) {
+            expected.writeText(text, Charsets.UTF_8)
+        }
+        assertWithMessage("src/test/resources/expected/scores.json").that(expected.readText(Charsets.UTF_8)).isEqualTo(text)
     }
 
     @Test

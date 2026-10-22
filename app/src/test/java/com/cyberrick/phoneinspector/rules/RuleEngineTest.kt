@@ -1,5 +1,6 @@
 package com.cyberrick.phoneinspector.rules
 
+import com.cyberrick.phoneinspector.collect.TrackerCatalog
 import com.cyberrick.phoneinspector.core.model.AppRecord
 import com.cyberrick.phoneinspector.core.model.CheckKind
 import com.cyberrick.phoneinspector.core.model.CheckResult
@@ -461,6 +462,63 @@ class RuleEngineTest {
                 .reason
                 .lowercase(),
         ).contains("unrecognized")
+    }
+
+    @Test
+    fun `every high and medium rule carries a label from the fixed set and a card sentence`() {
+        rules.rules.filter { it.severity != Severity.LOW }.forEach {
+            assertThat(it.label).isIn(Labels.ALL)
+            assertThat(it.cardText).isNotEmpty()
+            assertThat(it.cardText.length).isLessThan(140)
+        }
+        rules.rules.filter { it.severity == Severity.LOW }.forEach { assertThat(it.label).isEqualTo(Labels.NOTE) }
+    }
+
+    @Test
+    fun `known malware hash is high with the family in the reason`() {
+        val malware = MalwareHashes(mapOf("ab".repeat(32) to MalwareHashes.Entry("Cerberus", listOf("banker", "android"))))
+        val engine =
+            RuleEngine(
+                rules,
+                IocMatcher(iocs),
+                KnownServices(emptySet()),
+                intel = ThreatIntel(malware, MaliciousHosts(emptySet(), emptySet()), TrackerCatalog(emptyList())),
+            )
+        val e = evidence(listOf(app("com.innocent").copy(apkSha256 = "ab".repeat(32))))
+
+        val f = engine.evaluate(e).single { it.ruleId == "known_malware_hash" }
+
+        assertThat(f.severity).isEqualTo(Severity.HIGH)
+        assertThat(f.reason).contains("Cerberus")
+        assertThat(f.label).isEqualTo(Labels.KNOWN_MALWARE)
+    }
+
+    @Test
+    fun `contact with a malicious host is high and adware heavy and tracker note follow the tracker counts`() {
+        val catalog =
+            TrackerCatalog(
+                (1..10).map { TrackerCatalog.Tracker("Ad$it", listOf("Advertisement"), listOf("x$it")) } +
+                    TrackerCatalog.Tracker("Prof", listOf("Profiling"), listOf("y")),
+            )
+        val hosts = MaliciousHosts(domains = setOf("drop.bad.example"), ips = emptySet())
+        val engine =
+            RuleEngine(rules, IocMatcher(iocs), KnownServices(emptySet()), intel = ThreatIntel(MalwareHashes(emptyMap()), hosts, catalog))
+        val contact = evidence(listOf(app("com.a"))).copy(flows = listOf(dns("com.a", "cdn.drop.bad.example", now)))
+        val adHeavy = evidence(listOf(app("com.b", InstallSource.SIDELOADED).copy(trackers = listOf("Ad1", "Ad2", "Ad3", "Ad4", "Ad5"))))
+        val adHeavyStore = evidence(listOf(app("com.e").copy(trackers = (1..5).map { "Ad$it" } + "Prof")))
+        val adHeavyStoreTen = evidence(listOf(app("com.f").copy(trackers = (1..10).map { "Ad$it" })))
+        val profilingSideloaded = evidence(listOf(app("com.c", InstallSource.SIDELOADED).copy(trackers = listOf("Prof"))))
+        val few = evidence(listOf(app("com.d").copy(trackers = listOf("Ad1"))))
+
+        assertThat(engine.evaluate(contact).single { it.ruleId == "malicious_host_contact" }.severity).isEqualTo(Severity.HIGH)
+        assertThat(engine.evaluate(adHeavy).single { it.ruleId == "adware_heavy" }.label).isEqualTo(Labels.ADWARE_HEAVY)
+        assertThat(engine.evaluate(profilingSideloaded).map { it.ruleId }).contains("adware_heavy")
+        assertThat(engine.evaluate(few).single().ruleId).isEqualTo("trackers_note")
+        // From a store, ad heavy is a note, never a threat: the phone run showed 33 store games at five or more.
+        assertThat(engine.evaluate(adHeavyStore).single().ruleId).isEqualTo("trackers_note")
+        assertThat(engine.evaluate(adHeavyStoreTen).single().let { it.ruleId to it.severity }).isEqualTo(
+            "adware_heavy_store" to Severity.LOW,
+        )
     }
 
     @Test

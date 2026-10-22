@@ -57,6 +57,9 @@ def app_record(spec: dict, index: int) -> dict:
         "disguised": bool(spec.get("disguised", False)),
         "category": spec.get("category"),
         "duplicate": bool(spec.get("duplicate", False)),
+        "apkSha256": spec.get("apkSha256"),
+        "trackers": list(spec.get("trackers", [])),
+        "scanBudgetHit": bool(spec.get("scanBudgetHit", False)),
         "api": API["apps"],
         "collectedAt": COLLECTED_AT,
     }

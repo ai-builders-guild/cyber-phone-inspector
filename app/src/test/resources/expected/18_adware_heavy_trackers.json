@@ -1,0 +1,82 @@
+[
+    {
+        "ruleId": "adware_heavy",
+        "check": "APPS",
+        "packageName": "com.cleaner.turbo",
+        "severity": "MEDIUM",
+        "priority": 60,
+        "bucket": "WORTH_REMOVING",
+        "summary": "heavy with advertising or profiling trackers, not from a store",
+        "reason": "com.cleaner.turbo contains 1 tracker kit (Adbrix) and did not come from an app store. Five or more advertising trackers, or a profiling tracker, in an app installed outside a store is the pattern of adware.",
+        "remediation": "If you do not need com.cleaner.turbo, uninstall it. If you do, expect it to sell what you do inside it.",
+        "evidenceRef": [
+            "app:com.cleaner.turbo"
+        ],
+        "label": "Adware heavy",
+        "cardText": "Contains 1 advertising or profiling trackers that sell what you do."
+    },
+    {
+        "ruleId": "sideloaded_no_sensitive",
+        "check": "APPS",
+        "packageName": "com.cleaner.turbo",
+        "severity": "LOW",
+        "priority": 100,
+        "bucket": "SAFE",
+        "summary": "installed outside a store, no sensitive grants",
+        "reason": "com.cleaner.turbo was installed outside an app store but holds no microphone, camera or location grant.",
+        "remediation": "Nothing to do if you installed it on purpose.",
+        "evidenceRef": [
+            "app:com.cleaner.turbo"
+        ],
+        "label": "Note",
+        "cardText": "Installed outside a store, no sensitive grants."
+    },
+    {
+        "ruleId": "trackers_note",
+        "check": "APPS",
+        "packageName": "com.free.coin.game",
+        "severity": "LOW",
+        "priority": 200,
+        "bucket": "SAFE",
+        "summary": "trackers inside",
+        "reason": "com.free.coin.game contains 7 tracker kits (AppLovin (MAX and SparkLabs), Unity3d Ads, IronSource, Vungle, AdColony, Google AdMob and 1 more). Most apps carry a few for analytics or crash reports.",
+        "remediation": "Nothing to do.",
+        "evidenceRef": [
+            "app:com.free.coin.game"
+        ],
+        "label": "Note",
+        "cardText": "Trackers inside: 7."
+    },
+    {
+        "ruleId": "trackers_note",
+        "check": "APPS",
+        "packageName": "com.spotify.music",
+        "severity": "LOW",
+        "priority": 200,
+        "bucket": "SAFE",
+        "summary": "trackers inside",
+        "reason": "com.spotify.music contains 2 tracker kits (Google Firebase Analytics, Google CrashLytics). Most apps carry a few for analytics or crash reports.",
+        "remediation": "Nothing to do.",
+        "evidenceRef": [
+            "app:com.spotify.music"
+        ],
+        "label": "Note",
+        "cardText": "Trackers inside: 2."
+    },
+    {
+        "ruleId": "adware_heavy_store",
+        "check": "APPS",
+        "packageName": "com.mega.slots.casino",
+        "severity": "LOW",
+        "priority": 210,
+        "bucket": "SAFE",
+        "summary": "adware heavy, from a store",
+        "reason": "com.mega.slots.casino contains 13 tracker kits (AdColony, AppLovin (MAX and SparkLabs), Fyber, Google AdMob, Mintegral, Pangle and 7 more), ten or more of them advertising. It came from a store, so this is a note about what it sells, not a threat.",
+        "remediation": "If you do not need com.mega.slots.casino, uninstall it. If you do, expect it to sell what you do inside it.",
+        "evidenceRef": [
+            "app:com.mega.slots.casino"
+        ],
+        "label": "Note",
+        "cardText": "Adware heavy: 12 advertising trackers inside."
+    }
+]
