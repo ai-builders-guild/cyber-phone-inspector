@@ -6,6 +6,19 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
+/** Release signing comes from the gitignored .env at the project root (names in .env.example). Missing values leave release unsigned. */
+val dotEnv: Map<String, String> =
+    rootProject
+        .file(".env")
+        .takeIf { it.exists() }
+        ?.readLines()
+        ?.mapNotNull { line ->
+            val trimmed = line.substringBefore('#').trim()
+            if ('=' !in trimmed) null else trimmed.substringBefore('=').trim() to trimmed.substringAfter('=').trim()
+        }?.toMap() ?: emptyMap()
+
+fun env(name: String): String? = System.getenv(name)?.takeIf { it.isNotBlank() } ?: dotEnv[name]?.takeIf { it.isNotBlank() }
+
 android {
     namespace = "com.cyberrick.phoneinspector"
     compileSdk = 36
@@ -20,9 +33,25 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        val keystore = env("CPI_RELEASE_KEYSTORE_PATH")
+        if (keystore != null && file(keystore).exists()) {
+            create("release") {
+                storeFile = file(keystore)
+                storePassword = env("CPI_RELEASE_KEYSTORE_PASSWORD")
+                keyAlias = env("CPI_RELEASE_KEY_ALIAS")
+                keyPassword = env("CPI_RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // Shrinks the 29 MB debug build under the 15 MB gate. Serialization keeps are in proguard-rules.pro.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.findByName("release")
         }
     }
     compileOptions {
@@ -74,7 +103,10 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.truth)
     androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 // PROJECT.md: no analytics, ads, Play Services or third party networking may enter the app, even transitively.

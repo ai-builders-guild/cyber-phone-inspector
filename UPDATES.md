@@ -297,3 +297,24 @@ What failed and how it was fixed
 
 Queued next
 - Phase 13: instrumented tests on API 29 and 36.1, smoke checklist, signed release APK.
+
+## 2026-10-22 — Phase 13: Instrumented tests, smoke checklist, signed release (branch phase-13-release)
+
+What ran
+- `app/src/androidTest`: `ConsentAndScanTest` (consent then Home, full scan to verdict under 20 s, denied usage access reported NOT CHECKED), `PipelineAndExportTest` (five check statuses and a verdict, export readable through the content resolver, share intent with two streams), `MonitorTest` (start, run, stop, saved result; skips where VPN consent is absent), `TestShell` (shell grants on the test device only).
+- Release signing from `.env` (keystore generated outside the repo with the bundled keytool), R8 minify and resource shrink with serialization keep rules, `SMOKE.md`, README release and smoke sections, `dist/app-release.apk` (ignored).
+
+What was verified (validation gate)
+- `connectedDebugAndroidTest`: 6 of 6 on the API 36.1 emulator and 6 of 6 on the API 29 emulator, including the monitor test on both (consent existed from earlier runs).
+- Release APK: 1.8 MB (gate 15 MB); `apksigner` verifies the project certificate; `apkanalyzer manifest permissions` prints the seven allowlisted permissions plus AndroidX's self declared receiver marker; no ProbeActivity; all assets bundled; min 29, target 36.
+- Release APK installed on the API 36 emulator after removing the debug build: consent, scan to verdict in 2.3 s, no crash, so R8 kept everything the runtime needs.
+- Self traffic: the phone's 10 minute monitor attributed 1 byte to the app itself; the app has no outbound call of its own.
+- Phone rescan with the Phase 12 build: 16 findings, verdict clean, 0 high; network rules added 2 mediums (unrecognized hosts on apps with another oddity) and 1 low.
+- `./gradlew check` green before commit (gated).
+
+What failed and how it was fixed
+- Instrumented tests did not compile: Truth was JVM test only → added to the androidTest classpath.
+- A release APK cannot install over a debug build (different signing key); documented in README and SMOKE.md: uninstall the debug build first, which clears consents.
+
+Queued next
+- Rick runs SMOKE.md on the phone with `dist/app-release.apk` (uninstall the debug build first). Then Phase 14: docs, memory save.
