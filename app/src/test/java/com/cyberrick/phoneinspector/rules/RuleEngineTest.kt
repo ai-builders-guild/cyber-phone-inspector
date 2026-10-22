@@ -23,7 +23,7 @@ class RuleEngineTest {
     private val iocs =
         IocSet(
             packages = setOf("com.example.ioc.match"),
-            domains = emptySet(),
+            domains = setOf("c2.listed.example"),
             certs = setOf("sha256:deadbeef"),
             packageSources = mapOf("com.example.ioc.match" to listOf("Test list A", "Test list B")),
         )
@@ -132,6 +132,20 @@ class RuleEngineTest {
         assertThat(f.severity).isEqualTo(Severity.MEDIUM)
         assertThat(f.bucket).isEqualTo(Bucket.WORTH_REMOVING)
         assertThat(f.reason).contains("listed by: Test list A, Test list B")
+    }
+
+    @Test
+    fun `contact with a listed domain is medium for a visible store app and high otherwise`() {
+        val visible = evidence(listOf(app("com.family.app"))).copy(flows = listOf(dns("com.family.app", "api.c2.listed.example", now)))
+        val hidden =
+            evidence(
+                listOf(app("com.x", InstallSource.SIDELOADED, hidden = true)),
+            ).copy(flows = listOf(dns("com.x", "api.c2.listed.example", now)))
+
+        val v = engine.evaluate(visible)
+        assertThat(v.filter { it.ruleId == "ioc_domain_contact" }).isEmpty()
+        assertThat(v.single { it.ruleId == "ioc_domain_contact_visible_store" }.severity).isEqualTo(Severity.MEDIUM)
+        assertThat(engine.evaluate(hidden).single { it.ruleId == "ioc_domain_contact" }.severity).isEqualTo(Severity.HIGH)
     }
 
     @Test

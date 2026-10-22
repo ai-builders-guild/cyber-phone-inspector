@@ -84,8 +84,44 @@
         "flow"
       ],
       "when": {
-        "fact": "iocDomain",
-        "eq": true
+        "all": [
+          {
+            "fact": "iocDomain",
+            "eq": true
+          },
+          {
+            "not": {
+              "fact": "visibleStoreInstall",
+              "eq": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ioc_domain_contact_visible_store",
+      "check": "NETWORK",
+      "priority": 15,
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "summary": "contacted a domain on a published list, but the app is visible and from a store",
+      "reason": "{package} contacted a domain that appears on a published spyware list, but the app itself is installed from a store, has an icon, and is not disguised. Monitoring and family apps that appear on such lists contact their own servers; that is what this looks like.",
+      "remediation": "If you installed {package} yourself, keep it or remove it as you prefer. If you did not, treat this as high: preserve the phone and contact a digital security professional.",
+      "evidence": [
+        "app",
+        "flow"
+      ],
+      "when": {
+        "all": [
+          {
+            "fact": "iocDomain",
+            "eq": true
+          },
+          {
+            "fact": "visibleStoreInstall",
+            "eq": true
+          }
+        ]
       }
     },
     {
