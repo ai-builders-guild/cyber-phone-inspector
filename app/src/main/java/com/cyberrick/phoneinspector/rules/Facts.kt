@@ -36,6 +36,11 @@ object Facts {
                 put("inInventory", app != null)
                 put("installSource", app?.installSource?.name)
                 put("storeInstall", app?.installSource in STORE_SOURCES)
+                // Covertness separates stalkerware from an openly installed monitoring app: store install, icon, honest name.
+                put(
+                    "visibleStoreInstall",
+                    app != null && app.installSource in STORE_SOURCES && app.hasLauncherIcon && !app.hidden && !app.disguised,
+                )
                 put("isSystem", app?.isSystem ?: false)
                 put("hidden", app?.hidden ?: false)
                 put("disguised", app?.disguised ?: false)

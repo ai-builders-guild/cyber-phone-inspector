@@ -259,3 +259,20 @@ Real phone (Galaxy S24 Ultra, private DNS automatic), started by Rick from the a
 
 Queued next
 - Rule tuning from the first full report (see DECISIONS.md), then Phase 12 network rules.
+
+## 2026-10-21 — Rule tuning from the first full report (branch rules-tuning-first-report)
+
+What ran
+- rules.json: summaries on all 19 rules, `ioc_match_visible_store` (medium) split from `ioc_match` (high), store grant rule limited to microphone and background location; permission expectations gained Samsung and Google first party prefixes; `Facts` gained `visibleStoreInstall`; `Finding` gained `summary`; renderer compacts low findings to one line and uses summaries in the three lists.
+- 8 new or changed tests, written first; goldens regenerated and reviewed.
+
+What was verified
+- Visible store IOC match is medium; hidden or non store stays high; cert match follows the same rule.
+- Foreground location or camera on a store app yields nothing; microphone or background location still yields low.
+- Samsung first party packages are expected by the bundled asset.
+- Low findings carry their five facts on one line; medium and high keep the full block; lists use summaries.
+- Full `./gradlew check` green (gated); rescan of Rick's phone recorded below as counts.
+- Rescan of Rick's phone after tuning: 13 findings, verdict clean. 0 high; 6 medium (2 visible store IOC matches, 1 device admin without profile, 1 boot and background heavy, 1 sideloaded with a sensitive grant, 1 unexpected grant off store); 7 low (5 odd microphone or background location on store apps, 2 sideloaded without grants). Before tuning: 45 findings, 2 high, verdict compromised.
+
+Queued next
+- Phase 12: network rules (known services, raw IP, beacon detection) over the monitor's flows.

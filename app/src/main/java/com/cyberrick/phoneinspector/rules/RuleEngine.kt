@@ -28,6 +28,7 @@ class RuleEngine(
             severity = rule.severity,
             priority = rule.priority,
             bucket = rule.bucket,
+            summary = rule.summary,
             reason = fill(rule.reason, pkg, facts),
             remediation = fill(rule.remediation, pkg, facts),
             evidenceRef = rule.evidence.flatMap { refs(it, pkg, evidence) }.ifEmpty { listOf("package:$pkg") },

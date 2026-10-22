@@ -6,6 +6,7 @@
         "severity": "LOW",
         "priority": 100,
         "bucket": "SAFE",
+        "summary": "manages a work profile",
         "reason": "com.google.android.apps.work.clouddpc manages a work profile on this phone. Your employer can see and control the work side, not the personal side.",
         "remediation": "Nothing to do if this is your employer's management app.",
         "evidenceRef": [

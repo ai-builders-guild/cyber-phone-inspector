@@ -15,13 +15,7 @@ Nothing flagged.
 
 ## Deep control
 
-### Android Device Policy (com.google.android.apps.work.clouddpc)
-- What it is: com.google.android.apps.work.clouddpc manages a work profile on this phone. Your employer can see and control the work side, not the personal side.
-- What it can reach: the work profile, it can lock or wipe the phone
-- How long it has been there: since at latest 2026-09-01
-- Where it sends data: no network observed
-- Severity: low
-- What to do: Nothing to do if this is your employer's management app.
+- Low: Android Device Policy (com.google.android.apps.work.clouddpc): manages a work profile; reaches: the work profile, it can lock or wipe the phone; since at latest 2026-09-01; sends data: no network observed.
 
 ## Permissions
 Nothing flagged.
@@ -36,7 +30,7 @@ Nothing flagged.
 VERDICT: clean
 
 ## Safe
-- com.google.android.apps.work.clouddpc: com.google.android.apps.work.clouddpc manages a work profile on this phone. Your employer can see and control the work side, not the personal side.
+- com.google.android.apps.work.clouddpc: manages a work profile
 - 8 other apps had nothing flagged.
 
 ## Worth removing

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Severity table from INITIAL_INSTRUCTIONS.md as data. Facts come from rules/Facts.kt. Wording is plain language and hedged: 'looks', 'can', never 'is malicious'. Each rule names the check (report section) it belongs to. priority orders findings of equal severity (lower first); the top finding supplies the single next step.",
+  "description": "Severity table from INITIAL_INSTRUCTIONS.md as data. Facts come from rules/Facts.kt. Wording is plain language and hedged: 'looks', 'can', never 'is malicious'. Each rule names the check (report section) it belongs to. priority orders findings of equal severity (lower first); the top finding supplies the single next step. summary is the short form used in the three lists.",
   "rules": [
     {
       "id": "ioc_match",
@@ -8,19 +8,63 @@
       "priority": 10,
       "severity": "HIGH",
       "bucket": "NEEDS_PROFESSIONAL",
+      "summary": "on a published spyware list",
       "reason": "{package} matches a published indicator of stalkerware or spyware (listed by: {iocSources}). Some lists also include dual use tools such as remote access or family monitoring apps; the list name tells you which.",
       "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.",
       "evidence": [
         "app"
       ],
       "when": {
-        "any": [
+        "all": [
           {
-            "fact": "iocPackage",
-            "eq": true
+            "any": [
+              {
+                "fact": "iocPackage",
+                "eq": true
+              },
+              {
+                "fact": "iocCert",
+                "eq": true
+              }
+            ]
           },
           {
-            "fact": "iocCert",
+            "not": {
+              "fact": "visibleStoreInstall",
+              "eq": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ioc_match_visible_store",
+      "check": "APPS",
+      "priority": 15,
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "summary": "on a published spyware list, but visible and from a store",
+      "reason": "{package} matches a published indicator (listed by: {iocSources}) but is installed from a store, has an icon, and is not disguised. Stalkerware hides; this looks like a monitoring or family app installed openly. Such apps still see what they say they see.",
+      "remediation": "If you installed {package} yourself, keep it or remove it as you prefer. If you did not, treat this as high: preserve the phone and contact a digital security professional.",
+      "evidence": [
+        "app"
+      ],
+      "when": {
+        "all": [
+          {
+            "any": [
+              {
+                "fact": "iocPackage",
+                "eq": true
+              },
+              {
+                "fact": "iocCert",
+                "eq": true
+              }
+            ]
+          },
+          {
+            "fact": "visibleStoreInstall",
             "eq": true
           }
         ]
@@ -32,6 +76,7 @@
       "priority": 10,
       "severity": "HIGH",
       "bucket": "NEEDS_PROFESSIONAL",
+      "summary": "contacted a published spyware domain",
       "reason": "{package} contacted a domain published as spyware infrastructure.",
       "remediation": "Preserve the phone as evidence and contact a digital security professional.",
       "evidence": [
@@ -49,6 +94,7 @@
       "priority": 20,
       "severity": "HIGH",
       "bucket": "NEEDS_PROFESSIONAL",
+      "summary": "hidden, not from a store, holds deep access",
       "reason": "{package} has no icon, did not come from an app store, and holds accessibility, device admin, or a microphone, camera or location grant. This is the shape of stalkerware.",
       "remediation": "Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional.",
       "evidence": [
@@ -91,6 +137,7 @@
       "priority": 100,
       "severity": "MEDIUM",
       "bucket": "WORTH_REMOVING",
+      "summary": "hidden store app with admin or accessibility",
       "reason": "{package} has no icon and holds accessibility or device admin control. It came from an app store, which makes stalkerware less likely but not impossible.",
       "remediation": "Open Settings > Apps, find {package}, and decide whether you installed it on purpose. Remove its accessibility or admin access if not.",
       "evidence": [
@@ -128,6 +175,7 @@
       "priority": 30,
       "severity": "HIGH",
       "bucket": "NEEDS_PROFESSIONAL",
+      "summary": "accessibility service, not an accessibility app",
       "reason": "{package} is an enabled accessibility service and is not an accessibility app. Accessibility services can read everything on screen and type on your behalf.",
       "remediation": "If you do not use {package} for accessibility, turn it off in Settings > Accessibility. If you do not recognise it, contact a professional first.",
       "evidence": [
@@ -163,6 +211,7 @@
       "priority": 40,
       "severity": "MEDIUM",
       "bucket": "NEEDS_PROFESSIONAL",
+      "summary": "control grant on a package missing from the inventory",
       "reason": "{package} holds a control grant (admin, accessibility or notification access) but is not in the app inventory. The inventory may be incomplete on this phone, or the package is hiding.",
       "remediation": "Show this report to a professional. Do not change anything yet.",
       "evidence": [
@@ -187,6 +236,7 @@
       "priority": 100,
       "severity": "MEDIUM",
       "bucket": "WORTH_REMOVING",
+      "summary": "device admin without a work profile",
       "reason": "{package} is a device administrator and is not managing a work profile. Device admins can lock or wipe the phone and resist uninstall.",
       "remediation": "If you did not set up {package} as an anti theft or work tool, remove its admin rights in Settings > Security > Device admin apps, then uninstall it.",
       "evidence": [
@@ -224,6 +274,7 @@
       "priority": 100,
       "severity": "LOW",
       "bucket": "SAFE",
+      "summary": "manages a work profile",
       "reason": "{package} manages a work profile on this phone. Your employer can see and control the work side, not the personal side.",
       "remediation": "Nothing to do if this is your employer's management app.",
       "evidence": [
@@ -241,6 +292,7 @@
       "priority": 100,
       "severity": "MEDIUM",
       "bucket": "WORTH_REMOVING",
+      "summary": "named like a system component, not one",
       "reason": "{package} is named like a system component but is not one and did not come from an app store.",
       "remediation": "Uninstall {package} from Settings > Apps unless you know exactly what it is.",
       "evidence": [
@@ -257,6 +309,7 @@
       "priority": 100,
       "severity": "MEDIUM",
       "bucket": "WORTH_REMOVING",
+      "summary": "installed outside a store, holds a sensitive grant",
       "reason": "{package} was installed outside an app store and holds a microphone, camera or location grant.",
       "remediation": "If you did not install {package} yourself, uninstall it. If you did, revoke the permissions it does not need.",
       "evidence": [
@@ -285,6 +338,7 @@
       "priority": 100,
       "severity": "LOW",
       "bucket": "SAFE",
+      "summary": "installed outside a store, no sensitive grants",
       "reason": "{package} was installed outside an app store but holds no microphone, camera or location grant.",
       "remediation": "Nothing to do if you installed it on purpose.",
       "evidence": [
@@ -316,6 +370,7 @@
       "priority": 100,
       "severity": "MEDIUM",
       "bucket": "WORTH_REMOVING",
+      "summary": "odd mic, camera or location grant, not from a store",
       "reason": "{package} did not come from an app store and holds a microphone, camera or location grant that looks odd for this kind of app.",
       "remediation": "Revoke the permission in Settings > Apps > {package} > Permissions, or uninstall it.",
       "evidence": [
@@ -345,7 +400,8 @@
       "priority": 100,
       "severity": "LOW",
       "bucket": "SAFE",
-      "reason": "{package} holds a microphone, camera or location grant that looks odd for this kind of app. It came from an app store.",
+      "summary": "odd microphone or background location grant",
+      "reason": "{package} holds a microphone or background location grant that looks odd for this kind of app. It came from an app store. Foreground location and camera are not counted here; most store apps use them.",
       "remediation": "Check Settings > Apps > {package} > Permissions and revoke anything it does not need.",
       "evidence": [
         "app",
@@ -354,8 +410,16 @@
       "when": {
         "all": [
           {
-            "fact": "anyUnexpectedGranted",
-            "eq": true
+            "any": [
+              {
+                "fact": "unexpected.MICROPHONE",
+                "eq": true
+              },
+              {
+                "fact": "unexpected.LOCATION_BACKGROUND",
+                "eq": true
+              }
+            ]
           },
           {
             "fact": "storeInstall",
@@ -370,6 +434,7 @@
       "priority": 100,
       "severity": "MEDIUM",
       "bucket": "WORTH_REMOVING",
+      "summary": "starts at boot and ran over 6 h this week",
       "reason": "{package} starts itself at boot and ran in the background for more than 6 hours this week, and it is not a music, messaging, navigation or accessibility app.",
       "remediation": "Open Settings > Apps > {package} > Battery and check whether the activity makes sense. Uninstall if you do not use it.",
       "evidence": [
@@ -395,6 +460,7 @@
       "priority": 100,
       "severity": "LOW",
       "bucket": "SAFE",
+      "summary": "ran over 6 h in the background this week",
       "reason": "{package} ran in the background for more than 6 hours this week.",
       "remediation": "Nothing to do if you use it a lot.",
       "evidence": [
@@ -420,6 +486,7 @@
       "priority": 100,
       "severity": "MEDIUM",
       "bucket": "WORTH_REMOVING",
+      "summary": "reads all notifications, not from a store",
       "reason": "{package} can read every notification, including messages, did not come from an app store, and is not a messaging or accessibility app.",
       "remediation": "Turn off its notification access in Settings > Notifications > Device and app notifications, then uninstall it if you do not recognise it.",
       "evidence": [
@@ -462,6 +529,7 @@
       "priority": 100,
       "severity": "LOW",
       "bucket": "SAFE",
+      "summary": "reads all notifications (store app)",
       "reason": "{package} can read every notification. It came from an app store and is not a messaging app; watch and car companions commonly need this.",
       "remediation": "Nothing to do if you set it up. Otherwise turn off its notification access.",
       "evidence": [
@@ -500,6 +568,7 @@
       "priority": 100,
       "severity": "LOW",
       "bucket": "SAFE",
+      "summary": "listed twice in the inventory",
       "reason": "{package} appears twice in the inventory, usually a leftover from a second user or a failed update.",
       "remediation": "Nothing to do. Mention it if you talk to a professional.",
       "evidence": [

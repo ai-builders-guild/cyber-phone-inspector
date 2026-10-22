@@ -6,6 +6,7 @@
         "severity": "MEDIUM",
         "priority": 100,
         "bucket": "WORTH_REMOVING",
+        "summary": "named like a system component, not one",
         "reason": "com.update.core is named like a system component but is not one and did not come from an app store.",
         "remediation": "Uninstall com.update.core from Settings > Apps unless you know exactly what it is.",
         "evidenceRef": [
@@ -19,6 +20,7 @@
         "severity": "LOW",
         "priority": 100,
         "bucket": "SAFE",
+        "summary": "installed outside a store, no sensitive grants",
         "reason": "com.update.core was installed outside an app store but holds no microphone, camera or location grant.",
         "remediation": "Nothing to do if you installed it on purpose.",
         "evidenceRef": [

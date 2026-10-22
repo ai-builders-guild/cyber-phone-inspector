@@ -7,6 +7,7 @@ import com.cyberrick.phoneinspector.core.model.Evidence
 import com.cyberrick.phoneinspector.core.model.SensitiveGroup
 import com.cyberrick.phoneinspector.rules.Bucket
 import com.cyberrick.phoneinspector.rules.Finding
+import com.cyberrick.phoneinspector.rules.Severity
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -102,7 +103,12 @@ object ReportRenderer {
             if (findings.isEmpty()) {
                 if (status?.status == CheckStatus.CHECKED) appendLine("Nothing flagged.")
             } else {
-                findings.forEach { flag(it, e) }
+                findings.filter { it.severity != Severity.LOW }.forEach { flag(it, e) }
+                val lows = findings.filter { it.severity == Severity.LOW }
+                if (lows.isNotEmpty()) {
+                    appendLine()
+                    lows.forEach { lowLine(it, e) }
+                }
             }
         }
     }
@@ -121,6 +127,21 @@ object ReportRenderer {
         appendLine("- Where it sends data: ${sendsTo(pkg, e)}")
         appendLine("- Severity: ${f.severity.name.lowercase()}")
         appendLine("- What to do: ${f.remediation}")
+    }
+
+    /** A low finding is still a flag with all five facts, on one line, so the report stays readable at 40 of them. */
+    private fun StringBuilder.lowLine(
+        f: Finding,
+        e: Evidence,
+    ) {
+        val pkg = f.packageName ?: "(no package)"
+        val app = e.apps.firstOrNull { it.packageName == pkg }
+        appendLine(
+            "- Low: ${app?.label ?: pkg} ($pkg): ${f.summary}; reaches: ${reach(
+                pkg,
+                e,
+            )}; ${since(pkg, e)}; sends data: ${sendsTo(pkg, e)}.",
+        )
     }
 
     private fun reach(
@@ -191,7 +212,7 @@ object ReportRenderer {
         findings: List<Finding>,
     ) {
         val lows = findings.filter { it.bucket == Bucket.SAFE }.groupBy { it.packageName ?: "" }
-        lows.forEach { (pkg, fs) -> appendLine("- $pkg: ${fs.joinToString(" ") { it.reason }}") }
+        lows.forEach { (pkg, fs) -> appendLine("- $pkg: ${fs.joinToString("; ") { it.summary }}") }
         val flagged = findings.mapNotNull { it.packageName }.toSet()
         val others =
             e.apps
@@ -211,7 +232,7 @@ object ReportRenderer {
         } else {
             items.forEach { (pkg, fs) ->
                 val top = fs.maxBy { it.severity.rank }
-                appendLine("- $pkg (${top.severity.name.lowercase()}): ${fs.joinToString(" ") { it.reason }}")
+                appendLine("- $pkg (${top.severity.name.lowercase()}): ${fs.joinToString("; ") { it.summary }}")
             }
         }
     }

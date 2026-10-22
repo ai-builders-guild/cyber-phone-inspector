@@ -20,13 +20,7 @@ Read only: this scan changed nothing on the phone.
 - Severity: high
 - What to do: Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.
 
-### Battery Saver (com.example.ioc.match)
-- What it is: com.example.ioc.match was installed outside an app store but holds no microphone, camera or location grant.
-- What it can reach: nothing beyond its own data
-- How long it has been there: since at latest 2026-09-09
-- Where it sends data: no network observed
-- Severity: low
-- What to do: Nothing to do if you installed it on purpose.
+- Low: Battery Saver (com.example.ioc.match): installed outside a store, no sensitive grants; reaches: nothing beyond its own data; since at latest 2026-09-09; sends data: no network observed.
 
 ## Deep control
 Nothing flagged.
@@ -44,14 +38,14 @@ Nothing flagged.
 VERDICT: compromised
 
 ## Safe
-- com.example.ioc.match: com.example.ioc.match was installed outside an app store but holds no microphone, camera or location grant.
+- com.example.ioc.match: installed outside a store, no sensitive grants
 - 8 other apps had nothing flagged.
 
 ## Worth removing
 - none
 
 ## Needs a professional
-- com.example.ioc.match (high): com.example.ioc.match matches a published indicator of stalkerware or spyware (listed by: Test only list). Some lists also include dual use tools such as remote access or family monitoring apps; the list name tells you which.
+- com.example.ioc.match (high): on a published spyware list
 
 ## The single most important thing to do next
 Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.

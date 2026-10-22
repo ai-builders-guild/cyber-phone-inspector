@@ -148,6 +148,16 @@ class PermissionsCollectorTest {
     }
 
     @Test
+    fun `samsung and google first party packages are expected by the bundled asset`() {
+        val text = java.io.File(System.getProperty("user.dir") ?: ".", "src/main/assets/${PermissionExpectations.ASSET}").readText()
+        val bundled = PermissionExpectations.parse(text)
+
+        assertThat(bundled.isExpected(SensitiveGroup.MICROPHONE, null, "com.sec.android.app.voicenote")).isTrue()
+        assertThat(bundled.isExpected(SensitiveGroup.CAMERA, null, "com.samsung.android.ardrawing")).isTrue()
+        assertThat(bundled.isExpected(SensitiveGroup.MICROPHONE, null, "com.random.vendor.app")).isFalse()
+    }
+
+    @Test
     fun `bundled expectations asset parses with all four groups`() {
         val text = java.io.File(System.getProperty("user.dir") ?: ".", "src/main/assets/${PermissionExpectations.ASSET}").readText()
 

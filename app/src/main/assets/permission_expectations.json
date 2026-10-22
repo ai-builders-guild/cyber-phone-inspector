@@ -1,10 +1,30 @@
 {
-  "description": "Categories that plausibly need each sensitive permission (ApplicationInfo.CATEGORY_* names) and first party package prefixes expected regardless of category. Heuristic input for the Permissions check; outside it means 'looks odd', never 'malicious'.",
+  "description": "Categories that plausibly need each sensitive permission (ApplicationInfo.CATEGORY_* names) and first party package prefixes expected regardless of category. Heuristic input for the Permissions check; outside it means 'looks odd', never 'malicious'. Samsung and Google first party prefixes are expected as a whole: they ship the phone's own camera, recorder, calendar and health apps.",
   "byGroup": {
-    "LOCATION": ["MAPS", "SOCIAL", "NEWS", "GAME", "PRODUCTIVITY", "IMAGE"],
-    "LOCATION_BACKGROUND": ["MAPS"],
-    "MICROPHONE": ["SOCIAL", "AUDIO", "VIDEO", "ACCESSIBILITY", "PRODUCTIVITY"],
-    "CAMERA": ["SOCIAL", "IMAGE", "VIDEO", "PRODUCTIVITY"]
+    "LOCATION": [
+      "MAPS",
+      "SOCIAL",
+      "NEWS",
+      "GAME",
+      "PRODUCTIVITY",
+      "IMAGE"
+    ],
+    "LOCATION_BACKGROUND": [
+      "MAPS"
+    ],
+    "MICROPHONE": [
+      "SOCIAL",
+      "AUDIO",
+      "VIDEO",
+      "ACCESSIBILITY",
+      "PRODUCTIVITY"
+    ],
+    "CAMERA": [
+      "SOCIAL",
+      "IMAGE",
+      "VIDEO",
+      "PRODUCTIVITY"
+    ]
   },
   "familyPrefixes": [
     "com.google.android.apps.maps",
@@ -50,6 +70,9 @@
     "com.samsung.android.spay",
     "com.samsung.android.oneconnect",
     "com.samsung.android.app.find",
-    "com.samsung.android.fmm"
+    "com.samsung.android.fmm",
+    "com.samsung.",
+    "com.sec.android.",
+    "com.google.android."
   ]
 }

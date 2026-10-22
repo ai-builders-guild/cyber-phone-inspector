@@ -17,6 +17,7 @@ class VerdictTest {
             packageName = "com.x",
             severity = severity,
             bucket = Bucket.SAFE,
+            summary = "short",
             reason = "reason",
             remediation = "fix it",
             evidenceRef = emptyList(),

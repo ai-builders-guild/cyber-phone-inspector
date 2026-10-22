@@ -168,6 +168,33 @@ class ReportRendererTest {
     }
 
     @Test
+    fun `low findings render as one line carrying the five facts inline`() {
+        val md = render(fixture("07_"))
+        val line = md.lineSequence().first { it.startsWith("- Low: ") }
+
+        assertThat(line).contains("com.quickcalc.pro")
+        assertThat(line).contains("reaches: microphone")
+        assertThat(line).contains("since at latest 2026-09-")
+        assertThat(line).contains("sends data: no network observed")
+        assertThat(md).doesNotContain("### QuickCalc")
+    }
+
+    @Test
+    fun `medium and high findings keep the full block`() {
+        val md = render(fixture("09_"))
+
+        assertThat(md).contains("### Anti Theft (com.cerberus.antitheft)")
+    }
+
+    @Test
+    fun `the three lists use the short summary not the full reason`() {
+        val md = render(fixture("08_"))
+
+        assertThat(md.section("## Safe")).contains("- org.fdroid.example.reader: installed outside a store, no sensitive grants")
+        assertThat(md.section("## Safe")).doesNotContain("holds no microphone, camera or location grant")
+    }
+
+    @Test
     fun `the cannot see footer is present and last`() {
         val md = render(fixture("01_"))
 
