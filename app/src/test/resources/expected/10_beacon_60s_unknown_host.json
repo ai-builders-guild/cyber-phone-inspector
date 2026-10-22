@@ -1,1 +1,17 @@
-[]
+[
+    {
+        "ruleId": "beacon_unrecognized_host",
+        "check": "NETWORK",
+        "packageName": "com.photo.filters.free",
+        "severity": "MEDIUM",
+        "priority": 50,
+        "bucket": "WORTH_REMOVING",
+        "summary": "reports to an unrecognized host on a fixed schedule",
+        "reason": "com.photo.filters.free looked up c2.metrics-collector.xyz every 60 s for the whole monitor window. A fixed schedule to a host that is not a recognized service is how monitoring software reports in. It can also be an ordinary app polling its own server.",
+        "remediation": "If you do not know what com.photo.filters.free is or why it would report on a schedule, uninstall it. If you do, nothing to do.",
+        "evidenceRef": [
+            "app:com.photo.filters.free",
+            "flow:c2.metrics-collector.xyz:com.photo.filters.free"
+        ]
+    }
+]

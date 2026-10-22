@@ -25,6 +25,10 @@ NOT CHECKED: Usage access not granted
 ## Network
 Nothing flagged.
 
+Where each app sent data during the monitor window:
+- Spotify (com.spotify.music): known: api.spotify.com
+- WhatsApp (com.whatsapp): known: g.whatsapp.net
+
 ## Verdict
 VERDICT: clean
 This verdict does not cover: Persistence (Usage access not granted).

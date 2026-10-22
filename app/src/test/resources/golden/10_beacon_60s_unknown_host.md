@@ -23,22 +23,34 @@ Nothing flagged.
 Nothing flagged.
 
 ## Network
-Nothing flagged.
+
+### Photo Filters (com.photo.filters.free)
+- What it is: com.photo.filters.free looked up c2.metrics-collector.xyz every 60 s for the whole monitor window. A fixed schedule to a host that is not a recognized service is how monitoring software reports in. It can also be an ordinary app polling its own server.
+- What it can reach: nothing beyond its own data
+- How long it has been there: since at latest 2026-09-09
+- Where it sends data: c2.metrics-collector.xyz
+- Severity: medium
+- What to do: If you do not know what com.photo.filters.free is or why it would report on a schedule, uninstall it. If you do, nothing to do.
+
+Where each app sent data during the monitor window:
+- Photo Filters (com.photo.filters.free): unrecognized: c2.metrics-collector.xyz; every 60 s to c2.metrics-collector.xyz (10 times)
+- Spotify (com.spotify.music): known: api.spotify.com
+- WhatsApp (com.whatsapp): known: g.whatsapp.net
 
 ## Verdict
 VERDICT: clean
 
 ## Safe
-- 9 other apps had nothing flagged.
+- 8 other apps had nothing flagged.
 
 ## Worth removing
-- none
+- com.photo.filters.free (medium): reports to an unrecognized host on a fixed schedule
 
 ## Needs a professional
 - none
 
 ## The single most important thing to do next
-Nothing to do. Rescan after installing anything new.
+If you do not know what com.photo.filters.free is or why it would report on a schedule, uninstall it. If you do, nothing to do.
 
 ## What this scan cannot see
 

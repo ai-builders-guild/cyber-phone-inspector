@@ -578,6 +578,102 @@
         "fact": "duplicate",
         "eq": true
       }
+    },
+    {
+      "id": "beacon_unrecognized_host",
+      "check": "NETWORK",
+      "priority": 50,
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "summary": "reports to an unrecognized host on a fixed schedule",
+      "reason": "{package} looked up {beaconHost} every {beaconInterval} s for the whole monitor window. A fixed schedule to a host that is not a recognized service is how monitoring software reports in. It can also be an ordinary app polling its own server.",
+      "remediation": "If you do not know what {package} is or why it would report on a schedule, uninstall it. If you do, nothing to do.",
+      "evidence": [
+        "app",
+        "flow"
+      ],
+      "when": {
+        "fact": "net.beacon",
+        "eq": true
+      }
+    },
+    {
+      "id": "raw_ip_suspect",
+      "check": "NETWORK",
+      "priority": 60,
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "summary": "sent data with no name lookup",
+      "reason": "{package} sent about {bytesSentMb} MB during the monitor window without looking up a single name, which means it talks to fixed addresses. Some media and gaming apps do this; so does software that avoids leaving a trail.",
+      "remediation": "Check Settings > Apps > {package} > Mobile data and Wi Fi usage. If the app has no reason to send that much, uninstall it.",
+      "evidence": [
+        "app",
+        "flow"
+      ],
+      "when": {
+        "fact": "net.rawIpSuspect",
+        "eq": true
+      }
+    },
+    {
+      "id": "unrecognized_host_with_oddity",
+      "check": "NETWORK",
+      "priority": 70,
+      "severity": "MEDIUM",
+      "bucket": "WORTH_REMOVING",
+      "summary": "talks to unrecognized hosts and has another oddity",
+      "reason": "{package} talks to hosts that are not recognized services ({unrecognizedList}) and also has another oddity in this report (install source, a control grant, an odd permission, or heavy background use).",
+      "remediation": "Review the other finding for {package} first; together they are worth acting on.",
+      "evidence": [
+        "app",
+        "flow"
+      ],
+      "when": {
+        "all": [
+          {
+            "fact": "net.unrecognizedHosts",
+            "gt": 0
+          },
+          {
+            "fact": "anyOddity",
+            "eq": true
+          },
+          {
+            "fact": "net.beacon",
+            "eq": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "unrecognized_host_alone",
+      "check": "NETWORK",
+      "priority": 100,
+      "severity": "LOW",
+      "bucket": "SAFE",
+      "summary": "talks to unrecognized hosts",
+      "reason": "{package} talks to hosts that are not on the list of recognized services ({unrecognizedList}). Unrecognized means not on the list; it is not a judgment. Most apps have servers of their own.",
+      "remediation": "Nothing to do unless the names surprise you.",
+      "evidence": [
+        "app",
+        "flow"
+      ],
+      "when": {
+        "all": [
+          {
+            "fact": "net.unrecognizedHosts",
+            "gt": 0
+          },
+          {
+            "fact": "anyOddity",
+            "eq": false
+          },
+          {
+            "fact": "net.beacon",
+            "eq": false
+          }
+        ]
+      }
     }
   ]
 }

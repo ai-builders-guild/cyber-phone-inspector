@@ -7,6 +7,8 @@ import com.cyberrick.phoneinspector.core.model.Evidence
 import com.cyberrick.phoneinspector.core.model.SensitiveGroup
 import com.cyberrick.phoneinspector.rules.Bucket
 import com.cyberrick.phoneinspector.rules.Finding
+import com.cyberrick.phoneinspector.rules.KnownServices
+import com.cyberrick.phoneinspector.rules.NetworkFacts
 import com.cyberrick.phoneinspector.rules.Severity
 import java.time.Instant
 import java.time.ZoneOffset
@@ -43,13 +45,24 @@ object ReportRenderer {
     private val day = DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneOffset.UTC)
     private val local = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm zzz", Locale.US)
 
-    fun render(input: ReportInput): String {
+    fun render(
+        input: ReportInput,
+        known: KnownServices = KnownServices(emptySet()),
+    ): String {
         val e = input.evidence
         val verdict = Verdict.of(input.findings, e.checks)
         return buildString {
             header(e, input)
             section("What this scan touched") { input.touched.forEach { appendLine("- $it") } }
-            CheckKind.entries.forEach { check -> checkSection(check, e, input.findings.filter { it.check == check }) }
+            CheckKind.entries.forEach { check ->
+                checkSection(check, e, input.findings.filter { it.check == check }) {
+                    if (check ==
+                        CheckKind.NETWORK
+                    ) {
+                        hostListing(e, known)
+                    }
+                }
+            }
             section("Verdict") {
                 appendLine("VERDICT: ${verdict.word}")
                 if (verdict.uncovered.isNotEmpty()) {
@@ -92,6 +105,7 @@ object ReportRenderer {
         check: CheckKind,
         e: Evidence,
         findings: List<Finding>,
+        extra: StringBuilder.() -> Unit = {},
     ) {
         section(sectionTitles.getValue(check)) {
             val status = e.checks.firstOrNull { it.check == check }
@@ -110,6 +124,7 @@ object ReportRenderer {
                     lows.forEach { lowLine(it, e) }
                 }
             }
+            extra()
         }
     }
 
@@ -127,6 +142,32 @@ object ReportRenderer {
         appendLine("- Where it sends data: ${sendsTo(pkg, e)}")
         appendLine("- Severity: ${f.severity.name.lowercase()}")
         appendLine("- What to do: ${f.remediation}")
+    }
+
+    /** Where every app with observed flows sends data, flagged or not: known names, unrecognized names, bytes without lookups. */
+    private fun StringBuilder.hostListing(
+        e: Evidence,
+        known: KnownServices,
+    ) {
+        val packages =
+            e.flows
+                .mapNotNull { it.packageName }
+                .distinct()
+                .sorted()
+        if (packages.isEmpty()) return
+        appendLine()
+        appendLine("Where each app sent data during the monitor window:")
+        packages.forEach { pkg ->
+            val f = NetworkFacts.forPackage(pkg, e.flows, known)
+            val label = e.apps.firstOrNull { it.packageName == pkg }?.label ?: pkg
+            val parts = mutableListOf<String>()
+            if (f.knownHosts.isNotEmpty()) parts += "known: ${f.knownHosts.joinToString(", ")}"
+            if (f.unrecognizedHosts.isNotEmpty()) parts += "unrecognized: ${f.unrecognizedHosts.joinToString(", ")}"
+            f.beacon?.let { parts += "every ${it.intervalSeconds} s to ${it.host} (${it.count} times)" }
+            if (f.bytesSent > 0) parts += "sent ${f.bytesSent / 1024} KB"
+            if (f.lookups == 0 && f.bytesSent > 0) parts += "no name lookups"
+            appendLine("- $label ($pkg): ${parts.joinToString("; ")}")
+        }
     }
 
     /** A low finding is still a flag with all five facts, on one line, so the report stays readable at 40 of them. */

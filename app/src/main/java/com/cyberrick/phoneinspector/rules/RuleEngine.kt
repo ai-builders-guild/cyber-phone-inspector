@@ -6,9 +6,10 @@ import com.cyberrick.phoneinspector.core.model.Evidence
 class RuleEngine(
     private val rules: RuleSet,
     private val ioc: IocMatcher,
+    private val known: KnownServices = KnownServices(emptySet()),
 ) {
     fun evaluate(evidence: Evidence): List<Finding> {
-        val facts = Facts.perPackage(evidence, ioc)
+        val facts = Facts.perPackage(evidence, ioc, known)
         return facts
             .flatMap { (pkg, f) ->
                 rules.rules.filter { it.condition.evaluate(f) }.map { rule -> finding(rule, pkg, evidence, f) }
@@ -39,7 +40,14 @@ class RuleEngine(
         template: String,
         pkg: String,
         facts: Map<String, Any?>,
-    ): String = template.replace("{package}", pkg).replace("{iocSources}", facts["iocSources"]?.toString().orEmpty())
+    ): String =
+        template
+            .replace("{package}", pkg)
+            .replace("{iocSources}", facts["iocSources"]?.toString().orEmpty())
+            .replace("{beaconHost}", facts["net.beaconHost"]?.toString().orEmpty())
+            .replace("{beaconInterval}", facts["net.beaconInterval"]?.toString().orEmpty())
+            .replace("{bytesSentMb}", facts["net.bytesSentMb"]?.toString().orEmpty())
+            .replace("{unrecognizedList}", facts["net.unrecognizedList"]?.toString().orEmpty())
 
     private fun refs(
         kind: String,

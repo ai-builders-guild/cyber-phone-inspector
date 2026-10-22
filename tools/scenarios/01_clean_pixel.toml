@@ -62,7 +62,7 @@ uid = 10101
 packageName = "com.whatsapp"
 host = "g.whatsapp.net"
 answerIps = ["157.240.1.60"]
-repeat = 3
+repeat = 6
 intervalSeconds = 97
 jitterSeconds = 40
 [[flows]]

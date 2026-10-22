@@ -27,7 +27,7 @@ class RuleEngineTest {
             certs = setOf("sha256:deadbeef"),
             packageSources = mapOf("com.example.ioc.match" to listOf("Test list A", "Test list B")),
         )
-    private val engine = RuleEngine(rules, IocMatcher(iocs))
+    private val engine = RuleEngine(rules, IocMatcher(iocs), KnownServices(setOf("spotify.com", "whatsapp.net")))
 
     private fun app(
         pkg: String,
@@ -365,6 +365,88 @@ class RuleEngineTest {
 
         assertThat(findings.map { -it.severity.rank }).isInOrder()
         assertThat(findings.first().severity).isEqualTo(Severity.HIGH)
+    }
+
+    private fun dns(
+        pkg: String,
+        host: String,
+        at: Long,
+    ) = com.cyberrick.phoneinspector.core.model.FlowRecord(
+        uid = 1,
+        packageName = pkg,
+        host = host,
+        protocol = "udp",
+        observedAt = at,
+        api = "t",
+        collectedAt = now,
+    )
+
+    private fun counter(
+        pkg: String,
+        bytes: Long,
+    ) = com.cyberrick.phoneinspector.core.model.FlowRecord(
+        uid = 1,
+        packageName = pkg,
+        host = null,
+        protocol = "counter",
+        observedAt = now,
+        bytesSent = bytes,
+        api = "t",
+        collectedAt = now,
+    )
+
+    @Test
+    fun `a sixty second beacon to an unrecognized host is medium and names the interval`() {
+        val flows = (0 until 8).map { dns("com.photo", "c2.metrics-collector.xyz", now + it * 60_000L) }
+
+        val f = engine.evaluate(evidence(listOf(app("com.photo"))).copy(flows = flows)).single { it.ruleId == "beacon_unrecognized_host" }
+
+        assertThat(f.severity).isEqualTo(Severity.MEDIUM)
+        assertThat(f.check).isEqualTo(CheckKind.NETWORK)
+        assertThat(f.reason).contains("every 60 s")
+        assertThat(f.reason).contains("c2.metrics-collector.xyz")
+    }
+
+    @Test
+    fun `bytes sent with no lookups is medium raw ip suspect`() {
+        val f = engine.evaluate(evidence(listOf(app("com.weather"))).copy(flows = listOf(counter("com.weather", 2_097_152)))).single()
+
+        assertThat(f.ruleId).isEqualTo("raw_ip_suspect")
+        assertThat(f.severity).isEqualTo(Severity.MEDIUM)
+    }
+
+    @Test
+    fun `an unrecognized host alone is low and with another oddity on the app is medium`() {
+        val alone = engine.evaluate(evidence(listOf(app("com.a"))).copy(flows = listOf(dns("com.a", "odd.example", now))))
+        val withOddity =
+            engine.evaluate(
+                evidence(listOf(app("com.b", InstallSource.SIDELOADED))).copy(flows = listOf(dns("com.b", "odd.example", now))),
+            )
+
+        assertThat(alone.single().ruleId).isEqualTo("unrecognized_host_alone")
+        assertThat(alone.single().severity).isEqualTo(Severity.LOW)
+        assertThat(withOddity.single { it.ruleId == "unrecognized_host_with_oddity" }.severity).isEqualTo(Severity.MEDIUM)
+    }
+
+    @Test
+    fun `known hosts only yield no network finding`() {
+        val flows = (0 until 10).map { dns("com.spotify.music", "api.spotify.com", now + it * 60_000L) }
+
+        assertThat(engine.evaluate(evidence(listOf(app("com.spotify.music"))).copy(flows = flows))).isEmpty()
+    }
+
+    @Test
+    fun `network rule wording says unrecognized and never malicious`() {
+        rules.rules.filter { it.check == CheckKind.NETWORK }.forEach {
+            assertThat(it.reason.lowercase()).doesNotContain("malicious")
+            assertThat(it.summary.lowercase()).doesNotContain("malicious")
+        }
+        assertThat(
+            rules.rules
+                .single { it.id == "unrecognized_host_alone" }
+                .reason
+                .lowercase(),
+        ).contains("unrecognized")
     }
 
     @Test

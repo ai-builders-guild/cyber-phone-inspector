@@ -197,3 +197,12 @@ Rick's first full report (phone, with the monitor) carried two highs, both paren
 3. `com.samsung.`, `com.sec.android.` and `com.google.android.` are first party prefixes in the permission expectations: the phone's own recorder, camera, calendar and health apps are expected to hold what they hold.
 4. Every rule has a `summary`; the three lists use it. Low findings render as one line with the five facts inline; medium and high keep the full block. The report for the stalkerware fixture went from four repeated paragraphs per list entry to one line each.
 No package names from the report are recorded here; the categories above are enough to reproduce the decision.
+
+## 2026-10-22 / Network rules: known is a suffix list, beacons are regularity, raw IP is bytes without lookups
+`assets/known_services.json` holds 146 domain suffixes (platform vendors, big apps, CDNs, analytics, carriers). Known means recognised, never endorsed; unrecognized means not on the list, and the rule text says so and never says "malicious" (asserted by a test). A beacon is five or more lookups of one unrecognized host whose gaps vary by under 15 percent around their mean; regular polling of a known host is ignored. Raw IP suspect is over 1 MB sent with zero lookups in the window. An unrecognized host alone is low; with another oddity on the same app it is medium, using an `anyOddity` fact rather than cross rule lookups.
+
+## 2026-10-22 / The Network section lists every app's hosts, flagged or not
+"Where it sends data" is answered for every app seen by the monitor, grouped as known and unrecognized, with any beacon interval and byte total. This is the part of the brief a reader most wants to eyeball, so it does not depend on a rule firing.
+
+## 2026-10-22 / Clean fixture carries a jittered series
+Six WhatsApp lookups with a deterministic jitter pattern (gap variation about 0.4) sit in the clean fixture so the non beacon case is in a golden report, next to the ten lookup, 60 second series in the beacon fixture.

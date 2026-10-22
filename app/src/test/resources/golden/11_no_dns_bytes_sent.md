@@ -23,22 +23,34 @@ Nothing flagged.
 Nothing flagged.
 
 ## Network
-Nothing flagged.
+
+### Weather Lite (com.weather.widget.lite)
+- What it is: com.weather.widget.lite sent about 2 MB during the monitor window without looking up a single name, which means it talks to fixed addresses. Some media and gaming apps do this; so does software that avoids leaving a trail.
+- What it can reach: nothing beyond its own data
+- How long it has been there: since at latest 2026-09-09
+- Where it sends data: no network observed
+- Severity: medium
+- What to do: Check Settings > Apps > com.weather.widget.lite > Mobile data and Wi Fi usage. If the app has no reason to send that much, uninstall it.
+
+Where each app sent data during the monitor window:
+- Spotify (com.spotify.music): known: api.spotify.com
+- Weather Lite (com.weather.widget.lite): sent 2048 KB; no name lookups
+- WhatsApp (com.whatsapp): known: g.whatsapp.net
 
 ## Verdict
 VERDICT: clean
 
 ## Safe
-- 9 other apps had nothing flagged.
+- 8 other apps had nothing flagged.
 
 ## Worth removing
-- none
+- com.weather.widget.lite (medium): sent data with no name lookup
 
 ## Needs a professional
 - none
 
 ## The single most important thing to do next
-Nothing to do. Rescan after installing anything new.
+Check Settings > Apps > com.weather.widget.lite > Mobile data and Wi Fi usage. If the app has no reason to send that much, uninstall it.
 
 ## What this scan cannot see
 
