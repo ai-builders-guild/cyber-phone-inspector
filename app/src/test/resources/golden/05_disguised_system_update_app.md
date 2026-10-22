@@ -34,6 +34,10 @@ Nothing flagged.
 ## Network
 Nothing flagged.
 
+Where each app sent data during the monitor window:
+- Spotify (com.spotify.music): known: api.spotify.com
+- WhatsApp (com.whatsapp): known: g.whatsapp.net
+
 ## Verdict
 VERDICT: clean
 

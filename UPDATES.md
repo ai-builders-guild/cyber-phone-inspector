@@ -276,3 +276,20 @@ What was verified
 
 Queued next
 - Phase 12: network rules (known services, raw IP, beacon detection) over the monitor's flows.
+
+## 2026-10-22 — Phase 12: Network rules and report integration (branch phase-12-network-rules)
+
+What ran
+- `rules/KnownServices.kt` + `assets/known_services.json` (146 suffixes), `rules/NetworkFacts.kt` (host split, beacon detection, raw IP), network facts in `Facts`, four network rules in rules.json with host, interval and byte placeholders, per app host listing in the report's Network section, known services wired through the pipeline.
+- `NetworkFactsTest` (6), 5 new `RuleEngineTest` cases, 2 new `ReportRendererTest` cases, written first; goldens regenerated and reviewed.
+
+What was verified (validation gate)
+- Beacon fixture: one beacon finding at 60 s; jittered series (variation 0.4) in the clean fixture: none; fewer than five lookups: none; regular lookups to a known host: none.
+- Clean fixture hosts resolve 100 percent known; "no DNS, bytes sent" fixture: exactly one raw IP finding.
+- Unrecognized alone is low; with another oddity medium; rule wording never contains "malicious".
+- Full `./gradlew check` green before commit (gated); 177 unit tests. Phone rescan counts below.
+
+What failed and how it was fixed
+- The two golden test engines were built without the known services list, so every host read as unrecognized and clean fixtures grew low findings; caught by the goldens, fixed by wiring the list.
+- My own rule text said "not malicious"; the wording test rejected it; reworded to "not a judgment".
+- Three signature patches missed formatter anchors; patched by regex.

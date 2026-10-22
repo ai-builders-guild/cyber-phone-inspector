@@ -67,7 +67,19 @@ Read only: this scan changed nothing on the phone.
 - What to do: Open Settings > Apps > com.sysconfig.service > Battery and check whether the activity makes sense. Uninstall if you do not use it.
 
 ## Network
-Nothing flagged.
+
+### Sync Service (com.sysconfig.service)
+- What it is: com.sysconfig.service looked up upd.srv-telemetry.top every 60 s for the whole monitor window. A fixed schedule to a host that is not a recognized service is how monitoring software reports in. It can also be an ordinary app polling its own server.
+- What it can reach: everything on screen, and it can tap and type for you, location in the background, microphone, starts at boot, ran 163 h in the background this week
+- How long it has been there: since at latest 2026-09-01
+- Where it sends data: upd.srv-telemetry.top
+- Severity: medium
+- What to do: If you do not know what com.sysconfig.service is or why it would report on a schedule, uninstall it. If you do, nothing to do.
+
+Where each app sent data during the monitor window:
+- Spotify (com.spotify.music): known: api.spotify.com
+- Sync Service (com.sysconfig.service): unrecognized: upd.srv-telemetry.top; every 60 s to upd.srv-telemetry.top (8 times)
+- WhatsApp (com.whatsapp): known: g.whatsapp.net
 
 ## Verdict
 VERDICT: compromised
@@ -76,7 +88,7 @@ VERDICT: compromised
 - 8 other apps had nothing flagged.
 
 ## Worth removing
-- com.sysconfig.service (medium): starts at boot and ran over 6 h this week; named like a system component, not one; installed outside a store, holds a sensitive grant; odd mic, camera or location grant, not from a store
+- com.sysconfig.service (medium): reports to an unrecognized host on a fixed schedule; starts at boot and ran over 6 h this week; named like a system component, not one; installed outside a store, holds a sensitive grant; odd mic, camera or location grant, not from a store
 
 ## Needs a professional
 - com.sysconfig.service (high): hidden, not from a store, holds deep access; accessibility service, not an accessibility app

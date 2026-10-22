@@ -12,6 +12,7 @@ object Facts {
     fun perPackage(
         evidence: Evidence,
         ioc: IocMatcher,
+        known: KnownServices = KnownServices(emptySet()),
     ): Map<String, Map<String, Any?>> {
         val packages =
             (
@@ -60,6 +61,25 @@ object Facts {
                 put("iocPackage", ioc.packageHit(pkg))
                 put("iocCert", app?.let { ioc.certHit(it.signingCertSha256) } ?: false)
                 put("iocDomain", hosts.any { ioc.domainHit(it) })
+                val net = NetworkFacts.forPackage(pkg, evidence.flows, known)
+                put("net.knownHosts", net.knownHosts.size)
+                put("net.unrecognizedHosts", net.unrecognizedHosts.size)
+                put("net.beacon", net.beacon != null)
+                put("net.beaconHost", net.beacon?.host ?: "")
+                put("net.beaconInterval", net.beacon?.intervalSeconds ?: 0)
+                put("net.rawIpSuspect", net.rawIpSuspect)
+                put("net.bytesSentMb", net.bytesSent / 1_048_576)
+                put("net.unrecognizedList", net.unrecognizedHosts.take(5).joinToString(", "))
+                // Any other oddity on the app turns an unrecognized host from low into medium.
+                put(
+                    "anyOddity",
+                    (app?.installSource !in STORE_SOURCES && app != null) ||
+                        controls.isNotEmpty() ||
+                        perms.any { it.unexpected } ||
+                        (app?.hidden ?: false) ||
+                        (app?.disguised ?: false) ||
+                        (persist?.backgroundHeavy ?: false),
+                )
                 val sources = ioc.sourcesFor(pkg)
                 put(
                     "iocSources",

@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "ruleId": "raw_ip_suspect",
+        "check": "NETWORK",
+        "packageName": "com.weather.widget.lite",
+        "severity": "MEDIUM",
+        "priority": 60,
+        "bucket": "WORTH_REMOVING",
+        "summary": "sent data with no name lookup",
+        "reason": "com.weather.widget.lite sent about 2 MB during the monitor window without looking up a single name, which means it talks to fixed addresses. Some media and gaming apps do this; so does software that avoids leaving a trail.",
+        "remediation": "Check Settings > Apps > com.weather.widget.lite > Mobile data and Wi Fi usage. If the app has no reason to send that much, uninstall it.",
+        "evidenceRef": [
+            "app:com.weather.widget.lite"
+        ]
+    }
+]

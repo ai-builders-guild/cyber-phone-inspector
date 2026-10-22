@@ -36,6 +36,7 @@ class GoldenFindingsTest {
                         shipped.packageSources + ("com.example.ioc.match" to listOf("Test only list")),
                 ),
             ),
+            KnownServices.parse(File(moduleDir, "src/main/assets/${KnownServices.ASSET}").readText(Charsets.UTF_8)),
         )
     }
 

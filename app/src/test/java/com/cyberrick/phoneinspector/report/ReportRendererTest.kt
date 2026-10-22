@@ -3,6 +3,7 @@ package com.cyberrick.phoneinspector.report
 import com.cyberrick.phoneinspector.core.model.Evidence
 import com.cyberrick.phoneinspector.rules.IocMatcher
 import com.cyberrick.phoneinspector.rules.IocSet
+import com.cyberrick.phoneinspector.rules.KnownServices
 import com.cyberrick.phoneinspector.rules.RuleEngine
 import com.cyberrick.phoneinspector.rules.RuleSet
 import com.google.common.truth.Truth.assertThat
@@ -17,6 +18,9 @@ class ReportRendererTest {
     private val goldenDir = File(moduleDir, "src/test/resources/golden")
     private val update = System.getProperty("cpi.updateGolden") == "true"
     private val zone: ZoneId = ZoneId.of("America/New_York")
+    private val knownServices by lazy {
+        KnownServices.parse(File(moduleDir, "src/main/assets/${KnownServices.ASSET}").readText(Charsets.UTF_8))
+    }
 
     private val engine: RuleEngine by lazy {
         val rules = RuleSet.parse(File(moduleDir, "src/main/assets/${RuleSet.ASSET}").readText(Charsets.UTF_8))
@@ -30,6 +34,7 @@ class ReportRendererTest {
                         shipped.packageSources + ("com.example.ioc.match" to listOf("Test only list")),
                 ),
             ),
+            KnownServices.parse(File(moduleDir, "src/main/assets/${KnownServices.ASSET}").readText(Charsets.UTF_8)),
         )
     }
 
@@ -37,7 +42,7 @@ class ReportRendererTest {
 
     private fun render(file: File): String {
         val evidence = Evidence.load(file)
-        return ReportRenderer.render(ReportInput(evidence, engine.evaluate(evidence), ScanTouched.DEFAULT, zone))
+        return ReportRenderer.render(ReportInput(evidence, engine.evaluate(evidence), ScanTouched.DEFAULT, zone), knownServices)
     }
 
     @Test
@@ -192,6 +197,24 @@ class ReportRendererTest {
 
         assertThat(md.section("## Safe")).contains("- org.fdroid.example.reader: installed outside a store, no sensitive grants")
         assertThat(md.section("## Safe")).doesNotContain("holds no microphone, camera or location grant")
+    }
+
+    @Test
+    fun `network section lists each app's hosts grouped as known and unrecognized`() {
+        val md = render(fixture("01_")).section("## Network")
+
+        assertThat(md).contains("WhatsApp (com.whatsapp): known: g.whatsapp.net")
+        assertThat(md).contains("Spotify (com.spotify.music): known: api.spotify.com")
+        assertThat(md).doesNotContain("unrecognized:")
+    }
+
+    @Test
+    fun `beacon fixture network section shows the beacon finding and the interval`() {
+        val md = render(fixture("10_")).section("## Network")
+
+        assertThat(md).contains("Photo Filters (com.photo.filters.free)")
+        assertThat(md).contains("every 60 s")
+        assertThat(md).contains("unrecognized: c2.metrics-collector.xyz")
     }
 
     @Test

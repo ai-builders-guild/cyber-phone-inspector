@@ -72,8 +72,10 @@ Collectors are pure functions of Android system services that emit immutable evi
 | Background location, mic, or camera granted outside expected category AND install source not Play, vendor store, or web app | medium | worthRemoving |
 | Background location, mic, or camera granted outside expected category on a store install, alone | low | safe (listed with the note) |
 | Boot receiver AND backgroundHeavy outside expected category | medium | worthRemoving |
-| Fixed interval beacon to an unrecognized host | medium | worthRemoving |
-| bytes sent with no DNS seen (rawIpSuspect) | medium | worthRemoving |
+| Fixed interval beacon to an unrecognized host (5 or more lookups, gap variation under 15 percent) | medium | worthRemoving |
+| More than 1 MB sent with no DNS lookup at all (rawIpSuspect) | medium | worthRemoving |
+| Unrecognized host AND another oddity on the same app (non store install, control grant, odd permission, hidden, disguised, heavy background) | medium | worthRemoving |
+| Unrecognized host alone | low | safe (listed with the note) |
 | Any single oddity alone (sideloaded with no sensitive perms, unrecognized host alone, boot receiver alone) | low | safe (listed with the note) |
 | Control grant (admin, accessibility, listener) on a package missing from the inventory | medium | needsProfessional |
 | Profile owner present (work profile) | low | safe (listed with the note) |

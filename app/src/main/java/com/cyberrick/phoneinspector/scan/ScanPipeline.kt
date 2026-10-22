@@ -24,6 +24,7 @@ import com.cyberrick.phoneinspector.report.ReportRenderer
 import com.cyberrick.phoneinspector.report.ScanTouched
 import com.cyberrick.phoneinspector.rules.IocMatcher
 import com.cyberrick.phoneinspector.rules.IocSet
+import com.cyberrick.phoneinspector.rules.KnownServices
 import com.cyberrick.phoneinspector.rules.RuleEngine
 import com.cyberrick.phoneinspector.rules.RuleSet
 import kotlinx.coroutines.CoroutineDispatcher
@@ -75,6 +76,7 @@ class ScanPipeline(
             val expectations = PermissionExpectations.parse(asset(PermissionExpectations.ASSET))
             val ioc = IocSet.parse(asset("iocs/${IocSet.ASSET}"))
             val rules = RuleSet.parse(asset(RuleSet.ASSET))
+            val known = KnownServices.parse(asset(KnownServices.ASSET))
             val persistenceSource = AndroidPersistenceSource(context)
 
             val (apps, controls, permissions, persistence) =
@@ -112,8 +114,8 @@ class ScanPipeline(
                     flows = flows,
                     iocSnapshotDate = ioc.generatedAt,
                 ).withDuplicatesFlagged()
-            val findings = RuleEngine(rules, IocMatcher(ioc)).evaluate(evidence)
-            ScanResult(evidence, findings, ReportRenderer.render(ReportInput(evidence, findings, touched, zone)))
+            val findings = RuleEngine(rules, IocMatcher(ioc), known).evaluate(evidence)
+            ScanResult(evidence, findings, ReportRenderer.render(ReportInput(evidence, findings, touched, zone), known))
         }
 
     private data class Collected<A, B, C, D>(

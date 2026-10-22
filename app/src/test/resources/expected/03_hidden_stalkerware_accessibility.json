@@ -32,6 +32,21 @@
         ]
     },
     {
+        "ruleId": "beacon_unrecognized_host",
+        "check": "NETWORK",
+        "packageName": "com.sysconfig.service",
+        "severity": "MEDIUM",
+        "priority": 50,
+        "bucket": "WORTH_REMOVING",
+        "summary": "reports to an unrecognized host on a fixed schedule",
+        "reason": "com.sysconfig.service looked up upd.srv-telemetry.top every 60 s for the whole monitor window. A fixed schedule to a host that is not a recognized service is how monitoring software reports in. It can also be an ordinary app polling its own server.",
+        "remediation": "If you do not know what com.sysconfig.service is or why it would report on a schedule, uninstall it. If you do, nothing to do.",
+        "evidenceRef": [
+            "app:com.sysconfig.service",
+            "flow:upd.srv-telemetry.top:com.sysconfig.service"
+        ]
+    },
+    {
         "ruleId": "boot_and_background_heavy",
         "check": "PERSISTENCE",
         "packageName": "com.sysconfig.service",
