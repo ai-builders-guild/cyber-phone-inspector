@@ -2,34 +2,12 @@
     <string name="app_name">Cyber Phone Inspector</string>
     <string name="notification_channel">Scan progress</string>
     <string name="notification_scanning">Scanning this phone. Nothing is being changed.</string>
-
-    <string name="consent_title">Before the first scan</string>
-    <string name="consent_body">This app looks for anything on this phone that could watch you: hidden apps, apps with deep control, apps holding microphone, camera or location access they do not need, apps that run constantly, and where apps send data. It only reads. It never installs, removes or changes anything.</string>
-    <string name="consent_usage">Usage access (optional): lets the app see which apps ran in the background this week. Android asks you on a Settings screen. Without it the Persistence check is reported as not checked.</string>
-    <string name="consent_vpn">Local network monitor (coming in a later version): a local VPN that watches which names apps look up. Android asks you with a system dialog. It stops when the scan ends and never redirects or stores your traffic.</string>
     <string name="consent_readonly">Every report lists exactly what the scan touched.</string>
-    <string name="consent_continue">Continue</string>
-
-    <string name="home_body">One tap scans the phone and writes a plain language report: a verdict, three lists, and the single most important thing to do next.</string>
-    <string name="usage_access_granted">Usage access: granted.</string>
-    <string name="usage_access_missing">Usage access: not granted. The Persistence check will be reported as not checked.</string>
-    <string name="open_usage_access">Open usage access settings</string>
-    <string name="start_scan">Start scan</string>
 
     <string name="scanning_title">Scanning</string>
-    <string name="check_apps">Apps</string>
-    <string name="check_control">Deep control</string>
-    <string name="check_permissions">Permissions</string>
-    <string name="check_persistence">Persistence</string>
-    <string name="check_network">Network</string>
-    <string name="check_done">done</string>
-    <string name="check_pending">waiting</string>
     <string name="cancel">Cancel</string>
-
-    <string name="report_counts">High: %1$d. Medium: %2$d. Low: %3$d.</string>
     <string name="share_report">Share report</string>
     <string name="save_report">Save to Downloads</string>
-    <string name="scan_again">Scan again</string>
     <string name="saved_to_downloads">Saved to Download/%1$s</string>
     <string name="save_failed">Could not save: %1$s</string>
 
@@ -40,12 +18,76 @@
     <string name="monitor_notification">Network monitor running. Window in minutes: %1$d. Only DNS lookups are observed.</string>
     <string name="monitor_no_network">No active network.</string>
     <string name="monitor_no_dns">The current network reports no DNS server.</string>
-    <string name="monitor_title">Network monitor</string>
-    <string name="monitor_body">Watches which names each app looks up through a local VPN, then stops. Window in minutes: %1$d. Nothing is redirected or stored beyond the names. The next scan uses the result.</string>
-    <string name="monitor_start">Start network monitor</string>
-    <string name="monitor_stop">Stop monitor now</string>
-    <string name="monitor_running">Running. Lookups so far: %1$d. Minutes left: %2$d.</string>
-    <string name="monitor_finished">Last run. Lookups: %1$d. Median answer time in ms: %2$d. The next scan includes it.</string>
     <string name="monitor_refused">Could not start: %1$s</string>
-    <string name="monitor_idle">Not run yet. The Network check will be reported as not checked.</string>
+
+    <!-- v1.1 screens -->
+    <string name="launch_question">Is anything stealing from this phone?</string>
+    <string name="launch_body">Checks every app, who has deep control, what can hear or watch you, what runs all the time, and where your data goes. Reads only. Changes nothing until you say so.</string>
+    <string name="scan_now">Scan now</string>
+    <string name="what_it_touches">What a scan touches</string>
+    <string name="ring_not_scanned">NOT SCANNED</string>
+    <string name="ring_safety">SAFETY</string>
+    <string name="kept_link">Apps you marked as yours: %1$d</string>
+    <string name="sheet_title">Before the first scan</string>
+    <string name="sheet_body">This app looks for anything on this phone that could steal from you: known malware, hidden apps, apps with deep control, apps that can read your screen or your messages, apps that run all the time, and where your data goes. It only reads. It never removes or changes anything itself; when you choose to remove an app, Android shows its own confirmation.</string>
+    <string name="sheet_lists">Every app is checked against lists stored on this phone (MalwareBazaar, URLhaus, ThreatFox, Exodus Privacy, MVT). Nothing about this phone is sent anywhere.</string>
+    <string name="sheet_usage">Usage access (optional): lets the app see which apps ran in the background this week. Android asks you on a Settings screen.</string>
+    <string name="sheet_watch">Data flow watch (optional, 10 minutes): a local VPN that notes which names apps look up, then stops. Android asks you with a system dialog. Nothing is redirected or stored beyond the names.</string>
+    <string name="sheet_continue">Continue and scan</string>
+    <string name="scanning_checks">%1$d OF %2$d CHECKS</string>
+    <string name="scanning_inside">Looking inside apps. The first scan takes a minute or two; later scans are quick.</string>
+    <string name="scanning_needs_permission">needs one permission</string>
+    <string name="grant_usage_access">Grant usage access</string>
+    <plurals name="remove_threats">
+        <item quantity="one">Remove the threat</item>
+        <item quantity="other">Remove %1$d threats</item>
+    </plurals>
+    <plurals name="apps_fine">
+        <item quantity="one">%1$d app is fine</item>
+        <item quantity="other">%1$d apps are fine</item>
+    </plurals>
+    <string name="see_full_report">See the full report</string>
+    <string name="watch_card_title">Watch where your data goes</string>
+    <string name="watch_card_body">A 10 minute local watch notes which names each app looks up, then the result is rescanned on its own. Android asks for consent first.</string>
+    <plurals name="watch_card_running">
+        <item quantity="one">Watching: %1$d lookup so far, %2$d minutes left.</item>
+        <item quantity="other">Watching: %1$d lookups so far, %2$d minutes left.</item>
+    </plurals>
+    <string name="watch_card_done">Watched for 10 minutes. This result includes it.</string>
+    <string name="watch_start">Start the 10 minute watch</string>
+    <string name="watch_stop">Stop the watch</string>
+    <plurals name="capped_note">
+        <item quantity="one">%1$d check could not run, so the score stops at 90.</item>
+        <item quantity="other">%1$d checks could not run, so the score stops at 90.</item>
+    </plurals>
+    <string name="rescan">Scan again</string>
+    <string name="detail_back">Back</string>
+    <string name="detail_can_read">Can read</string>
+    <string name="detail_sends_to">Sends to</string>
+    <string name="detail_since">On this phone since</string>
+    <string name="detail_runs">Runs</string>
+    <string name="detail_why">Why it is flagged</string>
+    <string name="remove_this_app">Remove this app</string>
+    <string name="remove_note">Android will ask you to confirm. Nothing is removed until you tap Uninstall there.</string>
+    <string name="keep_it">Keep it, I know this app</string>
+    <string name="unkeep_it">Stop keeping this app</string>
+    <string name="kept_note">You marked this app as yours. Its findings are a note in the report and not counted.</string>
+    <string name="two_step_title">Two steps to remove it</string>
+    <string name="two_step_one">1. Turn off its control in Settings</string>
+    <string name="two_step_two">2. Uninstall</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="still_installed">Still installed: %1$s</string>
+    <string name="not_removable">This is part of the phone\'s system and cannot be uninstalled. It can be disabled from its Settings page.</string>
+    <string name="open_app_info">Open its Settings page</string>
+    <string name="stalkerware_line">If you believe someone you know installed this, do not remove it yet; keep the phone as it is and get help.</string>
+    <string name="after_threats_gone">Threats are gone</string>
+    <string name="after_review_done">Review done</string>
+    <string name="after_body">Rescanned just now. Now protect what they may have already taken.</string>
+    <string name="after_body_light">Rescanned just now. Nothing above a note remains.</string>
+    <string name="done">Done</string>
+    <string name="kept_title">Apps you marked as yours</string>
+    <string name="kept_empty">None yet. Tap "Keep it, I know this app" on a threat card to add one.</string>
+    <string name="kept_since">Kept since %1$s</string>
+    <string name="full_report">Full report</string>
+    <string name="report_intro">The professional\'s view: every check, every flag, what was touched and what this scan cannot see.</string>
 </resources>

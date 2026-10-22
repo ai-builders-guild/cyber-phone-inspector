@@ -65,6 +65,10 @@ class RemoveAction(
         packageName: String,
         blocker: RemovalBlocker,
     ): Intent {
+        if (blocker == RemovalBlocker.DEVICE_ADMIN) {
+            val list = Intent().setClassName(SettingsLinks.DEVICE_ADMIN_LIST_PACKAGE, SettingsLinks.DEVICE_ADMIN_LIST_CLASS)
+            if (pm.resolveActivity(list, 0) != null) return list
+        }
         val resolver = SettingsLinks.Resolver { action -> pm.resolveActivity(Intent(action), 0) != null }
         val action = SettingsLinks.choose(blocker, resolver)
         val intent = Intent(action)

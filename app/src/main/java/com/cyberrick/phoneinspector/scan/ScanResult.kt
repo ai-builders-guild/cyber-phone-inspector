@@ -12,6 +12,10 @@ data class ScanResult(
     val report: String,
     val score: SafetyScore = SafetyScore.of(findings, evidence.checks),
     val kept: List<KeptApp> = emptyList(),
+    /** Findings before the kept list was applied, so a keep or un keep re renders without a rescan. */
+    val rawFindings: List<Finding> = findings,
+    /** The "what this scan touched" lines without the kept app lines. */
+    val touched: List<String> = emptyList(),
 ) {
     val verdictLine: String get() = report.lineSequence().firstOrNull { it.startsWith("VERDICT: ") } ?: "VERDICT: unknown"
 }

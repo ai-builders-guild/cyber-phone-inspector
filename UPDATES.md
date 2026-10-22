@@ -389,3 +389,27 @@ What failed and how it was fixed
 
 Queued next
 - Phase C: the screens. Phase D: in app refresh, 0.2.0. Rick: `ABUSECH_AUTH_KEY` on the feeds repo when abuse.ch lets him generate it; the malware hash and malicious host lists ship as skipped until then.
+
+## 2026-10-22 — v1.1 Phase C: the screens
+Branch `phase-c-screens`.
+
+Done
+- `ui/theme` (dark, one green accent, red high, amber medium) and `ui/Components.kt` (score ring with capped and dotted segments, label pill, threat card, 56 dp primary button, ghost button, fact row).
+- `ui/model/ResultModel.kt`: cards per app worst first from the findings, headline by app counts, the four detail facts, the "N apps are fine" count, the protect yourself steps; JVM tests.
+- Screens: Launch, first run sheet (shown on the first Scan tap and from "What a scan touches"), Scanning with the five checks and the usage access button, Result (ring, headline, "Remove the threat(s)", cards, the 10 minute watch card, apps are fine, full report, kept apps, scan again), Detail (label, facts, why, Remove with Android's note, two step card for admin, accessibility and notification holders, Keep), After (ring, protect yourself checklist), Kept apps, Full report (share and save), Failed.
+- `ScanViewModel`: screen stack, removal queue for "Remove N threats", two step state, keep and un keep with instant re render, the watch finishing rescans on its own. `MainActivity` launches the dialog, Settings and the VPN consent and reports back; edge to edge with safe drawing insets (the v1 Continue button under the navigation bar is gone with the v1 screens).
+- Settings link for device admin: AOSP list component with the Security page as fallback.
+- Screenshots under `docs/screenshots/` (API 36 emulator): launch, sheet, scanning, result, detail, two step, Settings, admin page, step done, Android's dialog, After, result after, kept result, kept list, full report.
+
+Validation
+- `./gradlew check` green: 229 unit tests (ResultModel, ScanFlow, plus the earlier suites), ktlint, lint (fatal) with the strings cleaned up, dependency allowlist. Instrumented tests on the API 36 emulator: 6 tests, 0 failures, 1 skipped (the monitor without VPN consent), including the new first run sheet to result and denied usage access flows.
+- Emulator walk with a planted hidden admin app ("System Update", no icon, sideloaded, device admin): result reads 1 threat found, score 60, card Hidden; detail shows the two step card; Open Settings lands on the Device admin apps list; deactivate; back; the Uninstall step unlocks; Android's dialog; Uninstall; rescan; After screen "Threats are gone" with the checklist, score 90; result shows "System Update is gone." Keep on the remaining medium: card gone, score 100, "1 kept" and the Kept apps screen; un keep brings it back. Rotation on the result keeps the result.
+- Not run on the phone in this phase: the real phone walk is part of Phase D's smoke.
+
+What failed and how it was fixed
+- `ACTION_ADD_DEVICE_ADMIN` returned at once on API 36 for an active admin; replaced by the AOSP list component with a fallback (DECISIONS).
+- Three more patches missed their anchors after `ktlintFormat`; redone by line range. The lesson stands: format first, then patch, or patch by line range.
+- The emulator driver's first taps on Android's dialog and on the sheet's Continue missed; the driver was corrected, not the app.
+
+Queued next
+- Phase D: in app feed refresh, instrumented tests for detail to keep and detail to removal dialog, SMOKE.md v1.1, signed 0.2.0, docs, memory, SOP v2. Rick: look at `docs/screenshots/` (the one pause in this phase).

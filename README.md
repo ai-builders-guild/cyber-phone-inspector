@@ -21,6 +21,8 @@ Findings are matched against the public MVT indicator snapshot (680 package ids,
 
 v1.1 adds three checks that run against lists stored on the phone, never by sending anything out: every non system app's installed file is hashed and compared with the MalwareBazaar malware list; every non system app's code is searched for the Exodus Privacy tracker signatures (adware heavy outside a store is a medium, inside a store a note); and hosts an app contacted are compared with the URLhaus and ThreatFox lists. Results are cached per app version so a rescan only reads apps that changed. A safety score (100, minus 30 per app with a high, 10 per app with a medium) sits beside the verdict, and an app you mark as yours is kept as a dated note that returns if a stronger finding appears.
 
+The v1.1 screens: a safety score ring, one headline ("2 threats found", "1 thing to review", "Nothing found"), one card per flagged app with a plain label (Known malware, Steals data, Hidden, Reads your screen, Can wipe this phone, Reads your messages, Adware heavy, Review), a detail page with four facts and Remove or Keep, Android's own uninstall confirmation, a two step path for apps that hold device admin, accessibility or notification access, and an after removal checklist. Screenshots are under `docs/screenshots/`.
+
 ## What it cannot see
 
 Rooted or system privileged spyware, packages an OEM hides from the inventory, anything on the network side (router, carrier, SIM), your accounts and cloud backups, physical trackers, the work side of a work profile, traffic from apps that only sent data while the monitor was off, and name lookups by apps that bring their own encrypted DNS (notably Chrome). Every report ends with this list.

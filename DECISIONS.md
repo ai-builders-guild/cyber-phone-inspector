@@ -248,3 +248,15 @@ A cold scan of 303 non system apps hashed and scanned every APK (several GB of g
 
 ## 2026-10-22 / High remediations say data theft first, help second
 Every high rule shares one remediation: remove it, then protect your accounts (passwords from another device, two step sign in, statements), with the stalkerware line kept as the last sentence for the person who believes someone they know installed it. The golden reports regenerated once for this; the renderer test that looked for "Preserve the phone as evidence" now looks for "protect your accounts".
+
+## 2026-10-22 / The screens are a state machine in the view model, not a navigation graph
+Phase C keeps one `ScanViewModel` holding the scan state, the screen on top (Home, Consent, Result, Detail, After, Kept, Report), the removal state per package and the kept count. The activity only launches what Android must show (the uninstall confirmation, a Settings page, the VPN consent) and reports back. Rotation keeps the place because the view model survives it (checked on the API 36 emulator). Every screen is a plain composable with callbacks, so the flow is tested on the JVM with a fake scanner: open and back, remove through the dialog, cancel, remove all highs one dialog after another, the two step admin path, keep and un keep.
+
+## 2026-10-22 / Keep and un keep re render instantly; removal rescans
+`ScanResult` now carries the raw findings and the base "touched" lines, so a keep re applies the kept list, re renders the report and recomputes the score without a rescan (`ScanPipeline.rekeep`). A removal does rescan, because the package list is the truth, and the After screen shows when that rescan finishes with no high left. The "X is gone" line survives its own rescan and a scan the person starts clears it.
+
+## 2026-10-22 / The device admin step opens the AOSP Device admin apps list, with the Security page as fallback
+Android has no public action for the Device admin apps list, and on API 36 `ACTION_ADD_DEVICE_ADMIN` for an already active admin returns at once. The explicit AOSP Settings component (`Settings$DeviceAdminSettingsActivity`) is tried first and resolved before use; where it does not exist the public Security page opens and the step text names the app. Verified on the API 36 emulator with a planted hidden admin app: deactivate on its page, back, the Uninstall step unlocks, Android's dialog, gone, After screen.
+
+## 2026-10-22 / Four of the v1 strings became plurals; the unused v1 strings are gone
+Lint (fatal) flagged "%d threats", "%d apps", "%d lookups" and "%d check" as plural candidates and 28 v1 strings as unused once the screens were replaced. Plurals it is, and the old strings were deleted rather than suppressed.
