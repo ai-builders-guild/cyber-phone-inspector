@@ -16,6 +16,8 @@ data class ScanResult(
     val rawFindings: List<Finding> = findings,
     /** The "what this scan touched" lines without the kept app lines. */
     val touched: List<String> = emptyList(),
+    /** The oldest generatedAt among the lists on the phone when this scan ran. */
+    val listsDated: String = "",
 ) {
     val verdictLine: String get() = report.lineSequence().firstOrNull { it.startsWith("VERDICT: ") } ?: "VERDICT: unknown"
 }

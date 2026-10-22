@@ -90,4 +90,17 @@
     <string name="kept_since">Kept since %1$s</string>
     <string name="full_report">Full report</string>
     <string name="report_intro">The professional\'s view: every check, every flag, what was touched and what this scan cannot see.</string>
+
+    <string name="lists_title">Threat lists on this phone</string>
+    <string name="lists_body">Every app is checked against these lists here on the phone. Refreshing downloads new copies from the project\'s public list repository; nothing about this phone is sent.</string>
+    <string name="lists_link">Lists dated %1$s</string>
+    <string name="lists_link_unknown">Threat lists</string>
+    <string name="list_dated">dated %1$s</string>
+    <string name="list_not_included">not included yet</string>
+    <string name="refresh_now">Refresh the lists now</string>
+    <string name="refreshing">Downloading the lists…</string>
+    <string name="refresh_done">Lists are up to date.</string>
+    <string name="refresh_updated">Updated: %1$s</string>
+    <string name="refresh_rejected">Kept the previous copy of %1$s: %2$s</string>
+    <string name="weekly_refresh">Refresh every week on Wi\u2011Fi</string>
 </resources>

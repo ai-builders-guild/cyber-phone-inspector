@@ -36,7 +36,6 @@ import com.cyberrick.phoneinspector.report.ReportInput
 import com.cyberrick.phoneinspector.report.ReportRenderer
 import com.cyberrick.phoneinspector.report.ScanTouched
 import com.cyberrick.phoneinspector.rules.IocMatcher
-import com.cyberrick.phoneinspector.rules.IocSet
 import com.cyberrick.phoneinspector.rules.KnownServices
 import com.cyberrick.phoneinspector.rules.RuleEngine
 import com.cyberrick.phoneinspector.rules.RuleSet
@@ -90,10 +89,11 @@ class ScanPipeline(
             val (flows, networkStatus) = network
             val systemPackages = SystemPackages.parse(asset(SystemPackages.ASSET))
             val expectations = PermissionExpectations.parse(asset(PermissionExpectations.ASSET))
-            val ioc = IocSet.parse(asset("iocs/${IocSet.ASSET}"))
+            val feedFiles = FeedFiles(context)
+            val ioc = feedFiles.iocSet()
             val rules = RuleSet.parse(asset(RuleSet.ASSET))
             val known = KnownServices.parse(asset(KnownServices.ASSET))
-            val intel = FeedFiles(context).threatIntel()
+            val intel = feedFiles.threatIntel()
             val persistenceSource = AndroidPersistenceSource(context)
 
             val (apps, controls, permissions, persistence) =
@@ -200,6 +200,7 @@ class ScanPipeline(
                 kept,
                 rawFindings = raw,
                 touched = touched,
+                listsDated = feedFiles.oldestDate() ?: "",
             )
         }
 

@@ -43,8 +43,15 @@ class TrackerScanCollectorTest {
     @Test
     fun `a huge string pool trips the per app budget and is reported as partial`() {
         val big = SyntheticDex.build((0 until 200_000).map { "Lcom/filler/C$it;" })
+        // A fake clock that advances one millisecond per look, so the budget trips by count, never by wall time.
+        var ticks = 0L
         val tiny =
-            TrackerScanCollector(source("com.big" to listOf(big), "com.ok" to listOf(dex("Lcom/zeta/ads/X;"))), catalog, perAppBudgetMs = 1)
+            TrackerScanCollector(
+                source("com.big" to listOf(big), "com.ok" to listOf(dex("Lcom/zeta/ads/X;"))),
+                catalog,
+                perAppBudgetMs = 1,
+                clock = { ticks++ * 1_000_000 },
+            )
 
         val result = tiny.collect()
 

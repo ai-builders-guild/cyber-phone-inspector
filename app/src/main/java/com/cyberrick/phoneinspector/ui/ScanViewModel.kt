@@ -6,6 +6,8 @@ import com.cyberrick.phoneinspector.actions.RemovalBlocker
 import com.cyberrick.phoneinspector.actions.RemovalFlow
 import com.cyberrick.phoneinspector.actions.RemovalState
 import com.cyberrick.phoneinspector.core.model.CheckKind
+import com.cyberrick.phoneinspector.feeds.FeedFile
+import com.cyberrick.phoneinspector.feeds.RefreshResult
 import com.cyberrick.phoneinspector.rules.Severity
 import com.cyberrick.phoneinspector.scan.ScanResult
 import com.cyberrick.phoneinspector.ui.model.AppCard
@@ -54,6 +56,29 @@ sealed interface Screen {
     data object Kept : Screen
 
     data object Report : Screen
+
+    data object Lists : Screen
+}
+
+sealed interface RefreshUi {
+    data object Idle : RefreshUi
+
+    data object Running : RefreshUi
+
+    data class Done(
+        val result: RefreshResult,
+    ) : RefreshUi
+
+    data class Failed(
+        val message: String,
+    ) : RefreshUi
+}
+
+/** The lists on the phone and the one way to replace them. */
+interface Refresher {
+    fun dates(): Map<FeedFile, String?>
+
+    suspend fun refresh(): RefreshResult
 }
 
 /** Things only the activity can do; the view model asks, the activity launches. */
@@ -91,7 +116,37 @@ interface Keeper {
 class ScanViewModel(
     private val scanner: suspend (onProgress: (CheckKind) -> Unit) -> ScanResult,
     private val keeper: Keeper = NoKeeper,
+    private val refresher: Refresher? = null,
 ) : ViewModel() {
+    private val _refresh = MutableStateFlow<RefreshUi>(RefreshUi.Idle)
+    val refresh: StateFlow<RefreshUi> = _refresh
+    private val _listDates = MutableStateFlow(refresher?.dates().orEmpty())
+    val listDates: StateFlow<Map<FeedFile, String?>> = _listDates
+
+    val oldestListDate: String? get() =
+        _listDates.value.values
+            .filterNotNull()
+            .minOrNull()
+
+    fun showLists() {
+        _screen.value = Screen.Lists
+    }
+
+    fun refreshLists() {
+        val r = refresher ?: return
+        if (_refresh.value is RefreshUi.Running) return
+        _refresh.value = RefreshUi.Running
+        viewModelScope.launch {
+            _refresh.value =
+                try {
+                    RefreshUi.Done(r.refresh())
+                } catch (e: Exception) {
+                    RefreshUi.Failed(e.message ?: e.javaClass.simpleName)
+                }
+            _listDates.value = r.dates()
+        }
+    }
+
     private val _state = MutableStateFlow<ScanState>(ScanState.Idle)
     val state: StateFlow<ScanState> = _state
     private val _screen = MutableStateFlow<Screen>(Screen.Home)

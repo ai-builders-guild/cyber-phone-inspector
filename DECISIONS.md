@@ -260,3 +260,15 @@ Android has no public action for the Device admin apps list, and on API 36 `ACTI
 
 ## 2026-10-22 / Four of the v1 strings became plurals; the unused v1 strings are gone
 Lint (fatal) flagged "%d threats", "%d apps", "%d lookups" and "%d check" as plural candidates and 28 v1 strings as unused once the screens were replaced. Plurals it is, and the old strings were deleted rather than suppressed.
+
+## 2026-10-22 / The in app refresh is one host, one path, parse and size checked, atomic
+`feeds/FeedRefresher` downloads the four lists from the feeds repository's raw address and nowhere else; `HttpsFetcher` refuses any address that is not HTTPS on that host before a socket opens (GuardrailTest already pins the string). A download must parse as its own list (the spyware and tracker lists must be non empty) and must not be less than half the size of the copy it replaces, so a truncated or empty file is refused and the previous file kept; the replace is a temp file plus rename. Verified on the JVM with a fake repository and on the S24 Ultra against the live repository ("Lists are up to date").
+
+## 2026-10-22 / The weekly refresh is a JobScheduler job, off by default, not persisted
+WorkManager would be a new dependency and `setPersisted` needs the boot permission, which is not on the eight permission allowlist. The job (unmetered network, every seven days) is scheduled while the switch is on and scheduled again on every launch, so a reboot delays it until the app is next opened. Good enough for lists that change weekly.
+
+## 2026-10-22 / The spyware list comes from the feeds folder too
+`feeds/spyware.json` has the same shape as the v1 `iocs/snapshot.json`, so the pipeline reads it through `FeedFiles` (refreshed copy first, then the bundled feed, then the v1 snapshot). The golden tests keep using the v1 snapshot so a feed refresh never moves a golden.
+
+## 2026-10-22 / A time based unit test became a counted one
+The tracker budget test used a real one millisecond budget; with two emulators running it tripped on the tiny app too. It now injects a clock that advances one millisecond per look, so the budget trips by count. Any test that must trip a timeout should count, not wait.
