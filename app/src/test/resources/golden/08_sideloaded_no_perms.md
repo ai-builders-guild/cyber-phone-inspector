@@ -12,13 +12,7 @@ Read only: this scan changed nothing on the phone.
 
 ## Apps
 
-### Reader (org.fdroid.example.reader)
-- What it is: org.fdroid.example.reader was installed outside an app store but holds no microphone, camera or location grant.
-- What it can reach: nothing beyond its own data
-- How long it has been there: since at latest 2026-09-01
-- Where it sends data: no network observed
-- Severity: low
-- What to do: Nothing to do if you installed it on purpose.
+- Low: Reader (org.fdroid.example.reader): installed outside a store, no sensitive grants; reaches: nothing beyond its own data; since at latest 2026-09-01; sends data: no network observed.
 
 ## Deep control
 Nothing flagged.
@@ -36,7 +30,7 @@ Nothing flagged.
 VERDICT: clean
 
 ## Safe
-- org.fdroid.example.reader: org.fdroid.example.reader was installed outside an app store but holds no microphone, camera or location grant.
+- org.fdroid.example.reader: installed outside a store, no sensitive grants
 - 0 other apps had nothing flagged.
 
 ## Worth removing

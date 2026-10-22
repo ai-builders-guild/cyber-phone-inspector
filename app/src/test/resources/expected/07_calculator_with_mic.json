@@ -6,7 +6,8 @@
         "severity": "LOW",
         "priority": 100,
         "bucket": "SAFE",
-        "reason": "com.quickcalc.pro holds a microphone, camera or location grant that looks odd for this kind of app. It came from an app store.",
+        "summary": "odd microphone or background location grant",
+        "reason": "com.quickcalc.pro holds a microphone or background location grant that looks odd for this kind of app. It came from an app store. Foreground location and camera are not counted here; most store apps use them.",
         "remediation": "Check Settings > Apps > com.quickcalc.pro > Permissions and revoke anything it does not need.",
         "evidenceRef": [
             "app:com.quickcalc.pro",

@@ -20,13 +20,7 @@ Read only: this scan changed nothing on the phone.
 - Severity: medium
 - What to do: Uninstall com.update.core from Settings > Apps unless you know exactly what it is.
 
-### System Update (com.update.core)
-- What it is: com.update.core was installed outside an app store but holds no microphone, camera or location grant.
-- What it can reach: nothing beyond its own data
-- How long it has been there: since at latest 2026-09-09
-- Where it sends data: no network observed
-- Severity: low
-- What to do: Nothing to do if you installed it on purpose.
+- Low: System Update (com.update.core): installed outside a store, no sensitive grants; reaches: nothing beyond its own data; since at latest 2026-09-09; sends data: no network observed.
 
 ## Deep control
 Nothing flagged.
@@ -44,11 +38,11 @@ Nothing flagged.
 VERDICT: clean
 
 ## Safe
-- com.update.core: com.update.core was installed outside an app store but holds no microphone, camera or location grant.
+- com.update.core: installed outside a store, no sensitive grants
 - 8 other apps had nothing flagged.
 
 ## Worth removing
-- com.update.core (medium): com.update.core is named like a system component but is not one and did not come from an app store.
+- com.update.core (medium): named like a system component, not one
 
 ## Needs a professional
 - none

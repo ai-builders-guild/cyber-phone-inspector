@@ -189,3 +189,11 @@ Chrome on the emulator looked up Google service names through the system resolve
 
 ## 2026-10-21 / Monitor results are handed to the next scan through an app private file
 `FlowStore` writes `monitor_latest.json` atomically; a scan within 24 hours includes its flows and reports the Network check as CHECKED with the window and lookup count, otherwise NOT CHECKED. The monitor also stops when the app's task is removed or the VPN is revoked.
+
+## 2026-10-21 / Rule tuning from the first full report (supersedes part of the known dual use entry)
+Rick's first full report (phone, with the monitor) carried two highs, both parental control apps he installed and knows, plus 39 lows that were foreground location or camera on ordinary store apps and Samsung's own apps. Changes, all test first, goldens regenerated and reviewed:
+1. `ioc_match_visible_store` (medium, Worth removing): an indicator match on an app that is store installed, has a launcher icon, and is not disguised. Covertness is what separates stalkerware from an openly installed monitoring app; the upstream list types every entry "stalkerware" and offers no parental control category, so the evidence has to carry the distinction. The reason still names the list and the remediation says: if you did not install it, treat as high. `ioc_match` (high) now fires only when the app is hidden, disguised, or not from a store. This replaces point 1 of the known dual use entry; point 3 (per app acknowledgement) stays in BACKLOG as a refinement, no longer a necessity.
+2. `unexpected_grant_store` counts only microphone and background location. Foreground location and camera on a store app are the norm (store locators, barcode scanning, ride apps); flagging them produced most of the 39 lows.
+3. `com.samsung.`, `com.sec.android.` and `com.google.android.` are first party prefixes in the permission expectations: the phone's own recorder, camera, calendar and health apps are expected to hold what they hold.
+4. Every rule has a `summary`; the three lists use it. Low findings render as one line with the five facts inline; medium and high keep the full block. The report for the stalkerware fixture went from four repeated paragraphs per list entry to one line each.
+No package names from the report are recorded here; the categories above are enough to reproduce the decision.

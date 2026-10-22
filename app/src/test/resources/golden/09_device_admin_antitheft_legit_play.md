@@ -39,7 +39,7 @@ VERDICT: clean
 - 8 other apps had nothing flagged.
 
 ## Worth removing
-- com.cerberus.antitheft (medium): com.cerberus.antitheft is a device administrator and is not managing a work profile. Device admins can lock or wipe the phone and resist uninstall.
+- com.cerberus.antitheft (medium): device admin without a work profile
 
 ## Needs a professional
 - none

@@ -18,13 +18,7 @@ Nothing flagged.
 
 ## Permissions
 
-### QuickCalc (com.quickcalc.pro)
-- What it is: com.quickcalc.pro holds a microphone, camera or location grant that looks odd for this kind of app. It came from an app store.
-- What it can reach: microphone
-- How long it has been there: since at latest 2026-09-09
-- Where it sends data: no network observed
-- Severity: low
-- What to do: Check Settings > Apps > com.quickcalc.pro > Permissions and revoke anything it does not need.
+- Low: QuickCalc (com.quickcalc.pro): odd microphone or background location grant; reaches: microphone; since at latest 2026-09-09; sends data: no network observed.
 
 ## Persistence
 Nothing flagged.
@@ -36,7 +30,7 @@ Nothing flagged.
 VERDICT: clean
 
 ## Safe
-- com.quickcalc.pro: com.quickcalc.pro holds a microphone, camera or location grant that looks odd for this kind of app. It came from an app store.
+- com.quickcalc.pro: odd microphone or background location grant
 - 8 other apps had nothing flagged.
 
 ## Worth removing

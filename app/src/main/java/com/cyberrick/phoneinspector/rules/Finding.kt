@@ -25,6 +25,7 @@ data class Finding(
     val severity: Severity,
     val priority: Int = 100,
     val bucket: Bucket,
+    val summary: String,
     val reason: String,
     val remediation: String,
     val evidenceRef: List<String>,

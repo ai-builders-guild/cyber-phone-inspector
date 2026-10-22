@@ -122,6 +122,62 @@ class RuleEngineTest {
     }
 
     @Test
+    fun `ioc match on a visible store install with an icon is medium worth reviewing not high`() {
+        val visible = app("com.example.ioc.match", InstallSource.PLAY_STORE, hidden = false)
+
+        val findings = engine.evaluate(evidence(listOf(visible)))
+
+        assertThat(findings.filter { it.ruleId == "ioc_match" }).isEmpty()
+        val f = findings.single { it.ruleId == "ioc_match_visible_store" }
+        assertThat(f.severity).isEqualTo(Severity.MEDIUM)
+        assertThat(f.bucket).isEqualTo(Bucket.WORTH_REMOVING)
+        assertThat(f.reason).contains("listed by: Test list A, Test list B")
+    }
+
+    @Test
+    fun `ioc match on a hidden store install stays high`() {
+        val hidden = app("com.example.ioc.match", InstallSource.PLAY_STORE, hidden = true)
+
+        val findings = engine.evaluate(evidence(listOf(hidden)))
+
+        assertThat(findings.single { it.ruleId == "ioc_match" }.severity).isEqualTo(Severity.HIGH)
+    }
+
+    @Test
+    fun `foreground location or camera on a store install is not an unexpected grant finding`() {
+        val shop =
+            evidence(
+                listOf(app("com.shop")),
+                permissions =
+                    listOf(
+                        perm("com.shop", SensitiveGroup.LOCATION, unexpected = true),
+                        perm("com.shop", SensitiveGroup.CAMERA, unexpected = true),
+                    ),
+            )
+        val mic = evidence(listOf(app("com.calc")), permissions = listOf(perm("com.calc", SensitiveGroup.MICROPHONE, unexpected = true)))
+        val bg =
+            evidence(listOf(app("com.bg")), permissions = listOf(perm("com.bg", SensitiveGroup.LOCATION_BACKGROUND, unexpected = true)))
+
+        assertThat(engine.evaluate(shop)).isEmpty()
+        assertThat(engine.evaluate(mic).single().ruleId).isEqualTo("unexpected_grant_store")
+        assertThat(engine.evaluate(bg).single().ruleId).isEqualTo("unexpected_grant_store")
+    }
+
+    @Test
+    fun `every finding carries a short summary distinct from the reason`() {
+        val e =
+            evidence(
+                listOf(app("com.x", InstallSource.SIDELOADED, hidden = true)),
+                controls = listOf(control("com.x", ControlKind.ACCESSIBILITY)),
+            )
+
+        engine.evaluate(e).forEach {
+            assertThat(it.summary).isNotEmpty()
+            assertThat(it.summary.length).isLessThan(it.reason.length)
+        }
+    }
+
+    @Test
     fun `ioc match reason names the lists that carry the package`() {
         val findings = engine.evaluate(evidence(listOf(app("com.example.ioc.match", InstallSource.UNKNOWN))))
 
@@ -132,14 +188,16 @@ class RuleEngineTest {
     fun `ioc cert only match says which lists when known or signing certificate otherwise`() {
         val findings = engine.evaluate(evidence(listOf(app("com.innocent.name", certs = listOf("sha256:deadbeef")))))
 
-        assertThat(findings.single { it.ruleId == "ioc_match" }.reason).contains("listed by: signing certificate match")
+        assertThat(findings.single { it.ruleId.startsWith("ioc_match") }.reason).contains("listed by: signing certificate match")
     }
 
     @Test
-    fun `ioc signing cert match is high even on a play install`() {
-        val findings = engine.evaluate(evidence(listOf(app("com.innocent.name", certs = listOf("sha256:deadbeef")))))
+    fun `ioc signing cert match is medium on a visible play install and high when hidden`() {
+        val visible = engine.evaluate(evidence(listOf(app("com.innocent.name", certs = listOf("sha256:deadbeef")))))
+        val hidden = engine.evaluate(evidence(listOf(app("com.innocent.name", certs = listOf("sha256:deadbeef"), hidden = true))))
 
-        assertThat(findings.single { it.ruleId == "ioc_match" }.severity).isEqualTo(Severity.HIGH)
+        assertThat(visible.single { it.ruleId == "ioc_match_visible_store" }.severity).isEqualTo(Severity.MEDIUM)
+        assertThat(hidden.single { it.ruleId == "ioc_match" }.severity).isEqualTo(Severity.HIGH)
     }
 
     @Test
@@ -237,7 +295,7 @@ class RuleEngineTest {
                 listOf(app("com.a", InstallSource.SIDELOADED)),
                 permissions = listOf(perm("com.a", SensitiveGroup.CAMERA, unexpected = true)),
             )
-        val store = evidence(listOf(app("com.b")), permissions = listOf(perm("com.b", SensitiveGroup.CAMERA, unexpected = true)))
+        val store = evidence(listOf(app("com.b")), permissions = listOf(perm("com.b", SensitiveGroup.MICROPHONE, unexpected = true)))
 
         assertThat(engine.evaluate(side).single { it.ruleId == "unexpected_grant_nonstore" }.severity).isEqualTo(Severity.MEDIUM)
         assertThat(engine.evaluate(store).single { it.ruleId == "unexpected_grant_store" }.severity).isEqualTo(Severity.LOW)

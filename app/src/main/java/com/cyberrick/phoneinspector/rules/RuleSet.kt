@@ -15,6 +15,8 @@ data class Rule(
     val priority: Int = 100,
     val severity: Severity,
     val bucket: Bucket,
+    /** Short form for the three lists. */
+    val summary: String,
     /** Plain language, may contain {package}. */
     val reason: String,
     val remediation: String,

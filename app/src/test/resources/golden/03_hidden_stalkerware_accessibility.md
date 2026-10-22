@@ -76,10 +76,10 @@ VERDICT: compromised
 - 8 other apps had nothing flagged.
 
 ## Worth removing
-- com.sysconfig.service (medium): com.sysconfig.service starts itself at boot and ran in the background for more than 6 hours this week, and it is not a music, messaging, navigation or accessibility app. com.sysconfig.service is named like a system component but is not one and did not come from an app store. com.sysconfig.service was installed outside an app store and holds a microphone, camera or location grant. com.sysconfig.service did not come from an app store and holds a microphone, camera or location grant that looks odd for this kind of app.
+- com.sysconfig.service (medium): starts at boot and ran over 6 h this week; named like a system component, not one; installed outside a store, holds a sensitive grant; odd mic, camera or location grant, not from a store
 
 ## Needs a professional
-- com.sysconfig.service (high): com.sysconfig.service has no icon, did not come from an app store, and holds accessibility, device admin, or a microphone, camera or location grant. This is the shape of stalkerware. com.sysconfig.service is an enabled accessibility service and is not an accessibility app. Accessibility services can read everything on screen and type on your behalf.
+- com.sysconfig.service (high): hidden, not from a store, holds deep access; accessibility service, not an accessibility app
 
 ## The single most important thing to do next
 Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional.

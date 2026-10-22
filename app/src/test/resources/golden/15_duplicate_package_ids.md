@@ -12,13 +12,7 @@ Read only: this scan changed nothing on the phone.
 
 ## Apps
 
-### WhatsApp (com.whatsapp)
-- What it is: com.whatsapp appears twice in the inventory, usually a leftover from a second user or a failed update.
-- What it can reach: nothing beyond its own data
-- How long it has been there: since at latest 2026-09-06
-- Where it sends data: no network observed
-- Severity: low
-- What to do: Nothing to do. Mention it if you talk to a professional.
+- Low: WhatsApp (com.whatsapp): listed twice in the inventory; reaches: nothing beyond its own data; since at latest 2026-09-06; sends data: no network observed.
 
 ## Deep control
 Nothing flagged.
@@ -36,7 +30,7 @@ Nothing flagged.
 VERDICT: clean
 
 ## Safe
-- com.whatsapp: com.whatsapp appears twice in the inventory, usually a leftover from a second user or a failed update.
+- com.whatsapp: listed twice in the inventory
 - 5 other apps had nothing flagged.
 
 ## Worth removing
