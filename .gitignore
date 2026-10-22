@@ -34,3 +34,4 @@ PROBE_RESULTS_RAW/
 *.pcap
 *.log
 .DS_Store
+.superpowers/
