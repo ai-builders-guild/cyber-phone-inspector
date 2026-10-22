@@ -64,7 +64,7 @@ A release APK cannot be installed over a debug build (different signing key): un
 ANDROID_SERIAL=emulator-5554 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Six tests: consent flow, full scan to verdict, denied usage access, pipeline, export, monitor. They grant the emulator's own consents through the instrumentation shell. The monitor test skips where VPN consent was never given.
+Nine tests: first run sheet to result, full report behind the result, denied usage access capping the score, the detail screen's keep and remove paths and the two step admin card, pipeline, export, monitor. They grant the emulator's own consents through the instrumentation shell. The monitor test skips where VPN consent was never given. Phase D ran them green on API 36 and API 29.
 
 ## Manual smoke test
 
@@ -103,9 +103,21 @@ uv run --project tools python tools/fetch_iocs.py --check  # fail if the committ
 ./gradlew :app:testDebugUnitTest -Pcpi.updateGolden=true  # regenerate expected findings and golden reports after a deliberate rule change, then review the diff
 ```
 
+## Threat lists and refresh
+
+The four lists under `app/src/main/assets/feeds/` are built by `tools/fetch_feeds.py` and published by the public data repository https://github.com/CyberRick-AI/cyber-phone-inspector-feeds, whose weekly Action holds the only abuse.ch key. The app refreshes from that repository's raw address only (HTTPS, one host, fixed path), refuses a download that does not parse as its list or shrank by more than half, and replaces each file atomically; "Refresh every week on Wi-Fi" is off by default. Nothing about the phone is sent.
+
 ## Repository
 
 Private: https://github.com/CyberRick-AI/cyber-phone-inspector
+
+To publish the code under the guild organisation as a new public repository (GitHub cannot make a private fork public), create the empty public repo there first, then push the history:
+
+```bash
+git remote add guild https://github.com/<guild-org>/cyber-phone-inspector.git && git push guild main
+```
+
+Check `git log --all -p | grep -i -E "serial|\.env|password"` returns nothing you would not publish before the push; the repo never held secrets, the keystore or any phone's package names.
 
 ## Project documents
 

@@ -27,6 +27,10 @@ import androidx.lifecycle.lifecycleScope
 import com.cyberrick.phoneinspector.actions.RemovalState
 import com.cyberrick.phoneinspector.actions.RemoveAction
 import com.cyberrick.phoneinspector.collect.AndroidPersistenceSource
+import com.cyberrick.phoneinspector.feeds.FeedFile
+import com.cyberrick.phoneinspector.feeds.FeedFiles
+import com.cyberrick.phoneinspector.feeds.RefreshResult
+import com.cyberrick.phoneinspector.feeds.WeeklyRefresh
 import com.cyberrick.phoneinspector.keep.KeepStore
 import com.cyberrick.phoneinspector.net.DnsTunnelService
 import com.cyberrick.phoneinspector.net.MonitorState
@@ -69,13 +73,21 @@ class MainActivity : ComponentActivity() {
 
                         override fun rekeep(result: ScanResult): ScanResult = pipeline.rekeep(result)
                     }
-                return ScanViewModel(scanner = { onProgress -> pipeline.run(onProgress) }, keeper = keeper) as T
+                val feeds = FeedFiles(applicationContext)
+                val refresher =
+                    object : Refresher {
+                        override fun dates(): Map<FeedFile, String?> = feeds.dates()
+
+                        override suspend fun refresh(): RefreshResult = withContext(Dispatchers.IO) { feeds.refresher().refresh() }
+                    }
+                return ScanViewModel(scanner = { onProgress -> pipeline.run(onProgress) }, keeper = keeper, refresher = refresher) as T
             }
         }
     }
 
     private var consentSeen by mutableStateOf(false)
     private var usageAccess by mutableStateOf(false)
+    private var weekly by mutableStateOf(false)
 
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { startScan() }
     private val vpnConsent =
@@ -101,6 +113,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         consentSeen = prefs().getBoolean(PREF_CONSENT_SEEN, false)
+        weekly = WeeklyRefresh.isOn(this)
+        WeeklyRefresh.ensure(this)
         setContent {
             CpiTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
@@ -110,6 +124,8 @@ class MainActivity : ComponentActivity() {
                     val removal by viewModel.removal.collectAsState()
                     val notice by viewModel.notice.collectAsState()
                     val keptCount by viewModel.keptCount.collectAsState()
+                    val refresh by viewModel.refresh.collectAsState()
+                    val listDates by viewModel.listDates.collectAsState()
 
                     LaunchedEffect(Unit) {
                         viewModel.events.collect { event ->
@@ -130,7 +146,21 @@ class MainActivity : ComponentActivity() {
                         if (monitor is MonitorState.Finished && state is ScanState.Done) viewModel.start()
                     }
 
-                    Screens(state, screen, monitor, removal, notice, keptCount)
+                    if (screen is Screen.Lists && state !is ScanState.Running) {
+                        ListsScreen(
+                            dates = listDates,
+                            refresh = refresh,
+                            weekly = weekly,
+                            onRefresh = { viewModel.refreshLists() },
+                            onWeekly = { on ->
+                                WeeklyRefresh.set(this, on)
+                                weekly = on
+                            },
+                            onBack = { viewModel.back() },
+                        )
+                    } else {
+                        Screens(state, screen, monitor, removal, notice, keptCount)
+                    }
                     if (state !is ScanState.Running) ScanService.stop(this)
                 }
             }
@@ -196,9 +226,11 @@ class MainActivity : ComponentActivity() {
             result == null || screen is Screen.Home ->
                 LaunchScreen(
                     keptCount = keptCount,
+                    listsDated = viewModel.oldestListDate,
                     onScan = { if (consentSeen) requestNotificationsThenScan() else viewModel.showConsent() },
                     onWhatItTouches = { viewModel.showConsent() },
                     onKept = { viewModel.showKept() },
+                    onLists = { viewModel.showLists() },
                 )
             screen is Screen.Detail -> {
                 val card = ResultModel.cards(result).firstOrNull { it.packageName == screen.packageName }
@@ -254,6 +286,7 @@ class MainActivity : ComponentActivity() {
                     onReport = { viewModel.showReport() },
                     onKept = { viewModel.showKept() },
                     onRescan = { requestNotificationsThenScan() },
+                    onLists = { viewModel.showLists() },
                 )
         }
     }

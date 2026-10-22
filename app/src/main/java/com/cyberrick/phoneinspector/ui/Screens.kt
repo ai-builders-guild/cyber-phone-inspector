@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.cyberrick.phoneinspector.R
 import com.cyberrick.phoneinspector.actions.RemovalState
 import com.cyberrick.phoneinspector.core.model.CheckKind
+import com.cyberrick.phoneinspector.feeds.FeedFile
 import com.cyberrick.phoneinspector.keep.KeptApp
 import com.cyberrick.phoneinspector.net.MonitorState
 import com.cyberrick.phoneinspector.rules.Severity
@@ -100,9 +102,11 @@ private fun TopBar(
 @Composable
 fun LaunchScreen(
     keptCount: Int,
+    listsDated: String?,
     onScan: () -> Unit,
     onWhatItTouches: () -> Unit,
     onKept: () -> Unit,
+    onLists: () -> Unit,
 ) {
     Page {
         TopBar(stringResource(R.string.app_name))
@@ -119,6 +123,7 @@ fun LaunchScreen(
         Spacer(modifier = Modifier.height(8.dp))
         PrimaryButton(stringResource(R.string.scan_now), onClick = onScan)
         GhostButton(stringResource(R.string.what_it_touches), onClick = onWhatItTouches)
+        ListsLink(listsDated, onLists)
         if (keptCount > 0) {
             TextButton(onClick = onKept, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.kept_link, keptCount), color = Cpi.Muted)
@@ -217,6 +222,7 @@ fun ResultScreen(
     onReport: () -> Unit,
     onKept: () -> Unit,
     onRescan: () -> Unit,
+    onLists: () -> Unit = {},
 ) {
     val headline = ResultModel.headline(result)
     val score = result.score
@@ -287,6 +293,89 @@ fun ResultScreen(
         }
         if (result.kept.isNotEmpty()) GhostButton(stringResource(R.string.kept_link, result.kept.size), onClick = onKept)
         GhostButton(stringResource(R.string.rescan), onClick = onRescan)
+        ListsLink(result.listsDated.ifBlank { null }, onLists)
+    }
+}
+
+@Composable
+private fun ListsLink(
+    dated: String?,
+    onLists: () -> Unit,
+) {
+    TextButton(onClick = onLists, modifier = Modifier.fillMaxWidth()) {
+        Text(
+            (if (dated != null) stringResource(R.string.lists_link, dated) else stringResource(R.string.lists_link_unknown)) + " ›",
+            color = Cpi.Muted,
+        )
+    }
+}
+
+@Composable
+fun ListsScreen(
+    dates: Map<FeedFile, String?>,
+    refresh: RefreshUi,
+    weekly: Boolean,
+    onRefresh: () -> Unit,
+    onWeekly: (Boolean) -> Unit,
+    onBack: () -> Unit,
+) {
+    BackHandler(onBack = onBack)
+    Page {
+        TopBar(stringResource(R.string.lists_title), onBack = onBack)
+        SectionHeading(stringResource(R.string.lists_title))
+        MutedText(stringResource(R.string.lists_body))
+        FeedFile.entries.forEach { f ->
+            val date = dates[f]
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Cpi.Surface)
+                        .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(3.dp),
+            ) {
+                Text(f.title, style = MaterialTheme.typography.titleMedium)
+                MutedText(if (date != null) stringResource(R.string.list_dated, date) else stringResource(R.string.list_not_included))
+            }
+        }
+        when (refresh) {
+            RefreshUi.Idle -> Unit
+            RefreshUi.Running -> MutedText(stringResource(R.string.refreshing))
+            is RefreshUi.Failed -> Text(refresh.message, color = Cpi.MediumText, style = MaterialTheme.typography.bodyMedium)
+            is RefreshUi.Done -> {
+                if (refresh.result.updated.isNotEmpty()) {
+                    Text(
+                        stringResource(
+                            R.string.refresh_updated,
+                            refresh.result.updated.joinToString(", ") {
+                                it.title
+                            },
+                        ),
+                        color = Cpi.Accent,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                } else if (refresh.result.ok) {
+                    Text(stringResource(R.string.refresh_done), color = Cpi.Accent, style = MaterialTheme.typography.bodyMedium)
+                }
+                refresh.result.rejected.forEach { (f, why) ->
+                    Text(
+                        stringResource(R.string.refresh_rejected, f.title, why),
+                        color = Cpi.MediumText,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
+        }
+        PrimaryButton(stringResource(R.string.refresh_now), onClick = onRefresh, enabled = refresh !is RefreshUi.Running)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(stringResource(R.string.weekly_refresh), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+            Switch(checked = weekly, onCheckedChange = onWeekly)
+        }
     }
 }
 

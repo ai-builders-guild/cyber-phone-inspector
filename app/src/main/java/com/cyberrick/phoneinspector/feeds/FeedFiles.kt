@@ -2,6 +2,7 @@ package com.cyberrick.phoneinspector.feeds
 
 import android.content.Context
 import com.cyberrick.phoneinspector.collect.TrackerCatalog
+import com.cyberrick.phoneinspector.rules.IocSet
 import com.cyberrick.phoneinspector.rules.MaliciousHosts
 import com.cyberrick.phoneinspector.rules.MalwareHashes
 import com.cyberrick.phoneinspector.rules.ThreatIntel
@@ -30,6 +31,44 @@ class FeedFiles(
             .bufferedReader(Charsets.UTF_8)
             .use { it.readText() }
     }
+
+    /** The spyware list, refreshed copy first, then the bundled feed, then the v1 snapshot. */
+    fun iocSet(): IocSet =
+        parseOr("feeds/" + FeedFile.SPYWARE.fileName, IocSet::parse) {
+            IocSet.parse(
+                context.assets
+                    .open("iocs/${IocSet.ASSET}")
+                    .bufferedReader(Charsets.UTF_8)
+                    .use { it.readText() },
+            )
+        }
+
+    /** The generatedAt date of each list as it is on this phone. */
+    fun dates(): Map<FeedFile, String?> = FeedFile.entries.associateWith { f -> FeedFile.dateOf(readOrNull("feeds/" + f.fileName) ?: "") }
+
+    /** The oldest list date, for the one line the screens show. */
+    fun oldestDate(): String? = dates().values.filterNotNull().minOrNull()
+
+    fun refresher(): FeedRefresher =
+        FeedRefresher(dir, HttpsFetcher(), bundled = { f ->
+            try {
+                context.assets
+                    .open("feeds/" + f.fileName)
+                    .bufferedReader(Charsets.UTF_8)
+                    .use { it.readText() }
+            } catch (
+                e: Exception,
+            ) {
+                null
+            }
+        })
+
+    private fun readOrNull(asset: String): String? =
+        try {
+            read(asset)
+        } catch (e: Exception) {
+            null
+        }
 
     fun threatIntel(): ThreatIntel =
         ThreatIntel(

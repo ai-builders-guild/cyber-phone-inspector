@@ -33,6 +33,10 @@
                 android:value="Read only privacy scan of this phone, started by the user, runs for seconds" />
         </service>
         <service
+            android:name=".feeds.FeedRefreshJob"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
             android:name=".net.DnsTunnelService"
             android:exported="true"
             android:foregroundServiceType="specialUse"

@@ -1,36 +1,51 @@
-# SMOKE.md — manual smoke checklist on a real phone
+# SMOKE.md — manual smoke checklist on a real phone (v1.1)
 
-Run by Rick on the Galaxy S24 Ultra before any release. Tick with the date and build. Nothing here writes to the phone except the app's own data.
+Run by Rick on the Galaxy S24 Ultra before any release. Tick with the date and build. Nothing here writes to the phone except the app's own data and, where you choose it, Android's own uninstall of an app you picked.
 
 Build: ______ Date: ______ Phone: ______ Android: ______
 
 Install
 - [ ] `adb install -r dist/app-release.apk` succeeds over the previous build (no uninstall, data kept).
-- [ ] Launcher shows exactly one entry, Cyber Phone Inspector (no CPI Probe in a release build).
+- [ ] Launcher shows exactly one entry, Cyber Phone Inspector.
 
 First run
-- [ ] First launch shows "Before the first scan"; Continue leads to Home.
-- [ ] Home shows the usage access status correctly before and after granting it in Settings.
+- [ ] Launch shows the empty ring, "Is anything stealing from this phone?" and Scan now.
+- [ ] The first Scan now shows "Before the first scan"; Continue and scan starts the scan (the sheet never shows again; "What a scan touches" reopens it).
 
 Scan
-- [ ] Start scan asks for notification permission once; both Allow and Don't allow run the scan.
-- [ ] Scan finishes in under 20 s; the report screen shows the VERDICT line first.
-- [ ] Rotate the phone during a scan: the scan continues, no restart.
-- [ ] Save to Downloads creates two files under Download/CyberPhoneInspector and the toast says so.
-- [ ] Share report opens the share sheet with two attachments.
+- [ ] Notification permission is asked once; both Allow and Don't allow run the scan.
+- [ ] The first scan on this build finishes in under 3 minutes (it reads every app once); the second in under 30 s.
+- [ ] Rotate the phone during a scan and on the result: the scan continues, the result stays.
+- [ ] The result shows the score ring, one headline, cards worst first, "N apps are fine" and "Lists dated <date>".
+- [ ] Every card names an app you can find in Settings > Apps; tap one: the detail shows four facts and the reasons.
 
-Network monitor
-- [ ] Start network monitor shows Android's Connection request dialog; OK starts it; the status line counts lookups.
-- [ ] Phone stays online during the monitor (open a site, send a message).
-- [ ] Monitor stops itself after 10 min; "Last run" shows; no VPN key icon in the status bar afterwards.
-- [ ] A scan after the monitor shows the Network section with hosts per app.
-- [ ] Private DNS set to a named provider: Start network monitor shows "Could not start" with the Private DNS message; app stays alive. Set it back to Automatic.
+Keep
+- [ ] On an app you installed yourself, "Keep it, I know this app" removes the card at once, the score goes up and "1 kept" shows.
+- [ ] "Apps you marked as yours" lists it with the date; "Stop keeping this app" brings the card back.
+- [ ] The full report lists the kept app under "What this scan touched" while it is kept.
 
-Report sanity
-- [ ] Every flagged item names an app you can find in Settings > Apps.
+Remove (use an app you installed and do not need; nothing else)
+- [ ] Remove this app shows Android's own "Uninstall this app?" dialog; Cancel returns with "Still installed".
+- [ ] Uninstall there: the app rescans on its own; the card is gone; if it was the last high, the After screen shows the checklist.
+- [ ] An app holding device admin or accessibility shows the two step card; Open Settings lands on the right page; after switching it off and coming back, the Uninstall step unlocks.
+
+Lists
+- [ ] "Lists dated <date>" opens the lists screen with four lists and their dates.
+- [ ] Refresh the lists now finishes with "Lists are up to date" or "Updated: …" and no error; the dates do not go backwards.
+- [ ] Airplane mode on, refresh: it fails with a message, the dates stay, the app stays alive. Airplane mode off.
+- [ ] The weekly switch stays as set after closing and reopening the app.
+
+Data flow watch
+- [ ] Start the 10 minute watch shows Android's Connection request dialog; OK starts it; the card counts lookups.
+- [ ] Phone stays online during the watch (open a site, send a message).
+- [ ] The watch stops itself after 10 min and the app rescans on its own; the ring's dotted segment fills; no VPN key icon afterwards.
+- [ ] Private DNS set to a named provider: the watch shows "Could not start" with the Private DNS message. Set it back to Automatic.
+
+Report
+- [ ] See the full report shows VERDICT first; Share opens the share sheet with two attachments; Save to Downloads creates two files under Download/CyberPhoneInspector.
 - [ ] Nothing in the report is a package the phone does not have.
-- [ ] The "What this scan touched" section matches what you granted.
+- [ ] "What this scan touched" matches what you granted and names the lists on the phone.
 
 Teardown
 - [ ] Settings > Connections > More > VPN shows nothing running.
-- [ ] Revoking usage access makes the next report say NOT CHECKED for Persistence.
+- [ ] Revoking usage access makes the next result say a check could not run, capped at 90, with the Grant usage access button.

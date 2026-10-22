@@ -413,3 +413,26 @@ What failed and how it was fixed
 
 Queued next
 - Phase D: in app feed refresh, instrumented tests for detail to keep and detail to removal dialog, SMOKE.md v1.1, signed 0.2.0, docs, memory, SOP v2. Rick: look at `docs/screenshots/` (the one pause in this phase).
+
+## 2026-10-22 — v1.1 Phase D: refresh, instrumented tests, smoke, release 0.2.0, docs
+Branch `phase-d-refresh-release`.
+
+Done
+- `feeds/FeedRefresher.kt` (fixed address, parse and size checks, atomic replace, per list result), `feeds/HttpsFetcher.kt` (HTTPS, one host, bounded), `feeds/FeedRefreshJob.kt` (optional weekly job, off by default). `FeedFiles` now serves the spyware list and the list dates; the result carries "Lists dated <oldest>".
+- Lists screen (four lists with dates, Refresh the lists now with the outcome per list, the weekly switch) reached from the launch and result screens.
+- Instrumented `DetailScreenTest`: keep, remove to the dialog, the two step admin card with Uninstall locked. `SMOKE.md` rewritten for v1.1.
+- Version 0.2.0 (versionCode 2); signed `dist/app-release.apk`, 2.2 MB, exactly the eight allowlisted permissions plus AndroidX's app private receiver marker.
+- README: lists and refresh, the nine instrumented tests, the guild publish command.
+
+Validation
+- `./gradlew check` green: 235 unit tests (refresher: valid update, truncated refused, shrunk refused, unchanged, refused host, fixed address), ktlint, lint (fatal), dependency allowlist.
+- `connectedDebugAndroidTest` green on the API 36 emulator (9 tests, 1 skipped: monitor without VPN consent) and on the API 29 emulator (9 tests, 1 skipped).
+- S24 Ultra: 0.2.0 installed over 0.1.0 with data kept; the Lists screen shows all four lists dated 2026-10-22; a live refresh from the feeds repository returned "Lists are up to date".
+- Not done by me: the SMOKE.md walk on the phone is Rick's; "the app makes no connection with refresh off" is asserted by design (the only outbound code path is the refresher, which runs on the button or the weekly job) and by the single pinned address in GuardrailTest, not by a traffic measurement.
+
+What failed and how it was fixed
+- Lint: `setPersisted` needs the boot permission, outside the allowlist; dropped in favour of rescheduling on launch (DECISIONS). KTX `edit`.
+- The tracker budget unit test tripped under load; made deterministic with a fake clock (DECISIONS).
+
+Queued next
+- Rick: run SMOKE.md on the phone with `dist/app-release.apk`; add `ABUSECH_AUTH_KEY` to the feeds repo when abuse.ch allows; publish the code to the guild organisation with the README command when ready.
