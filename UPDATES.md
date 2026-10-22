@@ -339,3 +339,5 @@ What was verified (validation gate)
 
 Final state
 - 14 of 14 phases merged to main. 178 unit tests, 6 instrumented tests on API 29 and API 36, release 0.1.0 signed and installed on Rick's phone, verdict clean.
+- Clean clone gate: a fresh clone in a temp directory built `assembleDebug` and ran 178 unit tests green with only the README's three commands.
+- Obsidian: 9 notes filled, 0 placeholders, every wikilink resolves. Open Brain: 4 thoughts captured (summary and locations, decisions, hardware lessons, working method and next steps). SOP: `/Users/cyberrick/Documents/AI/Cyber Phone Inspector/Cyber Phone Inspector-SOP-v1.docx`.
