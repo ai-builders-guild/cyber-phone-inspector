@@ -254,5 +254,8 @@ What failed and how it was fixed
 - Chrome resolved the test sites with its own secure DNS, so the "3 sites in the browser" case could not be observed through the tunnel; other apps' lookups were. Documented as a limitation in the report footer.
 - Two patches missed anchors after formatting; re-applied by position.
 
+Real phone (Galaxy S24 Ultra, private DNS automatic), started by Rick from the app
+- Full 600 s window, 65 lookups, all 65 attributed to a uid and package, 6 apps, 48 distinct hosts, median 51 ms, 2 DoT probes reset, 11 per uid byte counters, 12 malformed or foreign packets dropped, no crash, no ANR. The next scan reported the Network check as CHECKED and showed a host for a device admin app.
+
 Queued next
-- Rick's 10 minute run on the Galaxy S24 Ultra (private DNS automatic there) to close the phase, then Phase 12 network rules.
+- Rule tuning from the first full report (see DECISIONS.md), then Phase 12 network rules.
