@@ -7,3 +7,7 @@
 - Scheduled rescans and change diffs between reports.
 - In app refresh of the indicator snapshot. Needs YAML index and STIX2 parsing on device; v1 ships a snapshot refreshed by tools/fetch_iocs.py at build time.
 - v1.1: per app "I installed this myself" acknowledgement for IOC matches (DECISIONS.md 2026-10-21, known dual use tools). Local only, never suppresses, always listed in the report.
+- Publish the repo to a GitHub remote (CLAUDE.md asks for pushes; no remote exists yet). Rick's call on public or private.
+- Refresh the IOC snapshot before each release (`tools/fetch_iocs.py`); `--check` fails past 90 days.
+- Localisation; the report and UI are English only.
+- Tune the known services list and the permission expectations from more real phones before any wider distribution.
