@@ -1,0 +1,247 @@
+{
+  "apps": [
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": null,
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788220800000,
+      "hasLauncherIcon": false,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "System UI",
+      "lastUpdateAt": 1788220800000,
+      "packageName": "com.android.systemui",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:a6b9513b47c92380"
+      ],
+      "trackers": [],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": null,
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788307200000,
+      "hasLauncherIcon": false,
+      "hidden": false,
+      "installSource": "SYSTEM",
+      "installerPackage": null,
+      "isSystem": true,
+      "label": "One UI Home",
+      "lastUpdateAt": 1788307200000,
+      "packageName": "com.sec.android.app.launcher",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:7c37691c6fda31e4"
+      ],
+      "trackers": [],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": "GAME",
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788393600000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "Coin Rush",
+      "lastUpdateAt": 1788393600000,
+      "packageName": "com.free.coin.game",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:b3dd9bac069063d9"
+      ],
+      "trackers": [
+        "AppLovin (MAX and SparkLabs)",
+        "Unity3d Ads",
+        "IronSource",
+        "Vungle",
+        "AdColony",
+        "Google AdMob",
+        "Google Firebase Analytics"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": "GAME",
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788480000000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "VENDOR_STORE",
+      "installerPackage": "com.sec.android.app.samsungapps",
+      "isSystem": false,
+      "label": "Mega Slots",
+      "lastUpdateAt": 1788480000000,
+      "packageName": "com.mega.slots.casino",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:1b1168483bf57970"
+      ],
+      "trackers": [
+        "AdColony",
+        "AppLovin (MAX and SparkLabs)",
+        "Fyber",
+        "Google AdMob",
+        "Mintegral",
+        "Pangle",
+        "Unity3d Ads",
+        "Vungle",
+        "Yandex Ad",
+        "Appodeal Stack",
+        "Adjoe",
+        "AdTiming",
+        "Google Firebase Analytics"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": null,
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788566400000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "SIDELOADED",
+      "installerPackage": "com.android.chrome",
+      "isSystem": false,
+      "label": "Turbo Cleaner",
+      "lastUpdateAt": 1788566400000,
+      "packageName": "com.cleaner.turbo",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:60d661b717bc891b"
+      ],
+      "trackers": [
+        "Adbrix"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": "AUDIO",
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788652800000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "Spotify",
+      "lastUpdateAt": 1788652800000,
+      "packageName": "com.spotify.music",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:be0ca287362158a5"
+      ],
+      "trackers": [
+        "Google Firebase Analytics",
+        "Google CrashLytics"
+      ],
+      "versionCode": 1,
+      "versionName": "1.0"
+    },
+    {
+      "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
+      "category": "SOCIAL",
+      "collectedAt": 1792584000000,
+      "disguised": false,
+      "duplicate": false,
+      "enabled": true,
+      "firstInstallAt": 1788739200000,
+      "hasLauncherIcon": true,
+      "hidden": false,
+      "installSource": "PLAY_STORE",
+      "installerPackage": "com.android.vending",
+      "isSystem": false,
+      "label": "WhatsApp",
+      "lastUpdateAt": 1788739200000,
+      "packageName": "com.whatsapp",
+      "scanBudgetHit": false,
+      "signingCertSha256": [
+        "sha256:04a1f5ddc4e1c6d0"
+      ],
+      "trackers": [],
+      "versionCode": 1,
+      "versionName": "1.0"
+    }
+  ],
+  "checks": [
+    {
+      "check": "APPS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "CONTROL",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERMISSIONS",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "PERSISTENCE",
+      "reason": null,
+      "status": "CHECKED"
+    },
+    {
+      "check": "NETWORK",
+      "reason": null,
+      "status": "CHECKED"
+    }
+  ],
+  "collectedAt": 1792584000000,
+  "controls": [],
+  "device": {
+    "androidRelease": "16",
+    "manufacturer": "Samsung",
+    "model": "SM-S926B",
+    "sdkInt": 36
+  },
+  "flows": [],
+  "iocSnapshotDate": "2026-10-21",
+  "permissions": [],
+  "persistence": [],
+  "scenario": "18_adware_heavy_trackers",
+  "schemaVersion": 1
+}

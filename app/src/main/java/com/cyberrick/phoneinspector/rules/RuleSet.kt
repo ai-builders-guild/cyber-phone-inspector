@@ -23,6 +23,10 @@ data class Rule(
     /** Which record kinds back this finding: app, control, permission, persistence, flow. */
     val evidence: List<String>,
     val `when`: JsonElement,
+    /** v1.1: the word on the threat card, one of [Labels.ALL]. Lows are always a note. */
+    val label: String = Labels.NOTE,
+    /** v1.1: one sentence for the card, second person, may use the same placeholders as reason. */
+    val cardText: String = "",
 ) {
     val condition: Condition by lazy { Condition.fromElement(`when`) }
 }

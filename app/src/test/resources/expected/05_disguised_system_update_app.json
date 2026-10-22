@@ -11,7 +11,9 @@
         "remediation": "Uninstall com.update.core from Settings > Apps unless you know exactly what it is.",
         "evidenceRef": [
             "app:com.update.core"
-        ]
+        ],
+        "label": "Hidden",
+        "cardText": "Named like a part of Android but is not one."
     },
     {
         "ruleId": "sideloaded_no_sensitive",
@@ -25,6 +27,8 @@
         "remediation": "Nothing to do if you installed it on purpose.",
         "evidenceRef": [
             "app:com.update.core"
-        ]
+        ],
+        "label": "Note",
+        "cardText": "Installed outside a store, no sensitive grants."
     }
 ]

@@ -1,0 +1,27 @@
+name = "19_tracker_budget_partial"
+description = "A huge app whose tracker scan ran out of its time budget. Expected: no tracker finding invented for it, scanBudgetHit carried in the evidence, everything else clean."
+[device]
+manufacturer = "Google"
+model = "Pixel 9"
+androidRelease = "16"
+sdkInt = 36
+
+[[apps]]
+packageName = "com.android.systemui"
+label = "System UI"
+isSystem = true
+[[apps]]
+packageName = "com.android.vending"
+label = "Google Play Store"
+isSystem = true
+hasLauncherIcon = true
+[[apps]]
+packageName = "com.huge.superapp"
+label = "SuperApp"
+category = "SOCIAL"
+scanBudgetHit = true
+[[apps]]
+packageName = "com.whatsapp"
+label = "WhatsApp"
+category = "SOCIAL"
+trackers = ["Google Firebase Analytics"]

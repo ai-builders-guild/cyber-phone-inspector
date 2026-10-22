@@ -13,6 +13,8 @@
             "app:com.google.android.apps.work.clouddpc",
             "control:PROFILE_OWNER:com.google.android.apps.work.clouddpc",
             "control:DEVICE_ADMIN:com.google.android.apps.work.clouddpc"
-        ]
+        ],
+        "label": "Note",
+        "cardText": "Manages a work profile."
     }
 ]

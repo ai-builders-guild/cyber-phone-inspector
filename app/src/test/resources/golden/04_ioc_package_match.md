@@ -18,7 +18,7 @@ Read only: this scan changed nothing on the phone.
 - How long it has been there: since at latest 2026-09-09
 - Where it sends data: no network observed
 - Severity: high
-- What to do: Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.
+- What to do: Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.
 
 - Low: Battery Saver (com.example.ioc.match): installed outside a store, no sensitive grants; reaches: nothing beyond its own data; since at latest 2026-09-09; sends data: no network observed.
 
@@ -52,7 +52,7 @@ VERDICT: compromised
 - com.example.ioc.match (high): on a published spyware list
 
 ## The single most important thing to do next
-Do not uninstall yet. Preserve the phone as evidence and contact a digital security professional or a domestic violence support service.
+Remove it, then protect your accounts: change your email and bank passwords from another device, turn on two step sign in, and check your statements. If you believe someone you know installed it, do not remove it yet; keep the phone as it is and get help.
 
 ## What this scan cannot see
 

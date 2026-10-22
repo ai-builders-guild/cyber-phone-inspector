@@ -7,9 +7,10 @@ class RuleEngine(
     private val rules: RuleSet,
     private val ioc: IocMatcher,
     private val known: KnownServices = KnownServices(emptySet()),
+    private val intel: ThreatIntel = ThreatIntel.EMPTY,
 ) {
     fun evaluate(evidence: Evidence): List<Finding> {
-        val facts = Facts.perPackage(evidence, ioc, known)
+        val facts = Facts.perPackage(evidence, ioc, known, intel)
         return facts
             .flatMap { (pkg, f) ->
                 rules.rules.filter { it.condition.evaluate(f) }.map { rule -> finding(rule, pkg, evidence, f) }
@@ -33,9 +34,11 @@ class RuleEngine(
             reason = fill(rule.reason, pkg, facts),
             remediation = fill(rule.remediation, pkg, facts),
             evidenceRef = rule.evidence.flatMap { refs(it, pkg, evidence) }.ifEmpty { listOf("package:$pkg") },
+            label = if (rule.severity == Severity.LOW) Labels.NOTE else rule.label,
+            cardText = fill(rule.cardText, pkg, facts),
         )
 
-    /** {package} and {iocSources} are the only placeholders rules may use. */
+    /** The placeholders rules may use; anything else is left as written. */
     private fun fill(
         template: String,
         pkg: String,
@@ -48,6 +51,12 @@ class RuleEngine(
             .replace("{beaconInterval}", facts["net.beaconInterval"]?.toString().orEmpty())
             .replace("{bytesSentMb}", facts["net.bytesSentMb"]?.toString().orEmpty())
             .replace("{unrecognizedList}", facts["net.unrecognizedList"]?.toString().orEmpty())
+            .replace("{malwareFamily}", facts["malwareFamily"]?.toString().orEmpty())
+            .replace("{listedHost}", facts["maliciousHostName"]?.toString().orEmpty())
+            .replace("{trackerCount}", facts["trackerCount"]?.toString().orEmpty())
+            .replace("{trackerKits}", facts["trackerKits"]?.toString().orEmpty())
+            .replace("{adTrackerCount}", facts["adTrackerCount"]?.toString().orEmpty())
+            .replace("{trackerList}", facts["trackerList"]?.toString().orEmpty())
 
     private fun refs(
         kind: String,

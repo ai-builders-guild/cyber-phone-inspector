@@ -6,6 +6,7 @@ import com.cyberrick.phoneinspector.rules.IocSet
 import com.cyberrick.phoneinspector.rules.KnownServices
 import com.cyberrick.phoneinspector.rules.RuleEngine
 import com.cyberrick.phoneinspector.rules.RuleSet
+import com.cyberrick.phoneinspector.rules.TestIntel
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Test
@@ -35,6 +36,7 @@ class ReportRendererTest {
                 ),
             ),
             KnownServices.parse(File(moduleDir, "src/main/assets/${KnownServices.ASSET}").readText(Charsets.UTF_8)),
+            intel = TestIntel.load(moduleDir),
         )
     }
 
@@ -48,7 +50,7 @@ class ReportRendererTest {
     @Test
     fun `golden report for every fixture is byte identical`() {
         val fixtures = fixtureDir.listFiles { f -> f.extension == "json" }.orEmpty().sortedBy { it.name }
-        assertThat(fixtures.size).isAtLeast(16)
+        assertThat(fixtures.size).isAtLeast(19)
         val mismatches = mutableListOf<String>()
         fixtures.forEach { f ->
             val text = render(f)
@@ -106,7 +108,7 @@ class ReportRendererTest {
 
         assertThat(md).contains("VERDICT: compromised")
         assertThat(md.section("## Needs a professional")).contains("com.sysconfig.service")
-        assertThat(md.section("## The single most important thing to do next")).contains("Preserve the phone as evidence")
+        assertThat(md.section("## The single most important thing to do next")).contains("protect your accounts")
     }
 
     @Test

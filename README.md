@@ -18,6 +18,9 @@ Status: v1 complete (0.1.0). All fourteen roadmap phases built, tested on API 29
 
 Findings are matched against the public MVT indicator snapshot (680 package ids, 6,548 domains, 497 signing certs) bundled at build time. Rules live in `app/src/main/assets/rules.json` as data.
 
+
+v1.1 adds three checks that run against lists stored on the phone, never by sending anything out: every non system app's installed file is hashed and compared with the MalwareBazaar malware list; every non system app's code is searched for the Exodus Privacy tracker signatures (adware heavy outside a store is a medium, inside a store a note); and hosts an app contacted are compared with the URLhaus and ThreatFox lists. Results are cached per app version so a rescan only reads apps that changed. A safety score (100, minus 30 per app with a high, 10 per app with a medium) sits beside the verdict, and an app you mark as yours is kept as a dated note that returns if a stronger finding appears.
+
 ## What it cannot see
 
 Rooted or system privileged spyware, packages an OEM hides from the inventory, anything on the network side (router, carrier, SIM), your accounts and cloud backups, physical trackers, the work side of a work profile, traffic from apps that only sent data while the monitor was off, and name lookups by apps that bring their own encrypted DNS (notably Chrome). Every report ends with this list.

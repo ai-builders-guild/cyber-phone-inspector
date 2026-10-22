@@ -16,6 +16,18 @@ object ScanTouched {
         "Local VPN: observed DNS lookups for the monitor window. You granted this; it stopped when the scan ended. " +
             "No traffic was redirected or stored."
     val DEFAULT = listOf(INVENTORY, USAGE_ACCESS, LOCAL_VPN)
+
+    /** v1.1: names the local lists and their dates. Nothing about this phone was sent anywhere to check them. */
+    fun threatLists(intel: com.cyberrick.phoneinspector.rules.ThreatIntel): String {
+        val malware =
+            intel.malware.skipped?.let { "not included ($it)" } ?: "${intel.malware.entries.size} hashes dated ${intel.malware.generatedAt}"
+        val hosts =
+            intel.hosts.skipped?.let { "not included ($it)" }
+                ?: "${intel.hosts.domains.size + intel.hosts.ips.size} hosts dated ${intel.hosts.generatedAt}"
+        return "Checked every non system app against the lists stored on this phone: " +
+            "${intel.trackers.trackers.size} tracker signatures (Exodus Privacy), malware hashes (MalwareBazaar): $malware, " +
+            "malicious hosts (URLhaus, ThreatFox): $hosts. Nothing about this phone was sent anywhere."
+    }
 }
 
 data class ReportInput(

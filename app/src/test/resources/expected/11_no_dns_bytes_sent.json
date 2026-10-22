@@ -11,6 +11,8 @@
         "remediation": "Check Settings > Apps > com.weather.widget.lite > Mobile data and Wi Fi usage. If the app has no reason to send that much, uninstall it.",
         "evidenceRef": [
             "app:com.weather.widget.lite"
-        ]
+        ],
+        "label": "Review",
+        "cardText": "Sent 2 MB without looking up any name, the way hidden uploads do."
     }
 ]

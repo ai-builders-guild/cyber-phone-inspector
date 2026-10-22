@@ -2,6 +2,7 @@
   "apps": [
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": null,
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -16,14 +17,17 @@
       "label": "System UI",
       "lastUpdateAt": 1788220800000,
       "packageName": "com.android.systemui",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:a6b9513b47c92380"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": null,
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -38,14 +42,17 @@
       "label": "Settings",
       "lastUpdateAt": 1788307200000,
       "packageName": "com.android.settings",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:48f96ab723a440c7"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": null,
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -60,14 +67,17 @@
       "label": "Google Play services",
       "lastUpdateAt": 1788393600000,
       "packageName": "com.google.android.gms",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:e5182720425068e4"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": null,
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -82,14 +92,17 @@
       "label": "Google Play Store",
       "lastUpdateAt": 1788480000000,
       "packageName": "com.android.vending",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:6bc560052007dfb4"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": null,
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -104,14 +117,17 @@
       "label": "Phone",
       "lastUpdateAt": 1788566400000,
       "packageName": "com.android.phone",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:bc0c3e5347a0272a"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": "SOCIAL",
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -126,14 +142,17 @@
       "label": "WhatsApp",
       "lastUpdateAt": 1788652800000,
       "packageName": "com.whatsapp",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:04a1f5ddc4e1c6d0"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": "AUDIO",
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -148,14 +167,17 @@
       "label": "Spotify",
       "lastUpdateAt": 1788739200000,
       "packageName": "com.spotify.music",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:be0ca287362158a5"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": "MAPS",
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -170,14 +192,17 @@
       "label": "Maps",
       "lastUpdateAt": 1788825600000,
       "packageName": "com.google.android.apps.maps",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:61f5747032f2d387"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     },
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": null,
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -192,9 +217,11 @@
       "label": "Battery Saver",
       "lastUpdateAt": 1788912000000,
       "packageName": "com.example.ioc.match",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:62858af8776bd768"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     }

@@ -365,3 +365,27 @@ What failed and how it was fixed
 
 Queued next
 - Phase B: hash and tracker collectors, rules v1.1, score, keep. Rick: add `ABUSECH_AUTH_KEY` as an Actions secret on the feeds repo when you have it; nothing waits on it.
+
+## 2026-10-22 — v1.1 Phase B: hash and tracker collectors, rules v1.1, score, keep
+Branch `phase-b-collectors-rules`.
+
+Done
+- `collect/ApkHashCollector.kt`: SHA-256 of every non system app's base APK, streamed, unreadable counted, split packages noted. `collect/TrackerScanCollector.kt` with `DexStrings`: Exodus signatures matched against each DEX string pool in one forward pass over a stream, per app time budget (1.5 s), over budget reported as PARTIAL on the Apps check. `collect/AppScanCache.kt`: both results cached per package version. Android adapters `AndroidApkSource` and `AndroidDexSource`.
+- `rules/ThreatIntel.kt` (`MalwareHashes`, `MaliciousHosts`), `rules/Labels.kt`; `Rule.label` and `Rule.cardText` on all 29 rules; new rules `known_malware_hash` (high), `malicious_host_contact` (high), `adware_heavy` (medium, outside a store), `adware_heavy_store` (low), `trackers_note` (low); high remediations reworded to data theft first. `AppRecord` gains `apkSha256`, `trackers`, `scanBudgetHit`.
+- `score/SafetyScore.kt`: 100 minus 30 per app whose worst is high, 10 per medium app, floor 0, capped at 90 when a check other than the network watch could not run. `expected/scores.json` is a golden over all 19 fixtures.
+- `keep/KeepStore.kt` and `keep/KeepTransform.kt`: kept apps collapse to one dated low note; stronger or new findings return; the report lists every kept app under what the scan touched.
+- `feeds/FeedFiles.kt`: lists read from private storage when a refreshed copy exists, else from assets. `ScanPipeline` runs hash and tracker scans after the inventory (hash in parallel with four tracker workers), applies the kept list before rendering, and the result carries the score.
+- Scenarios 17 (known malware hash), 18 (adware heavy, three tiers), 19 (tracker budget partial); goldens regenerated and read.
+
+Validation
+- `./gradlew check` green: 215 unit tests, ktlint, lint, dependency allowlist. Instrumented tests on the API 36 emulator: 6 of 6.
+- Phone (Samsung S24 Ultra, Android 16, 800 packages, 303 non system): all 303 hashed, tracker histogram 0 to 35 kits per app, 4 apps over budget, no crash. Verdict clean, 0 high, the same 11 mediums as the v1 scan that morning, 232 lows (191 tracker notes). Timings with one tracker worker: cold scan 124 s, cached rescan 25 s (down from 137 s before the cache). The four worker build passed `check` and installed, but the phone was unplugged before its cold run finished, so its timing is unmeasured; Phase C's phone run will record it.
+
+What failed and how it was fixed
+- OutOfMemoryError on the first phone run: whole DEX files on the heap. Streaming reader (DECISIONS).
+- 44 mediums on a clean phone: the adware rule retiered by install source (DECISIONS).
+- Two minute scans: per version cache and four workers (DECISIONS).
+- Three patches silently missed their anchors after `ktlintFormat` reformatted the target; each was redone by line range. Format first, then patch.
+
+Queued next
+- Phase C: the screens. Phase D: in app refresh, 0.2.0. Rick: `ABUSECH_AUTH_KEY` on the feeds repo when abuse.ch lets him generate it; the malware hash and malicious host lists ship as skipped until then.

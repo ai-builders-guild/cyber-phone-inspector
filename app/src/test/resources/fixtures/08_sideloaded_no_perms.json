@@ -2,6 +2,7 @@
   "apps": [
     {
       "api": "PackageManager.getInstalledPackages",
+      "apkSha256": null,
       "category": "NEWS",
       "collectedAt": 1792584000000,
       "disguised": false,
@@ -16,9 +17,11 @@
       "label": "Reader",
       "lastUpdateAt": 1788220800000,
       "packageName": "org.fdroid.example.reader",
+      "scanBudgetHit": false,
       "signingCertSha256": [
         "sha256:7b79a733f07fb69d"
       ],
+      "trackers": [],
       "versionCode": 1,
       "versionName": "1.0"
     }
