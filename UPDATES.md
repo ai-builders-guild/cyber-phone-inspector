@@ -293,3 +293,7 @@ What failed and how it was fixed
 - The two golden test engines were built without the known services list, so every host read as unrecognized and clean fixtures grew low findings; caught by the goldens, fixed by wiring the list.
 - My own rule text said "not malicious"; the wording test rejected it; reworded to "not a judgment".
 - Three signature patches missed formatter anchors; patched by regex.
+- Phone rescan: the phone was disconnected when the build finished; Rick runs the next scan from the app itself (the build is on the phone from the Phase 11 install plus the tuning install; the Network section appears after any scan that follows a monitor run within 24 h).
+
+Queued next
+- Phase 13: instrumented tests on API 29 and 36.1, smoke checklist, signed release APK.
