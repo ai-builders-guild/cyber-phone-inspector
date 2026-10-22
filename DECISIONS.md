@@ -206,3 +206,15 @@ No package names from the report are recorded here; the categories above are eno
 
 ## 2026-10-22 / Clean fixture carries a jittered series
 Six WhatsApp lookups with a deterministic jitter pattern (gap variation about 0.4) sit in the clean fixture so the non beacon case is in a golden report, next to the ten lookup, 60 second series in the beacon fixture.
+
+## 2026-10-22 / Release signing: keystore outside the repo, secrets only in .env
+`app/build.gradle.kts` reads the four `CPI_RELEASE_*` names from the environment or the gitignored `.env`; missing values leave the release unsigned rather than failing the build. The keystore was generated with the bundled JDK's keytool into `~/.cpi-release/` with a random password that exists only in `.env`. Never printed, never committed.
+
+## 2026-10-22 / R8 on release; serialization keep rules
+Release is minified and resource shrunk: 29 MB debug became 1.8 MB release, well under the 15 MB gate. `proguard-rules.pro` keeps the generated serializers and companions for the app's @Serializable classes; the instrumented run on the release APK (scan through the UI) is the proof that nothing needed at runtime was stripped.
+
+## 2026-10-22 / The release permission list carries one self declared marker
+`apkanalyzer manifest permissions` prints the seven allowlisted platform permissions plus `com.cyberrick.phoneinspector.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`, an app private permission AndroidX core declares for its own unexported receivers. It grants nothing and is not a platform permission; GuardrailTest keeps checking the source manifest's uses-permission list.
+
+## 2026-10-22 / Instrumented tests take the test device's own consents through the instrumentation shell
+On an emulator the instrumentation grants usage access and notifications with `appops` and `pm grant` as the shell user. The VPN consent cannot be granted that way, so the monitor test runs only where consent already exists and skips otherwise (`Assume`). None of this applies to a user's phone.
