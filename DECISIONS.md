@@ -218,3 +218,6 @@ Release is minified and resource shrunk: 29 MB debug became 1.8 MB release, well
 
 ## 2026-10-22 / Instrumented tests take the test device's own consents through the instrumentation shell
 On an emulator the instrumentation grants usage access and notifications with `appops` and `pm grant` as the shell user. The VPN consent cannot be granted that way, so the monitor test runs only where consent already exists and skips otherwise (`Assume`). None of this applies to a user's phone.
+
+## 2026-10-22 / Listed domain contact follows the same visibility rule as a listed package
+Rick's smoke scan showed one high: a visible, store installed family app contacting its own server, whose domain sits on the same published list as its package id. The package rule had already learned that an openly installed listed app is medium; the domain rule had not, so the same app was medium in Apps and high in Network. `ioc_domain_contact` now fires high only when the contacting app is hidden, disguised or not from a store; `ioc_domain_contact_visible_store` is medium with the same remediation as the package case. The report still names the domain under "Where it sends data".
