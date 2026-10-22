@@ -55,6 +55,12 @@ class GuardrailTest {
     }
 
     @Test
+    fun `the uninstall intent appears only in RemoveAction`() {
+        val hits = sourceFiles().filter { f -> UNINSTALL_SYMBOLS.any { f.readText().contains(it) } }.map { it.relativeTo(moduleDir).path }
+        assertThat(hits).containsExactly(REMOVAL_FILE)
+    }
+
+    @Test
     fun `the only url literal in main sources is the pinned ioc source`() {
         val urlPattern = Regex("""https?://[^\s"'<>)]+""")
         val hits =
@@ -86,13 +92,18 @@ class GuardrailTest {
                 "android.permission.POST_NOTIFICATIONS",
                 // Approved by Rick 2026-10-21 (DECISIONS.md): needed by every ConnectivityManager read in the network check.
                 "android.permission.ACCESS_NETWORK_STATE",
+                // Approved by Rick 2026-10-22 (DECISIONS.md): lets the app ask Android to show its uninstall confirmation.
+                "android.permission.REQUEST_DELETE_PACKAGES",
             )
+
+        /** The uninstall intent may appear in exactly this file (v1.1 design); anywhere else fails the build. */
+        const val REMOVAL_FILE = "src/main/java/com/cyberrick/phoneinspector/actions/RemoveAction.kt"
+
+        val UNINSTALL_SYMBOLS = listOf("ACTION_DELETE", "ACTION_UNINSTALL_PACKAGE")
 
         val FORBIDDEN_SYMBOLS =
             listOf(
                 "PackageInstaller",
-                "ACTION_DELETE",
-                "ACTION_UNINSTALL_PACKAGE",
                 "killBackgroundProcesses",
                 "Settings.Secure.putString",
                 "Settings.Secure.putInt",
@@ -110,6 +121,8 @@ class GuardrailTest {
         val ALLOWED_URL_PREFIXES =
             listOf(
                 "https://raw.githubusercontent.com/mvt-project/mvt-indicators/main/indicators.yaml",
+                "https://raw.githubusercontent.com/CyberRick-AI/cyber-phone-inspector-feeds/main/feeds/",
+                "https://reports.exodus-privacy.eu.org/api/trackers",
                 "http://schemas.android.com/",
             )
     }

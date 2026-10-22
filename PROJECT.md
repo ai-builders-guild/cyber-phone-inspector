@@ -44,6 +44,8 @@ None in v1. The app ships with no API keys and makes no outbound calls by defaul
 
 ## Read only guarantee (operational rules)
 
+v1.1 note: the app may launch Android's uninstall confirmation (from `actions/RemoveAction.kt` only, enforced by GuardrailTest) and open Settings pages. It still never removes, disables or changes anything itself.
+
 The app has no code path that calls `PackageInstaller`, `DevicePolicyManager` setters, `Settings.*.putString`, `ActivityManager.killBackgroundProcesses`, or any uninstall intent. A lint rule and a unit test grep the source for those symbols and fail the build if they appear. The two system level things the app does touch, with user consent each time, and which the report lists under "What this scan touched":
 
 | Touch | Why | Reversible |
