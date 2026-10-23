@@ -109,15 +109,10 @@ The four lists under `app/src/main/assets/feeds/` are built by `tools/fetch_feed
 
 ## Repository
 
-Private: https://github.com/CyberRick-AI/cyber-phone-inspector
+Public (guild testers): https://github.com/ai-builders-guild/cyber-phone-inspector
+Private (working repo): https://github.com/CyberRick-AI/cyber-phone-inspector
 
-To publish the code under the guild organisation as a new public repository (GitHub cannot make a private fork public), create the empty public repo there first, then push the history:
-
-```bash
-git remote add guild https://github.com/<guild-org>/cyber-phone-inspector.git && git push guild main
-```
-
-Check `git log --all -p | grep -i -E "serial|\.env|password"` returns nothing you would not publish before the push; the repo never held secrets, the keystore or any phone's package names.
+The public repo is a push of the same history (`git push guild main --tags`), not a fork, because GitHub cannot make a fork of a private repo public. Before each push the history was checked for secrets, the keystore and any phone's package names; it has never held them. Threat lists are in their own public repo: https://github.com/CyberRick-AI/cyber-phone-inspector-feeds.
 
 ## Project documents
 
