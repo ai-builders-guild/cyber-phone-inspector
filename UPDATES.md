@@ -437,5 +437,7 @@ What failed and how it was fixed
 Smoke findings (Rick, S24 Ultra, 2026-10-22)
 - A kept app came back after the watch added a finding and could not be kept again; fixed (DECISIONS), release rebuilt and reinstalled with data kept, `dist/app-release.apk` refreshed.
 
+Smoke passed: Rick walked SMOKE.md v1.1 on the S24 Ultra on 2026-10-22, every item ticked, on commit 39db94d (the keep again fix included; the v0.2.0 tag points one fix earlier, the `dist/app-release.apk` is the smoked build).
+
 Queued next
-- Rick: run SMOKE.md on the phone with `dist/app-release.apk`; add `ABUSECH_AUTH_KEY` to the feeds repo when abuse.ch allows; publish the code to the guild organisation with the README command when ready.
+- Rick: add `ABUSECH_AUTH_KEY` to the feeds repo when abuse.ch allows; publish the code to the guild organisation with the README command when ready.
