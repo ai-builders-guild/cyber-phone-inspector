@@ -37,8 +37,17 @@ class KeepStore(
         ruleIds: List<String>,
         worst: Severity = Severity.MEDIUM,
     ) {
+        val existing = all().firstOrNull { it.packageName == packageName }
         val others = all().filterNot { it.packageName == packageName }
-        write(others + KeptApp(packageName, ruleIds.distinct(), worst, clock()))
+        // Keeping again adds the new findings to what was already accepted; the first date is kept.
+        val merged =
+            KeptApp(
+                packageName,
+                (existing?.ruleIds.orEmpty() + ruleIds).distinct(),
+                if (existing != null && existing.worst.rank > worst.rank) existing.worst else worst,
+                existing?.keptAt ?: clock(),
+            )
+        write(others + merged)
     }
 
     fun unkeep(packageName: String) = write(all().filterNot { it.packageName == packageName })

@@ -434,5 +434,8 @@ What failed and how it was fixed
 - Lint: `setPersisted` needs the boot permission, outside the allowlist; dropped in favour of rescheduling on launch (DECISIONS). KTX `edit`.
 - The tracker budget unit test tripped under load; made deterministic with a fake clock (DECISIONS).
 
+Smoke findings (Rick, S24 Ultra, 2026-10-22)
+- A kept app came back after the watch added a finding and could not be kept again; fixed (DECISIONS), release rebuilt and reinstalled with data kept, `dist/app-release.apk` refreshed.
+
 Queued next
 - Rick: run SMOKE.md on the phone with `dist/app-release.apk`; add `ABUSECH_AUTH_KEY` to the feeds repo when abuse.ch allows; publish the code to the guild organisation with the README command when ready.

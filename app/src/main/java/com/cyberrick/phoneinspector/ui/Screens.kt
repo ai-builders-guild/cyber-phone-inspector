@@ -470,7 +470,9 @@ fun DetailScreen(
             }
         }
         if (kept) {
-            MutedText(stringResource(R.string.kept_note))
+            // A kept app only has a card when something new fired since it was kept.
+            Text(stringResource(R.string.kept_new_finding), style = MaterialTheme.typography.bodyLarge)
+            PrimaryButton(stringResource(R.string.keep_again), onClick = onKeep)
             GhostButton(stringResource(R.string.unkeep_it), onClick = onUnkeep)
         } else {
             RemovalBlock(card, removal, onRemove, onOpenSettings)
