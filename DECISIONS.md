@@ -278,3 +278,6 @@ Rick's smoke: a kept family app came back as a card after the data flow watch ga
 
 ## 2026-10-23 / The first keyed feeds run exposed two API mismatches
 With `ABUSECH_AUTH_KEY` in place the Action wrote 1604 Android malware hashes but 0 hosts. URLhaus's recent list is a GET with the limit in the path (the form POST got 405), and ThreatFox wants a JSON body (a form body returns nothing). Both calls now match the APIs, a non ok ThreatFox status is logged, and the tests pin the request shapes. The same script lives in both repos; it was pushed to the feeds repo first and the Action re run.
+
+## 2026-10-23 / The public guild repo is a push of the full history
+Before pushing to https://github.com/ai-builders-guild/cyber-phone-inspector the whole history was searched for the keystore, `.env` values, the phone serial and package names from Rick's phone: nothing, apart from the empty `.env.example` and public MVT list entries. So the public repo carries the full history and tags (`v0.2.0`, `v0.2.1`) rather than a squashed snapshot, and `main` is pushed to both remotes from the same checkout (`origin` private, `guild` public). The keystore and the abuse.ch key stay where they were: outside the repo and in the feeds repo's Actions secret.
