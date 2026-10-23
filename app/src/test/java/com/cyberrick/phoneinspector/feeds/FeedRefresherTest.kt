@@ -27,7 +27,9 @@ class FeedRefresherTest {
         }
     }
 
-    private fun newer(f: FeedFile): String = bundled(f).replaceFirst("\"generatedAt\": \"2026-10-22\"", "\"generatedAt\": \"2026-10-29\"")
+    /** The bundled list with its generatedAt moved into the future, whatever date it carries. */
+    private fun newer(f: FeedFile): String =
+        bundled(f).replaceFirst(Regex("\"generatedAt\":\\s*\"[^\"]*\""), "\"generatedAt\": \"2099-01-01\"")
 
     @Test
     fun `valid newer lists replace the files atomically and dates follow`() {
@@ -38,7 +40,7 @@ class FeedRefresherTest {
 
         assertThat(result.ok).isTrue()
         assertThat(result.updated).containsExactlyElementsIn(FeedFile.entries)
-        assertThat(FeedFile.dateOf(File(dir, "spyware.json").readText())).isEqualTo("2026-10-29")
+        assertThat(FeedFile.dateOf(File(dir, "spyware.json").readText())).isEqualTo("2099-01-01")
         assertThat(dir.listFiles()!!.map { it.name }.filter { it.endsWith(".tmp") }).isEmpty()
         assertThat(repo.asked).containsExactlyElementsIn(FeedFile.entries.map { FeedRefresher.BASE + it.fileName })
     }
