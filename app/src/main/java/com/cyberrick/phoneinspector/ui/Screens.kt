@@ -149,6 +149,7 @@ fun ConsentSheet(
         MutedText(stringResource(R.string.sheet_watch))
         MutedText(stringResource(R.string.consent_readonly))
         PrimaryButton(continueText, onClick = onContinue)
+        MutedText(stringResource(R.string.sheet_credits))
     }
 }
 
