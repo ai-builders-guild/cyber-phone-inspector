@@ -6,6 +6,26 @@ It runs five read only checks and writes a report with a single verdict line, th
 
 Status: v1 complete (0.1.0). All fourteen roadmap phases built, tested on API 29 and API 36 emulators and on a Galaxy S24 Ultra running Android 16.
 
+## For testers: install in two minutes
+
+1. Download `app-release.apk` from the latest release: https://github.com/ai-builders-guild/cyber-phone-inspector/releases
+2. Open it on the phone, allow the install from that source once, tap Install.
+3. Open the app, tap Scan now, read the sheet, tap Continue and scan.
+
+Then follow [docs/USING.md](docs/USING.md) and, if you are testing for the guild, walk [SMOKE.md](SMOKE.md) and report with the issue templates.
+
+## Documentation
+
+| Read this | For |
+|---|---|
+| [docs/USING.md](docs/USING.md) | Using the app: install, scan, the labels, detail, remove, keep, lists, the watch, what it cannot see |
+| [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Where every list comes from, what each catches, the behaviour rules, licences |
+| [SMOKE.md](SMOKE.md) | The manual checklist run on a real phone before each release |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Building, the guardrails, changing a rule, pull requests |
+| [SECURITY.md](SECURITY.md) | Reporting a vulnerability; what the app does with your data |
+| [CHANGELOG.md](CHANGELOG.md) | What changed in each release |
+| [PROJECT.md](PROJECT.md), [ROADMAP.md](ROADMAP.md), [DECISIONS.md](DECISIONS.md), [UPDATES.md](UPDATES.md) | The plan, the gates, why, and what happened |
+
 ## What it checks
 
 | Check | How | Needs |
