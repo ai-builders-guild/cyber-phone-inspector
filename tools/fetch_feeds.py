@@ -29,7 +29,7 @@ PINNED = {
     "mvt_index": fetch_iocs.PINNED_INDEX,
     "exodus": "https://reports.exodus-privacy.eu.org/api/trackers",
     "bazaar": "https://mb-api.abuse.ch/api/v1/",
-    "urlhaus": "https://urlhaus-api.abuse.ch/v1/urls/recent/",
+    "urlhaus": "https://urlhaus-api.abuse.ch/v1/urls/recent/limit/1000/",
     "threatfox": "https://threatfox-api.abuse.ch/api/v1/",
 }
 MAX_AGE_DAYS = 90
@@ -57,12 +57,16 @@ def key() -> str | None:
     return os.environ.get("CPI_ABUSECH_AUTH_KEY") or os.environ.get("ABUSECH_AUTH_KEY") or None
 
 
-def fetch(url: str, data: dict | None = None, auth: str | None = None) -> bytes:
+def fetch(url: str, data: dict | str | None = None, auth: str | None = None) -> bytes:
+    """GET when data is None; POST a form when data is a dict; POST JSON when data is a str (ThreatFox wants JSON)."""
     if url not in PINNED.values() and not url.startswith(fetch_iocs.RAW_HOST):
         raise RefusedUrl(f"refusing {url}: not a pinned address")
     body = None
     headers = {"User-Agent": "cyber-phone-inspector-feeds"}
-    if data is not None:
+    if isinstance(data, str):
+        body = data.encode()
+        headers["Content-Type"] = "application/json"
+    elif data is not None:
         body = "&".join(f"{k}={v}" for k, v in data.items()).encode()
         headers["Content-Type"] = "application/x-www-form-urlencoded"
     if auth:
@@ -115,6 +119,8 @@ def parse_urlhaus(raw: bytes) -> set[str]:
 def parse_threatfox(raw: bytes) -> tuple[set[str], set[str]]:
     doc = json.loads(raw)
     domains, ips = set(), set()
+    if doc.get("query_status") != "ok":
+        print(f"threatfox answered {doc.get('query_status')!r}: {str(doc.get('data', ''))[:120]}", file=sys.stderr)
     for i in doc.get("data", []) if doc.get("query_status") == "ok" else []:
         t = i.get("ioc_type", "")
         v = (i.get("ioc") or "").lower()
@@ -139,11 +145,11 @@ def build_abusech(auth: str | None, fetcher=fetch) -> tuple[dict, dict]:
     hashes.pop(TEST_ONLY_HASH, None)
     domains, ips = set(), set()
     try:
-        domains |= parse_urlhaus(fetcher(PINNED["urlhaus"], {"limit": "1000"}, auth))
+        domains |= parse_urlhaus(fetcher(PINNED["urlhaus"], None, auth))  # the recent list is a GET, limit in the path
     except (OSError, ValueError) as e:
         print(f"urlhaus failed: {type(e).__name__}: {e}", file=sys.stderr)
     try:
-        d, i = parse_threatfox(fetcher(PINNED["threatfox"], {"query": "get_iocs", "days": "7"}, auth))
+        d, i = parse_threatfox(fetcher(PINNED["threatfox"], json.dumps({"query": "get_iocs", "days": 7}), auth))
         domains |= d
         ips |= i
     except (OSError, ValueError) as e:

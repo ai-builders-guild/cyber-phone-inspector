@@ -275,3 +275,6 @@ The tracker budget test used a real one millisecond budget; with two emulators r
 
 ## 2026-10-22 / Keeping again adds the new findings; the first date stays
 Rick's smoke: a kept family app came back as a card after the data flow watch gave it a new finding (a listed domain contact), and the detail offered only "Stop keeping", so there was no way to accept the new finding. Keep now merges: keeping an already kept app adds the new rule ids, keeps the higher accepted severity and the original date. The detail of a kept app that is back explains why and offers "Keep it, including this" above "Stop keeping this app". A stronger finding still returns, as designed.
+
+## 2026-10-23 / The first keyed feeds run exposed two API mismatches
+With `ABUSECH_AUTH_KEY` in place the Action wrote 1604 Android malware hashes but 0 hosts. URLhaus's recent list is a GET with the limit in the path (the form POST got 405), and ThreatFox wants a JSON body (a form body returns nothing). Both calls now match the APIs, a non ok ThreatFox status is logged, and the tests pin the request shapes. The same script lives in both repos; it was pushed to the feeds repo first and the Action re run.

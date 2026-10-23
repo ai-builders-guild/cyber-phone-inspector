@@ -40,6 +40,25 @@ class FetchFeedsTest(unittest.TestCase):
         self.assertEqual(malware["hashes"], {})
         self.assertEqual(hosts["domains"], [])
 
+    def test_urlhaus_is_a_get_and_threatfox_gets_a_json_body(self):
+        seen = []
+
+        def fetcher(url, data=None, auth=None):
+            seen.append((url, data))
+            return json.dumps(BAZAAR if "mb-api" in url else (URLHAUS if "urlhaus" in url else THREATFOX)).encode()
+
+        ff.build_abusech("k", fetcher=fetcher)
+        urlhaus = [d for u, d in seen if "urlhaus" in u]
+        threatfox = [d for u, d in seen if "threatfox" in u]
+        self.assertEqual(urlhaus, [None])
+        self.assertEqual(json.loads(threatfox[0]), {"query": "get_iocs", "days": 7})
+        self.assertTrue(ff.PINNED["urlhaus"].endswith("/limit/1000/"))
+
+    def test_a_threatfox_error_status_yields_nothing_and_does_not_abort(self):
+        bad = {"query_status": "unknown_query", "data": "Unknown query"}
+        _, hosts = ff.build_abusech("k", fetcher=lambda url, data=None, auth=None: json.dumps(BAZAAR if "mb-api" in url else (URLHAUS if "urlhaus" in url else bad)).encode())
+        self.assertEqual(hosts["domains"], ["evil.example"])
+
     def test_refuses_an_unpinned_address(self):
         with self.assertRaises(ff.RefusedUrl):
             ff.fetch("https://example.com/feed.json")
