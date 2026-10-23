@@ -1,0 +1,15 @@
+Cyber Phone Inspector
+Copyright 2026 Rick Rodriguez, CyberRick AI LLC
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version. See LICENSE for the full text. Keep this notice and the copyright
+line in any copy or derivative.
+
+Threat lists bundled under app/src/main/assets/feeds and published from
+https://github.com/CyberRick-AI/cyber-phone-inspector-feeds are data, not
+program code, and carry their sources' terms:
+- Exodus Privacy tracker signatures: CC BY-SA 4.0 (https://exodus-privacy.eu.org)
+- abuse.ch MalwareBazaar, URLhaus and ThreatFox: CC0
+- MVT indicator index: the terms of the lists it names (https://github.com/mvt-project/mvt-indicators)

@@ -114,6 +114,10 @@ Private (working repo): https://github.com/CyberRick-AI/cyber-phone-inspector
 
 The public repo is a push of the same history (`git push guild main --tags`), not a fork, because GitHub cannot make a fork of a private repo public. Before each push the history was checked for secrets, the keystore and any phone's package names; it has never held them. Threat lists are in their own public repo: https://github.com/CyberRick-AI/cyber-phone-inspector-feeds.
 
+## License
+
+GPL-3.0-or-later. Copyright 2026 Rick Rodriguez, CyberRick AI LLC. You may use, study, share and change this program; if you distribute a modified version you must publish its source under the same license and keep the copyright notice. See `LICENSE` and `NOTICE`. The bundled threat lists are data under their own terms (Exodus Privacy CC BY-SA 4.0, abuse.ch CC0, MVT indicators per their sources), listed in `NOTICE`.
+
 ## Project documents
 
 CLAUDE.md (guardrails), PROJECT.md (limits and data sources), ROADMAP.md (phases and gates), INITIAL_INSTRUCTIONS.md (stack, severity table, assumptions), DECISIONS.md (why), UPDATES.md (what happened, per phase), PROBE_RESULTS.md (what each Android API returned on real hardware), BACKLOG.md (not in v1), SMOKE.md (manual checklist).

@@ -33,6 +33,7 @@
     <string name="sheet_lists">Every app is checked against lists stored on this phone (MalwareBazaar, URLhaus, ThreatFox, Exodus Privacy, MVT). Nothing about this phone is sent anywhere.</string>
     <string name="sheet_usage">Usage access (optional): lets the app see which apps ran in the background this week. Android asks you on a Settings screen.</string>
     <string name="sheet_watch">Data flow watch (optional, 10 minutes): a local VPN that notes which names apps look up, then stops. Android asks you with a system dialog. Nothing is redirected or stored beyond the names.</string>
+    <string name="sheet_credits">Cyber Phone Inspector is free software under the GNU GPL v3, copyright 2026 Rick Rodriguez, CyberRick AI LLC. Tracker signatures by Exodus Privacy (CC BY-SA 4.0); malware lists by abuse.ch (CC0); spyware indicators from the MVT index.</string>
     <string name="sheet_continue">Continue and scan</string>
     <string name="scanning_checks">%1$d OF %2$d CHECKS</string>
     <string name="scanning_inside">Looking inside apps. The first scan takes a minute or two; later scans are quick.</string>

@@ -281,3 +281,6 @@ With `ABUSECH_AUTH_KEY` in place the Action wrote 1604 Android malware hashes bu
 
 ## 2026-10-23 / The public guild repo is a push of the full history
 Before pushing to https://github.com/ai-builders-guild/cyber-phone-inspector the whole history was searched for the keystore, `.env` values, the phone serial and package names from Rick's phone: nothing, apart from the empty `.env.example` and public MVT list entries. So the public repo carries the full history and tags (`v0.2.0`, `v0.2.1`) rather than a squashed snapshot, and `main` is pushed to both remotes from the same checkout (`origin` private, `guild` public). The keystore and the abuse.ch key stay where they were: outside the repo and in the feeds repo's Actions secret.
+
+## 2026-10-23 / GPL-3.0-or-later
+Rick wants attribution to follow the code wherever it goes and no closed commercial fork. Every open source license keeps the copyright notice; GPL-3.0 adds that a distributed modified version must publish its source under the same terms. LICENSE holds the full text, NOTICE the copyright line and the data credits (Exodus CC BY-SA 4.0, abuse.ch CC0, MVT per its sources), README has the one paragraph summary, and the first run sheet carries the credit line in the app itself. The lists are data under their own terms, not GPL code.
