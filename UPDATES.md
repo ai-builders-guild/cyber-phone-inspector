@@ -450,3 +450,7 @@ Queued next
 ## 2026-10-23 — 0.2.1 and the public guild repo
 - `versionCode 3`, `versionName 0.2.1`: the same source Rick smoked plus the keep again fix and the bundled keyed lists; tag `v0.2.1`. Installed on the S24 Ultra over 0.2.0 with data kept.
 - The code is published to https://github.com/ai-builders-guild/cyber-phone-inspector as a push of the full history (checked: no secrets, no keystore, no phone package names; the only matches are public MVT list entries). The private repo stays the working repo.
+
+## 2026-10-23 — Documentation set and the first public release
+- `docs/USING.md` (the person's guide), `docs/DATA_SOURCES.md` (every list, what it catches, the behaviour rules, licences), `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, issue templates (bug, false positive, suggestion) and a PR template; README gained a tester quick start and a documentation table. Licence GPL-3.0-or-later with NOTICE and in app credits.
+- GitHub Release v0.2.1 on the public repo with the signed APK attached and its SHA-256 in the notes, so testers install without building.
