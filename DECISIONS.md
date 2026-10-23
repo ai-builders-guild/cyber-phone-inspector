@@ -272,3 +272,6 @@ WorkManager would be a new dependency and `setPersisted` needs the boot permissi
 
 ## 2026-10-22 / A time based unit test became a counted one
 The tracker budget test used a real one millisecond budget; with two emulators running it tripped on the tiny app too. It now injects a clock that advances one millisecond per look, so the budget trips by count. Any test that must trip a timeout should count, not wait.
+
+## 2026-10-22 / Keeping again adds the new findings; the first date stays
+Rick's smoke: a kept family app came back as a card after the data flow watch gave it a new finding (a listed domain contact), and the detail offered only "Stop keeping", so there was no way to accept the new finding. Keep now merges: keeping an already kept app adds the new rule ids, keeps the higher accepted severity and the original date. The detail of a kept app that is back explains why and offers "Keep it, including this" above "Stop keeping this app". A stronger finding still returns, as designed.

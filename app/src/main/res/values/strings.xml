@@ -71,7 +71,8 @@
     <string name="remove_note">Android will ask you to confirm. Nothing is removed until you tap Uninstall there.</string>
     <string name="keep_it">Keep it, I know this app</string>
     <string name="unkeep_it">Stop keeping this app</string>
-    <string name="kept_note">You marked this app as yours. Its findings are a note in the report and not counted.</string>
+    <string name="kept_new_finding">You marked this app as yours, but a new finding appeared since, so it is back. Keep it again to accept this finding too.</string>
+    <string name="keep_again">Keep it, including this</string>
     <string name="two_step_title">Two steps to remove it</string>
     <string name="two_step_one">1. Turn off its control in Settings</string>
     <string name="two_step_two">2. Uninstall</string>

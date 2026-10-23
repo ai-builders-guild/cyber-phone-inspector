@@ -89,4 +89,24 @@ class KeepTest {
 
         assertThat(lines).containsExactly("You marked Findmykids (com.family) as yours on 2026-10-21; its findings are not counted.")
     }
+
+    @Test
+    fun `keeping again adds the new rules, keeps the first date and the higher severity`() {
+        val store = KeepStore(tmp.root) { now }
+        store.keep("com.family", listOf("ioc_match_visible_store"))
+        val later = KeepStore(tmp.root) { now + 86_400_000L }
+
+        later.keep("com.family", listOf("ioc_domain_contact_visible_store"), Severity.LOW)
+
+        val k = later.all().single()
+        assertThat(k.ruleIds).containsExactly("ioc_match_visible_store", "ioc_domain_contact_visible_store")
+        assertThat(k.keptAt).isEqualTo(now)
+        assertThat(k.worst).isEqualTo(Severity.MEDIUM)
+        val findings =
+            listOf(
+                f("com.family", Severity.MEDIUM, "ioc_match_visible_store"),
+                f("com.family", Severity.MEDIUM, "ioc_domain_contact_visible_store"),
+            )
+        assertThat(KeepTransform.apply(findings, later.all()).single().ruleId).isEqualTo(KeepTransform.KEPT_RULE)
+    }
 }
